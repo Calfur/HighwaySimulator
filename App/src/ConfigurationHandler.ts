@@ -1,7 +1,8 @@
 
 export default class ConfigurationHandler {
    private readonly _rangeInputOutputs: { inputId: string, outputId: string }[] = [
-      { inputId: "#map-x-in-meters", outputId: "#map-x-in-meters-value" }
+      { inputId: "#map-x-in-meters", outputId: "#map-x-in-meters-value" },
+      { inputId: "#time-in-seconds", outputId: "#time-in-seconds-value" }
    ];
 
    constructor() {
@@ -10,6 +11,12 @@ export default class ConfigurationHandler {
 
    public MapXInMeters() {
       const input = <HTMLInputElement>document.querySelector("#map-x-in-meters");
+
+      return parseFloat(input.value);
+   }
+
+   public TimeInSeconds() {
+      const input = <HTMLInputElement>document.querySelector("#time-in-seconds");
 
       return parseFloat(input.value);
    }

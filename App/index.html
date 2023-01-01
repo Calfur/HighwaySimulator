@@ -8,15 +8,24 @@
 </head>
 
 <body>
-   <div class="container">
+   <main>
       <h1>Autobahn Simulator</h1>
+
       <div class="slider-container">
          <label for="map-x-in-meters">Angezeigte Breite in Meter</label>
          <input id="map-x-in-meters" type="range" min="50" max="800" value="200">
          <div id="map-x-in-meters-value">200</div>
       </div>
+
+      <div class="slider-container">
+         <label for="time-in-seconds">Zeit in Sekunden</label>
+         <input id="time-in-seconds" type="range" min="0" max="60" value="0">
+         <div id="time-in-seconds-value">0</div>
+      </div>
+
       <div id="p5js-app"></div>
-   </div>
+   </main>
+
    <script src="src/app.ts"></script>
 </body>
 
