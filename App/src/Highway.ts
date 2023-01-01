@@ -3,10 +3,10 @@ import Car from "./Car";
 
 export default class Highway {
    // Lane width from: https://www.saldo.ch/artikel/artikeldetail/mit-den-aussenspiegeln-wirds-eng-auf-der-ueberholspur/
-   private static readonly _laneWidthInMeter = 3.5;
-   private static readonly _laneSpacingInMeter = 0.3;
-   private static readonly _backgroundColor = "#008f00";
-   private static readonly _laneColor = "#575757";
+   private static readonly LANE_WIDTH_IN_METERS = 3.5;
+   private static readonly LANE_SPACING_IN_METERS = 0.3;
+   private static readonly BACKGROUND_COLOR = "#008f00";
+   private static readonly LANE_COLOR = "#575757";
 
    private readonly _p5: P5;
    private readonly _position: P5.Vector;
@@ -24,11 +24,11 @@ export default class Highway {
    }
 
    private get laneHeight() {
-      return this.pixelsPerMeter * Highway._laneWidthInMeter;
+      return this.pixelsPerMeter * Highway.LANE_WIDTH_IN_METERS;
    }
 
    private get laneSpacing() {
-      return this.pixelsPerMeter * Highway._laneSpacingInMeter;
+      return this.pixelsPerMeter * Highway.LANE_SPACING_IN_METERS;
    }
 
    constructor(p5: P5, position: P5.Vector, size: P5.Vector, xInMeter: number, amountOfLanes: number, cars: Car[]) {
@@ -59,7 +59,7 @@ export default class Highway {
       this._p5.push();
 
       this._p5.noStroke();
-      this._p5.fill(Highway._backgroundColor);
+      this._p5.fill(Highway.BACKGROUND_COLOR);
       this._p5.rectMode("corner");
       this._p5.rect(this._position.x, this._position.y, this._size.x, this._size.y);
 
@@ -72,7 +72,7 @@ export default class Highway {
       this._p5.push();
 
       this._p5.noStroke();
-      this._p5.fill(Highway._laneColor);
+      this._p5.fill(Highway.LANE_COLOR);
       this._p5.rectMode("corner");
       this._p5.rect(this._position.x, positionY, this._size.x, this.laneHeight);
 

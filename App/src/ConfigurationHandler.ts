@@ -9,13 +9,13 @@ export default class ConfigurationHandler {
       this.addRangeInputEventListeners();
    }
 
-   public MapXInMeters() {
+   public mapXInMeters() {
       const input = <HTMLInputElement>document.querySelector("#map-x-in-meters");
 
       return parseFloat(input.value);
    }
 
-   public TimeInSeconds() {
+   public timeInSeconds() {
       const input = <HTMLInputElement>document.querySelector("#time-in-seconds");
 
       return parseFloat(input.value);

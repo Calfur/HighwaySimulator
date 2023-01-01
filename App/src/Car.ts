@@ -3,8 +3,8 @@ import HighwayPosition from "./HighwayPosition";
 
 export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
-   private static readonly _length = 4.40;
-   private static readonly _width = 1.80; 
+   private static readonly LENGTH = 4.40;
+   private static readonly WIDTH = 1.80; 
    
    private readonly _p5: P5;
 	private readonly _highwayPosition: HighwayPosition;
@@ -21,8 +21,8 @@ export default class Car {
 	}
 
 	public draw(position: P5.Vector, pixelsPerMeter: number) {
-      const pixelLength = Car._length * pixelsPerMeter;
-      const pixelWidth = Car._width * pixelsPerMeter;
+      const pixelLength = Car.LENGTH * pixelsPerMeter;
+      const pixelWidth = Car.WIDTH * pixelsPerMeter;
       
 		this._p5.push();
 

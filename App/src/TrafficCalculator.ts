@@ -12,12 +12,16 @@ export default class TrafficCalculator {
       this.calculateTraffic()
    }
 
-   public getClosestStateAtTime(seconds: number) {
+   public getClosestAvailableTime(requestedTime: number) {
       var closest = this._carsAtTime.reduce(function (prev, curr) {
-         return (Math.abs(curr.seconds - seconds) < Math.abs(prev.seconds - seconds) ? curr : prev);
+         return (Math.abs(curr.seconds - requestedTime) < Math.abs(prev.seconds - requestedTime) ? curr : prev);
       });
 
-      return closest;
+      return closest.seconds;
+   }
+
+   public getCarsAtTime(seconds: number) {
+      return this._carsAtTime.find(c => c.seconds == seconds).cars;
    }
 
    private calculateTraffic() {
