@@ -1,27 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
+	<head>
+		<title>p5.js Typescript Template</title>
+		<meta charset="UTF-8" />
 
-<head>
-   <meta charset="utf-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link
+			href="https://fonts.googleapis.com/css?family=Montserrat&display=swap"
+			rel="stylesheet"
+		/>
+	</head>
 
-   <title>Autobahn Simulator</title>
-
-   <link rel="stylesheet" type="text/css" href="./style.css">
-
-   <script type="importmap">
-      {
-        "imports": {
-          "p5": "/node_modules/p5/lib/p5.min.js"
-        }
-      }
-    </script>
-</head>
-
-<body>
-   <div id="p5js-app"></div>
-   <!-- <script id="common-js" data-main="./build/index.js" src="./node_modules/common-js/common.min.js"></script>  -->
-   <script type="module" src="./build/index.js"></script>
-</body>
-
+	<body>
+		<div class="container">
+			<h1>p5.js meets Typescript</h1>
+			<div id="app"></div>
+		</div>
+		<script src="src/app.ts"></script>
+	</body>
 </html>
