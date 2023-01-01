@@ -2,6 +2,7 @@ import P5 from "p5";
 import Car from "./Car";
 import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
+import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
 
 export default class HighwaySimulator {
@@ -17,7 +18,7 @@ export default class HighwaySimulator {
          this._canvasWidth = p5.windowWidth - 50;
          this._canvasHeight = p5.windowHeight - 200;
          this._trafficCalculator = new TrafficCalculator(p5);
-      
+               
          this.setup(p5);
          this.draw(p5);
       };
@@ -34,13 +35,18 @@ export default class HighwaySimulator {
 
    private draw(p5: P5) {
       p5.draw = () => {
+         const simulatorStatistic = new SimulatorStatistic(p5, this._canvasHeight);
+
          var requestedTime = this._configurationHandler.timeInSeconds();
          var closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
          var cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
 
          this.drawMap(p5, cars);
 
-         this.addTextForClosestAvailableTime(p5, closestAvailableTime, this._canvasHeight);
+         simulatorStatistic.addStatistic("Angezeigte Zeit", `${closestAvailableTime.toString()} Sekunden`);
+         simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
+         
+         simulatorStatistic.draw();
       };
    }
 
@@ -59,15 +65,5 @@ export default class HighwaySimulator {
       );
    
       map.draw();
-   }
-
-   private addTextForClosestAvailableTime(p5: P5, seconds: number, canvasHeight: number) {
-      p5.push();
-   
-      p5.fill("white");
-      p5.textSize(20);
-      p5.text(`Angezeigte Zeit: ${seconds.toString()} Sekunden`, 15, canvasHeight - 15);
-   
-      p5.pop();
    }
 }
