@@ -10,6 +10,11 @@
 <body>
    <div class="container">
       <h1>Autobahn Simulator</h1>
+      <div class="slider-container">
+         <label for="map-x-in-meters">Angezeigte Breite in Meter</label>
+         <input id="map-x-in-meters" type="range" min="50" max="800" value="200">
+         <div id="map-x-in-meters-value">200</div>
+      </div>
       <div id="p5js-app"></div>
    </div>
    <script src="src/app.ts"></script>

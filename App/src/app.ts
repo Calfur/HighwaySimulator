@@ -1,5 +1,6 @@
 import P5 from "p5";
 import Car from "./Car";
+import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
 import HighwayPosition from "./HighwayPosition";
 import "./styles.scss";
@@ -8,6 +9,7 @@ const sketch = (p5: P5) => {
 
    const canvasWidth = p5.windowWidth - 50;
    const canvasHeight = p5.windowHeight - 200;
+   var configurationHandler = new ConfigurationHandler();
 
    p5.setup = () => {
       const canvas = p5.createCanvas(canvasWidth, canvasHeight);
@@ -26,7 +28,7 @@ const sketch = (p5: P5) => {
 
       var mapPosition = p5.createVector(0, 0);
       var mapSize = p5.createVector(canvasWidth, canvasHeight);
-      var mapXInMeters = 50;
+      var mapXInMeters = configurationHandler.MapXInMeters();
       var amountOfLanes = 2;
 
       var map = new Highway(

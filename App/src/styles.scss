@@ -16,3 +16,10 @@ body {
     justify-content: center;
     align-items: center;
 }
+
+.slider-container{
+   display: flex;
+   >*{
+      margin: 10px;
+   }
+}
