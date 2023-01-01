@@ -1,4 +1,4 @@
-import HighwaySimulator from "./HighwaySimulator";
+import HighwaySimulator from "./HighwaySimulator/HighwaySimulator";
 import "./styles.scss";
 
 var highwaySimulator = new HighwaySimulator();
