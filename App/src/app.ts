@@ -16,8 +16,6 @@ const sketch = (p5: P5) => {
    p5.setup = () => {
       const canvas = p5.createCanvas(canvasWidth, canvasHeight);
       canvas.parent("p5js-app");
-
-      p5.background("gray");
    };
 
    p5.draw = () => {
@@ -30,16 +28,28 @@ const sketch = (p5: P5) => {
       var amountOfLanes = 2;
 
       var map = new Highway(
-         p5, 
-         mapPosition, 
-         mapSize, 
-         mapXInMeters, 
-         amountOfLanes, 
+         p5,
+         mapPosition,
+         mapSize,
+         mapXInMeters,
+         amountOfLanes,
          timeCars.cars
       );
 
       map.draw();
+
+      addTextForCurrentlyShownSecond(p5, timeCars.seconds, canvasHeight);
    };
 };
 
 new P5(sketch);
+
+function addTextForCurrentlyShownSecond(p5: P5, seconds: number, canvasHeight: number) {
+   p5.push();
+
+   p5.fill("white");
+   p5.textSize(20);
+   p5.text(`Angezeigte Zeit: ${seconds.toString()} Sekunden`, 15, canvasHeight - 15);
+
+   p5.pop();
+}
