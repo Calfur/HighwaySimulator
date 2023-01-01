@@ -8,12 +8,20 @@
    <title>Autobahn Simulator</title>
 
    <link rel="stylesheet" type="text/css" href="./style.css">
+
+   <script type="importmap">
+      {
+        "imports": {
+          "p5": "/node_modules/p5/lib/p5.min.js"
+        }
+      }
+    </script>
 </head>
 
 <body>
    <div id="p5js-app"></div>
-   <script id="common-js" data-main="./scripts/app.js" src="./node_modules/common-js/common.min.js"></script> 
-   <!-- <script type="module" src="./scripts/app.js"></script> -->
+   <!-- <script id="common-js" data-main="./build/index.js" src="./node_modules/common-js/common.min.js"></script>  -->
+   <script type="module" src="./build/index.js"></script>
 </body>
 
 </html>

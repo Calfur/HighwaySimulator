@@ -1,6 +1,6 @@
-import P5 from "../node_modules/p5/lib/p5.min.js";
+import p5 from "p5";
 
-const sketch = (p5: P5) => {
+const sketch = (p5: p5) => {
    p5.setup = () => {
       const canvas = p5.createCanvas(200, 200);
       canvas.parent("p5js-app");
@@ -13,6 +13,6 @@ const sketch = (p5: P5) => {
    }
 }
 
-new P5(sketch);
+new p5(sketch);
 
 console.log("Hallo")
