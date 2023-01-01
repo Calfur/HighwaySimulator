@@ -1,39 +1,44 @@
 import P5 from "p5";
-import "p5/lib/addons/p5.dom";
-// import "p5/lib/addons/p5.sound";	// Include if needed
+import Car from "./Car";
+import Highway from "./Highway";
+import HighwayPosition from "./HighwayPosition";
 import "./styles.scss";
 
-// DEMO: A sample class implementation
-import MyCircle from "./MyCircle";
 
-// Creating the sketch itself
 const sketch = (p5: P5) => {
-	// DEMO: Prepare an array of MyCircle instances
-	const myCircles: MyCircle[] = [];
 
-	// The sketch setup method 
-	p5.setup = () => {
-		// Creating and positioning the canvas
-		const canvas = p5.createCanvas(200, 200);
-		canvas.parent("app");
+   p5.setup = () => {
 
-		// Configuring the canvas
-		p5.background("white");
+      const canvas = p5.createCanvas(300, 300);
+      canvas.parent("p5js-app");
 
-		// DEMO: Create three circles in the center of the canvas
-		for (let i = 1; i < 4; i++) {
-			const p = p5.width / 4;
-			const circlePos = p5.createVector(p * i, p5.height / 2);
-			const size = i % 2 !== 0 ? 24 : 32;
-			myCircles.push(new MyCircle(p5, circlePos, size));
-		}
-	};
+      p5.background("gray");
+   };
 
-	// The sketch draw method
-	p5.draw = () => {
-		// DEMO: Let the circle instances draw themselves
-		myCircles.forEach(circle => circle.draw());
-	};
+   p5.draw = () => {
+      var cars = [
+         new Car(p5, new HighwayPosition(10, 0), p5.color("red")),
+         new Car(p5, new HighwayPosition(20, 0), p5.color("blue")),
+         new Car(p5, new HighwayPosition(15, 1), p5.color("green")),
+         new Car(p5, new HighwayPosition(30, 1), p5.color("yellow")),
+      ];
+
+      var mapPosition = p5.createVector(10, 10);
+      var mapSize = p5.createVector(280, 280);
+      var mapXInMeters = 50;
+      var amountOfLanes = 2;
+
+      var map = new Highway(
+         p5, 
+         mapPosition, 
+         mapSize, 
+         mapXInMeters, 
+         amountOfLanes, 
+         cars
+      );
+
+      map.draw();
+   };
 };
 
 new P5(sketch);
