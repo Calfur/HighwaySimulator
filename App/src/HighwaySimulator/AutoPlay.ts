@@ -1,10 +1,55 @@
-export default class AutoPlay {
-   private static CONTROL_CLASS = ".play-pause-btn";
+import ConfigurationHandler from "./ConfigurationHandler";
 
-   constructor() {
-      const control = <HTMLElement>document.querySelector(AutoPlay.CONTROL_CLASS);
+export default class AutoPlay {
+   private static PLAY_PAUSE_SELECTOR = ".play-pause-button";
+   private static PAUSE_SELECTOR = ".pause-button";
+   private static TIMEOUT = 100;
+
+   private readonly _configurationHandler: ConfigurationHandler;
+
+   private _isPlaying = true;
+
+   constructor(configurationHandler: ConfigurationHandler) {
+      this._configurationHandler = configurationHandler;
+
+      this.loadPlayPauseButtons();
+      this.loadPauseButtons();
+      this.loadPlayer();
+   }
+
+   private loadPlayPauseButtons() {
+      const controls = <NodeListOf<HTMLElement>>document.querySelectorAll(AutoPlay.PLAY_PAUSE_SELECTOR);
+
+      controls.forEach((control: HTMLElement) => {
+         this.loadPlayPauseButton(control);
+      });
+   }
+
+   private loadPlayPauseButton(control: HTMLElement) {
       control.onclick = () => {
-         console.log("clicked");
+         this._isPlaying = !this._isPlaying;
       };
+   }
+
+   private loadPauseButtons() {
+      const controls = <NodeListOf<HTMLElement>>document.querySelectorAll(AutoPlay.PAUSE_SELECTOR);
+
+      controls.forEach((control: HTMLElement) => {
+         this.loadPauseButton(control);
+      });
+   }
+
+   private loadPauseButton(control: HTMLElement) {
+      control.onclick = () => {
+         this._isPlaying = false;
+      };
+   }
+
+   private loadPlayer() {
+      setInterval(() => {
+         if (this._isPlaying) {
+            this._configurationHandler.timeInSeconds += AutoPlay.TIMEOUT / 1000;
+         }
+      }, AutoPlay.TIMEOUT);
    }
 }

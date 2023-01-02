@@ -12,8 +12,8 @@ export default class HighwaySimulator {
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
-   private _autoPlay = new AutoPlay();
    private _configurationHandler = new ConfigurationHandler();
+   private _autoPlay = new AutoPlay(this._configurationHandler);
 
    public load(){
       const sketch = (p5: P5) => {
@@ -39,7 +39,7 @@ export default class HighwaySimulator {
       p5.draw = () => {
          const simulatorStatistic = new SimulatorStatistic(p5, this._canvasHeight);
 
-         var requestedTime = this._configurationHandler.timeInSeconds();
+         var requestedTime = this._configurationHandler.timeInSeconds;
          var closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
          var cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
 
@@ -55,7 +55,7 @@ export default class HighwaySimulator {
    private drawMap(p5: P5, cars: Car[]) {
       var mapPosition = p5.createVector(0, 0);
       var mapSize = p5.createVector(this._canvasWidth, this._canvasHeight);
-      var mapXInMeters = this._configurationHandler.mapXInMeters();
+      var mapXInMeters = this._configurationHandler.mapXInMeters;
    
       var map = new Highway(
          p5,
