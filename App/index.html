@@ -1,10 +1,13 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-   <title>Autobahn Simulator</title>
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <meta charset="UTF-8" />
 
    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet" />
+   <title>Autobahn Simulator</title>
 </head>
 
 <body>
@@ -18,8 +21,8 @@
       </div>
 
       <div class="slider-container">
-         <label for="time-in-seconds">Zeit in Sekunden</label>
-         <input id="time-in-seconds" type="range" min="0" max="60" value="0" step="0.1">
+         <label for="time-in-seconds">Zeit in Sekunden <span class="play-pause-btn">⏯</span></label>
+         <input id="time-in-seconds" type="range" min="0" max="60" value="0" step="0.01">
          <div id="time-in-seconds-value">0</div>
       </div>
 

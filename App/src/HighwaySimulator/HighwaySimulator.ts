@@ -1,4 +1,5 @@
 import P5 from "p5";
+import AutoPlay from "./Autoplay";
 import Car from "./Car";
 import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
@@ -11,6 +12,7 @@ export default class HighwaySimulator {
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
+   private _autoPlay = new AutoPlay();
    private _configurationHandler = new ConfigurationHandler();
 
    public load(){
