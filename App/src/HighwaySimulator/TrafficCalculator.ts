@@ -25,35 +25,22 @@ export default class TrafficCalculator {
    }
 
    private calculateTraffic() {
-      var cars1 = [
+      var cars: Car[] = [
          new Car(this._p5, new HighwayPosition(10, 0), this._p5.color("red")),
          new Car(this._p5, new HighwayPosition(20, 0), this._p5.color("blue")),
          new Car(this._p5, new HighwayPosition(15, 1), this._p5.color("green")),
          new Car(this._p5, new HighwayPosition(30, 1), this._p5.color("yellow")),
       ];
-      var cars2 = [
-         new Car(this._p5, new HighwayPosition(15, 0), this._p5.color("red")),
-         new Car(this._p5, new HighwayPosition(30, 0), this._p5.color("blue")),
-         new Car(this._p5, new HighwayPosition(25, 1), this._p5.color("green")),
-         new Car(this._p5, new HighwayPosition(40, 1), this._p5.color("yellow")),
-      ];
-      var cars3 = [
-         new Car(this._p5, new HighwayPosition(25, 0), this._p5.color("red")),
-         new Car(this._p5, new HighwayPosition(40, 0), this._p5.color("blue")),
-         new Car(this._p5, new HighwayPosition(35, 1), this._p5.color("green")),
-         new Car(this._p5, new HighwayPosition(50, 1), this._p5.color("yellow")),
-      ];
-      var cars4 = [
-         new Car(this._p5, new HighwayPosition(35, 0), this._p5.color("red")),
-         new Car(this._p5, new HighwayPosition(50, 0), this._p5.color("blue")),
-         new Car(this._p5, new HighwayPosition(45, 1), this._p5.color("green")),
-         new Car(this._p5, new HighwayPosition(60, 1), this._p5.color("yellow")),
-      ];
-
-      this._carsAtTime.push({ seconds: 0, cars: cars1 });
-      this._carsAtTime.push({ seconds: 1, cars: cars2 });
-      this._carsAtTime.push({ seconds: 2, cars: cars3 });
-      this._carsAtTime.push({ seconds: 3, cars: cars4 });
+      this._carsAtTime.push({ seconds: second, cars: cars });
+      var second:number;
+      var carNum:number;
+      for (second = 1; second<=20; second++) {
+         for (carNum = 1; carNum<=20; carNum++) {
+            cars[carNum].CalcAction(); //TODO Call not working
+            cars[carNum].CalcNextPosition();
+         }
+         this._carsAtTime.push({ seconds: second, cars: cars });
+      }
    }
 }
 
