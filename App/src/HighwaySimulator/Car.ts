@@ -10,16 +10,21 @@ export default class Car {
    private readonly _p5: P5;
 	private readonly _highwayPosition: HighwayPosition;
    private readonly _color: P5.Color;
-   private _speed: number; // m/s
+   private readonly _speed: number; // m/s
    
    public get highwayPosition(){
       return this._highwayPosition;
    }
 
-	constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color) {
+   public get color(){
+      return this._color;
+   }
+
+	constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, speed: number) {
 		this._p5 = p5;
 		this._highwayPosition = highwayPosition;
       this._color = color;
+      this._speed = speed;
 	}
 
 	public draw(position: P5.Vector, pixelsPerMeter: number) {
@@ -36,11 +41,11 @@ export default class Car {
 		this._p5.pop();
 	}
 
-   public CalcAction(){
-      this._speed += Car.ACCELERATION; //TODO Algorythmus
+   public CalcNewSpeed(){
+      return this._speed + Car.ACCELERATION; //TODO Algorythmus
    }
 
    public CalcNextPosition(){
-      this.highwayPosition.meter += this._speed;
+      return this.highwayPosition.meter + this._speed;
    }
 }
