@@ -1,6 +1,6 @@
 export default class HighwayPosition {
-   private readonly _meter: number;
-   private readonly _lane: number;
+   private _meter: number;
+   private _lane: number;
 
    public get meter() {
       return this._meter;
@@ -8,6 +8,14 @@ export default class HighwayPosition {
 
    public get lane() {
       return this._lane;
+   }
+
+   public set meter(meter: number) {
+      this._meter = meter;
+   }
+
+   public set lane(lane: number) {
+      this._lane = lane;
    }
 
    constructor(meter: number, lane: number) {
