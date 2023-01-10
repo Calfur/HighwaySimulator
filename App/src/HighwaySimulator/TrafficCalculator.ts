@@ -3,6 +3,8 @@ import Car from "./Car";
 import HighwayPosition from "./HighwayPosition";
 
 export default class TrafficCalculator {
+   private static readonly SECONDS_BETWEEN_CALCULATIONS = 1;
+
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
 
@@ -20,36 +22,46 @@ export default class TrafficCalculator {
       return closest.second;
    }
 
-   public getCarsAtTime(seconds: number) {
-      return this._carsAtTime.find(c => c.second == seconds).cars;
+   public getCarsAtTime(second: number) {
+      return this._carsAtTime.find(c => c.second == second).cars;
    }
 
    private calculateTraffic() {
-      var previousCars: Car[] = [
+      this.createInitialCars();
+
+      for (var lastCalculatedSecond = 0; lastCalculatedSecond <= 60; lastCalculatedSecond += TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) {
+         this.calculateNextCars(lastCalculatedSecond);
+      }
+   }
+
+   private createInitialCars() {
+      var initialCars: Car[] = [
          new Car(this._p5, new HighwayPosition(10, 0), this._p5.color("red"), 0),
          new Car(this._p5, new HighwayPosition(20, 0), this._p5.color("blue"), 0),
          new Car(this._p5, new HighwayPosition(15, 1), this._p5.color("green"), 0),
          new Car(this._p5, new HighwayPosition(30, 1), this._p5.color("yellow"), 0),
       ];
+      this._carsAtTime.push({ second: 0, cars: initialCars });
+   }
 
-      for (var second = 1; second <= 20; second++) {
-         var currentCars: Car[] = [];
+   private calculateNextCars(lastSecond: number) {
+      var nextSecond = lastSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS;
+      var nextCars: Car[] = [];
 
-         previousCars.forEach(previousCar => {
-            currentCars.push(
-               new Car(
-                  this._p5, 
-                  new HighwayPosition(previousCar.CalcNextPosition(), previousCar.highwayPosition.lane), 
-                  previousCar.color, 
-                  previousCar.CalcNewSpeed()
-               )
-            );
-         });
+      this.getCarsAtTime(lastSecond).forEach(lastCar => {
+         var nextCar = this.calculateNextCar(lastCar);
+         nextCars.push(nextCar);
+      });
 
-         this._carsAtTime.push({ second: second, cars: currentCars });
-         previousCars = currentCars;
-      }
+      this._carsAtTime.push({ second: nextSecond, cars: nextCars });
+   }
+
+   private calculateNextCar(lastCar: Car) {
+      return new Car(
+         this._p5,
+         lastCar.calculateNextPosition(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
+         lastCar.color,
+         lastCar.calculateNextSpeed(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS)
+      );
    }
 }
-
-
