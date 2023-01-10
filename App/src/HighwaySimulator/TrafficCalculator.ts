@@ -4,15 +4,15 @@ import HighwayPosition from "./HighwayPosition";
 
 export default class TrafficCalculator {
    private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
-   private static readonly MAX_SECONDS_TO_CALCULATE = 600;
+   private static readonly MAX_SECONDS_TO_CALCULATE = 60;
+   private static readonly CALCULATIONS_PER_EVENT_CYCLE = 10;
 
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
+   private _lastCalculatedSecond = 0;
 
    constructor(p5: P5) {
       this._p5 = p5;
-
-      this.calculateTraffic()
    }
 
    public getClosestAvailableTime(requestedTime: number) {
@@ -27,12 +27,20 @@ export default class TrafficCalculator {
       return this._carsAtTime.find(c => c.second == second).cars;
    }
 
-   private calculateTraffic() {
+   public calculateTraffic() {
       this.createInitialCars();
 
-      for (var lastCalculatedSecond = 0; lastCalculatedSecond < TrafficCalculator.MAX_SECONDS_TO_CALCULATE; lastCalculatedSecond = this.calculateNextSecond(lastCalculatedSecond)) {
-         this.calculateNextCars(lastCalculatedSecond);
-      }
+      this.calculateNextSecondsAsync();
+   }
+
+   private calculateNextSecondsAsync() {
+      setTimeout(() => {
+         this.calculateNextSeconds();
+
+         if (this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE) {
+            this.calculateNextSecondsAsync();
+         }
+      }, 0, this._lastCalculatedSecond);
    }
 
    private createInitialCars() {
@@ -45,11 +53,18 @@ export default class TrafficCalculator {
       this._carsAtTime.push({ second: 0, cars: initialCars });
    }
 
+   private calculateNextSeconds() {
+      for (var i = 0; i < TrafficCalculator.CALCULATIONS_PER_EVENT_CYCLE && this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE; i++) {
+         this.calculateNextCars(this._lastCalculatedSecond);
+         this._lastCalculatedSecond = this.calculateNextSecond(this._lastCalculatedSecond);
+      }
+   }
+
    private calculateNextCars(lastSecond: number) {
       var nextSecond = this.calculateNextSecond(lastSecond);
       var nextCars: Car[] = [];
 
-      for (const lastCar of this.getCarsAtTime(lastSecond)){
+      for (const lastCar of this.getCarsAtTime(lastSecond)) {
          var nextCar = this.calculateNextCar(lastCar);
          nextCars.push(nextCar);
       };
