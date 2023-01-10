@@ -45,7 +45,7 @@ export default class HighwaySimulator {
 
          this.drawMap(p5, cars);
 
-         simulatorStatistic.addStatistic("Angezeigte Zeit", `${closestAvailableTime.toString()} Sekunden`);
+         simulatorStatistic.addStatistic("Angezeigte Zeit", `${(Math.round(closestAvailableTime * 10)/10).toString()} Sekunden`);
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
          
          simulatorStatistic.draw();

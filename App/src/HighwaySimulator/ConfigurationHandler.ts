@@ -35,11 +35,9 @@ export default class ConfigurationHandler {
    public set timeInSeconds(value: number) {
       const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
       const output = document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
-
-      var roundedValue = Math.round(value * 10)/10;
-
-      input.value = roundedValue.toString();
-      output.textContent = input.value;
+    
+      input.value = (Math.round(value * 100)/100).toString();
+      output.textContent = (Math.round(value * 10)/10).toString();
    }
 
    private addRangeInputEventListeners() {

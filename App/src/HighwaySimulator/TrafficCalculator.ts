@@ -3,7 +3,8 @@ import Car from "./Car";
 import HighwayPosition from "./HighwayPosition";
 
 export default class TrafficCalculator {
-   private static readonly SECONDS_BETWEEN_CALCULATIONS = 1;
+   private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
+   private static readonly MAX_SECONDS_TO_CALCULATE = 60;
 
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
@@ -29,7 +30,7 @@ export default class TrafficCalculator {
    private calculateTraffic() {
       this.createInitialCars();
 
-      for (var lastCalculatedSecond = 0; lastCalculatedSecond <= 60; lastCalculatedSecond += TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) {
+      for (var lastCalculatedSecond = 0; lastCalculatedSecond < TrafficCalculator.MAX_SECONDS_TO_CALCULATE; lastCalculatedSecond = this.calculateNextSecond(lastCalculatedSecond)) {
          this.calculateNextCars(lastCalculatedSecond);
       }
    }
@@ -45,7 +46,7 @@ export default class TrafficCalculator {
    }
 
    private calculateNextCars(lastSecond: number) {
-      var nextSecond = lastSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS;
+      var nextSecond = this.calculateNextSecond(lastSecond);
       var nextCars: Car[] = [];
 
       this.getCarsAtTime(lastSecond).forEach(lastCar => {
@@ -63,5 +64,9 @@ export default class TrafficCalculator {
          lastCar.color,
          lastCar.calculateNextSpeed(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS)
       );
+   }
+
+   private calculateNextSecond(lastSecond: number) {
+      return Math.round((lastSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) * 10000) / 10000;
    }
 }

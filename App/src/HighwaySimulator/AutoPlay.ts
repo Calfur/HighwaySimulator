@@ -1,9 +1,9 @@
 import ConfigurationHandler from "./ConfigurationHandler";
 
 export default class AutoPlay {
-   private static PLAY_PAUSE_SELECTOR = ".play-pause-button";
-   private static PAUSE_SELECTOR = ".pause-button";
-   private static TIMEOUT = 100;
+   private static readonly PLAY_PAUSE_SELECTOR = ".play-pause-button";
+   private static readonly PAUSE_SELECTOR = ".pause-button";
+   private static readonly TIMEOUT = 10;
 
    private readonly _configurationHandler: ConfigurationHandler;
 
