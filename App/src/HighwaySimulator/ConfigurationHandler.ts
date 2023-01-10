@@ -35,15 +35,15 @@ export default class ConfigurationHandler {
    public set timeInSeconds(value: number) {
       const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
       const output = document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
-    
-      input.value = (Math.round(value * 100)/100).toString();
-      output.textContent = (Math.round(value * 10)/10).toString();
+
+      input.value = (Math.round(value * 100) / 100).toString();
+      output.textContent = (Math.round(value * 10) / 10).toString();
    }
 
    private addRangeInputEventListeners() {
-      this._rangeInputOutputs.forEach(rangeInputOutput => {
+      for (const rangeInputOutput of this._rangeInputOutputs) {
          this.addRangeInputEventListener(rangeInputOutput.inputSelector, rangeInputOutput.outputSelector);
-      });
+      };
    }
 
    private addRangeInputEventListener(inputSelector: string, outputSelector: string) {

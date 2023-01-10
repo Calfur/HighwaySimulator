@@ -4,7 +4,7 @@ import HighwayPosition from "./HighwayPosition";
 
 export default class TrafficCalculator {
    private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
-   private static readonly MAX_SECONDS_TO_CALCULATE = 60;
+   private static readonly MAX_SECONDS_TO_CALCULATE = 600;
 
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
@@ -49,10 +49,10 @@ export default class TrafficCalculator {
       var nextSecond = this.calculateNextSecond(lastSecond);
       var nextCars: Car[] = [];
 
-      this.getCarsAtTime(lastSecond).forEach(lastCar => {
+      for (const lastCar of this.getCarsAtTime(lastSecond)){
          var nextCar = this.calculateNextCar(lastCar);
          nextCars.push(nextCar);
-      });
+      };
 
       this._carsAtTime.push({ second: nextSecond, cars: nextCars });
    }
