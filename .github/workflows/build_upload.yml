@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
+        with:
+          cache-dependency-path: ./App/package-lock.json
         
       - name: Install Dependencies
         run: npm install
