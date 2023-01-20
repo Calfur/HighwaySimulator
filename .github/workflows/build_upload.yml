@@ -1,0 +1,21 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Build Typescript and SCSS files with Parcel and upload with FTP
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["master"]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  deploy:
+ 
+          
+      - name: ftp-action
+        uses: sebastianpopp/ftp-action@v2.0.0
+        with:
+          host: www533.your-server.de
+          user: pannenp_0
+          password: ${{ secrets.FTP_PASSWORD }}
+          forceSsl: false
+          localDir: App/dist
+          remoteDir: public_html
