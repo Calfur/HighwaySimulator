@@ -32,3 +32,12 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           security: loose
         
+      - name: FTP Deployment
+        uses: airvzxf/ftp-deployment-action@latest
+        with: 
+          server: www533.your-server.de
+          user: pannenp_0
+          password: ${{ secrets.FTP_PASSWORD }}
+          local_dir: App/dist
+          remote_dir: public_html
+
