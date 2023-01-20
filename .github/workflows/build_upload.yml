@@ -30,4 +30,5 @@ jobs:
           server: www533.your-server.de
           username: pannenp_0
           password: ${{ secrets.FTP_PASSWORD }}
+          security: loose
         
