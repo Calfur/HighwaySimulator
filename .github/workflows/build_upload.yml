@@ -17,7 +17,6 @@ jobs:
         uses: actions/setup-node@v3.6.0
         with:
           cache-dependency-path: ./App/package-lock.json
-          node-version: 8.19.x
         
       - name: NPM commands
         working-directory: App
