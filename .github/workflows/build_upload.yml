@@ -17,8 +17,9 @@ jobs:
           path2: ./App/package.json
         
       - name: Install Dependencies
-        working-directory: App
         run: |
+          ls -a
+          cd App
           npm install
           npm run build
           
