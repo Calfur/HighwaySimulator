@@ -10,16 +10,16 @@ jobs:
   deploy:
     runs-on: ubuntu-18.04
     steps:
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v1
+      - name: Use Node.js ${{ matrix.node_version }}
+        uses: actions/setup-node@v1
         with:
-          cache-dependency-path: ./App/package-lock.json
+          node-version: 9.3.1
         
-      - name: Install Dependencies
-        run: npm install
-        
-      - name: Build
-        run: npm run build
+      - name: npm install, build and test
+        run: |
+          npm install
+          npm run build --if-present
           
       - name: ftp-action
         uses: sebastianpopp/ftp-action@v2.0.0
