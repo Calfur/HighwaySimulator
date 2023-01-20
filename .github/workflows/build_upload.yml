@@ -24,20 +24,12 @@ jobs:
           npm ci
           npm run build
 
-      - name: SFTP Sync
-        uses: swillner/sftp-sync-action@v1.0
+      - name: ftp-action
+        uses: sebastianpopp/ftp-action@v2.0.0
         with:
-          # server
-          server: pannenstreifen.com
-          # server port (default: 22)
-          port: 22
-          # user
+          host: pannenstreifen.com
           user: pannenp_0
-          # Private SSH key for user (include via secrets if possible)
-          user_private_key: ${{ secrets.FTP_PRIVATE_KEY }}
-          # Public SSH key of host
-          # host_public_key: # default is 
-          # Local path to sync (default: .)
-          local: App/dist
-          # Path on server (default: .)
-          remote: public_html
+          password: ${{ secrets.FTP_PASSWORD }}
+          forceSsl: false
+          localDir: App/dist
+          remoteDir: public_html
