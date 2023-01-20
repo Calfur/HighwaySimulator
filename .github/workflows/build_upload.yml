@@ -24,12 +24,12 @@ jobs:
           npm ci
           npm run build
           
-      - name: ftp-action
-        uses: sebastianpopp/ftp-action@v2.0.0
+      - name: FTP Uploader
+        uses: zinh/ftp-uploader-action@v0.4
         with:
-          host: www533.your-server.de
-          user: pannenp_0
-          password: ${{ secrets.FTP_PASSWORD }}
-          forceSsl: false
-          localDir: App/dist
-          remoteDir: public_html
+          ftpHostname: www533.your-server.de
+          ftpUsername: pannenp_0
+          ftpPassword: ${{ secrets.FTP_PASSWORD }}
+          files: false
+          src: App/dist
+          dest: public_html
