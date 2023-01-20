@@ -27,7 +27,7 @@ jobs:
       - name: FTP Deployment
         uses: airvzxf/ftp-deployment-action@latest
         with: 
-          server: www533.your-server.de
+          server: pannenstreifen.com
           user: pannenp_0
           password: ${{ secrets.FTP_PASSWORD }}
           local_dir: App/dist
