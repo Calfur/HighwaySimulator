@@ -32,4 +32,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           forceSsl: false
           localDir: App/dist
-          remoteDir: public_html
+          remoteDir: .
