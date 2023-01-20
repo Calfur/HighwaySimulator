@@ -9,17 +9,19 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-18.04
-    steps:
+    steps:     
+      - name: Checkout
+        uses: actions/checkout@v3
+        
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
           cache-dependency-path: ./App/package-lock.json
           path2: ./App/package.json
         
-      - name: Install Dependencies
+      - name: NPM commands
+        working-directory: App
         run: |
-          ls -a
-          cd App
           npm install
           npm run build
           
