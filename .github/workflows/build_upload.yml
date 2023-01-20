@@ -33,4 +33,3 @@ jobs:
           files: false
           src: App/dist
           dest: public_html
-          dryRun: false
