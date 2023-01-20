@@ -24,12 +24,10 @@ jobs:
           npm ci
           npm run build
           
-      - name: FTP Uploader
-        uses: zinh/ftp-uploader-action@v0.4
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
         with:
-          ftpHostname: www533.your-server.de
-          ftpUsername: pannenp_0
-          ftpPassword: ${{ secrets.FTP_PASSWORD }}
-          files: false
-          src: App/dist
-          dest: public_html
+          server: www533.your-server.de
+          username: pannenp_0
+          password: ${{ secrets.FTP_PASSWORD }}
+        
