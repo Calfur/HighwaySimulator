@@ -1,5 +1,5 @@
 import P5 from "p5";
-import AutoPlay from "./Autoplay";
+import AutoPlay from "./AutoPlay";
 import Car from "./Car";
 import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
