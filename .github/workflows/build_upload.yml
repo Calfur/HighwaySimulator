@@ -17,12 +17,11 @@ jobs:
         uses: actions/setup-node@v3.6.0
         with:
           cache-dependency-path: ./App/package-lock.json
-          path2: ./App/package.json
         
       - name: NPM commands
         working-directory: App
         run: |
-          npm install
+          npm ci
           npm run build
           
       - name: ftp-action
