@@ -1,0 +1,46 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Build Typescript and SCSS files with Parcel and upload to FTP
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["master"]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  deploy1:
+    runs-on: windows-2019
+    steps:     
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
+        with:
+          cache-dependency-path: ./App/package-lock.json
+        
+      - name: NPM commands
+        working-directory: App
+        run: |
+          npm ci
+          npm run build
+
+  deploy2:
+    runs-on: ubuntu-18.04
+    steps:
+      - name: SFTP Sync
+        uses: swillner/sftp-sync-action@v1.0
+        with:
+          # server
+          server: pannenstreifen.com
+          # server port (default: 22)
+          port: 22
+          # user
+          user: pannenp_0
+          # Private SSH key for user (include via secrets if possible)
+          user_private_key: ${{ secrets.FTP_PRIVATE_KEY }}
+          # Public SSH key of host
+          # host_public_key: # default is 
+          # Local path to sync (default: .)
+          local: App/dist
+          # Path on server (default: .)
+          remote: public_html
