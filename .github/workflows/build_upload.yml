@@ -23,15 +23,7 @@ jobs:
         run: |
           npm ci
           npm run build
-          
-      - name: Sync files
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
-        with:
-          server: pannenstreifen.com
-          username: pannenp_0
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: App/dist
-          
+                    
       - name: SFTP Sync
         uses: swillner/sftp-sync-action@v1.0
         with:
@@ -46,6 +38,6 @@ jobs:
           # Public SSH key of host
           # host_public_key: # default is 
           # Local path to sync (default: .)
-          local: App/
+          local: App/dist
           # Path on server (default: .)
           remote: public_html
