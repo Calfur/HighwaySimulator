@@ -1,0 +1,32 @@
+# Simple workflow for deploying static content to GitHub Pages
+name: Build Typescript and SCSS files with Parcel and upload to FTP
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches: ["master"]
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 9.3.1
+        
+      - name: npm install, build and test
+        run: |
+          npm install
+          npm run build --if-present
+          
+      - name: ftp-action
+        uses: sebastianpopp/ftp-action@v2.0.0
+        with:
+          host: www533.your-server.de
+          user: pannenp_0
+          password: ${{ secrets.FTP_PASSWORD }}
+          forceSsl: false
+          localDir: App/dist
+          remoteDir: public_html
