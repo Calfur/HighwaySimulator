@@ -24,9 +24,6 @@ jobs:
           npm ci
           npm run build
 
-  deploy2:
-    runs-on: ubuntu-18.04
-    steps:
       - name: SFTP Sync
         uses: swillner/sftp-sync-action@v1.0
         with:
