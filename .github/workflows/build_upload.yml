@@ -23,13 +23,11 @@ jobs:
         run: |
           npm ci
           npm run build
-                  
-      - name: FTP Deployment
-        uses: airvzxf/ftp-deployment-action@latest
-        with: 
+          
+      - name: Sync files
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
           server: pannenstreifen.com
-          user: pannenp_0
+          username: pannenp_0
           password: ${{ secrets.FTP_PASSWORD }}
-          local_dir: App/dist
-          remote_dir: public_html
-
+          local-dir: App/dist
