@@ -7,24 +7,24 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 jobs:
-  deploy1:
+  deploy:
     runs-on: ubuntu-latest
-    steps:     
-      - name: Checkout
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
-        
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
           cache-dependency-path: ./App/package-lock.json
-        
-      - name: NPM commands
+
+      - name: Run npm commands
         working-directory: App
         run: |
           npm ci
           npm run build
 
-      - name: ftp-action
+      - name: Upload files to FTP
         uses: sebastianpopp/ftp-action@v2.0.0
         with:
           host: pannenstreifen.com
