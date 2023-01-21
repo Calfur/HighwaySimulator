@@ -45,10 +45,12 @@ export default class TrafficCalculator {
 
    private createInitialCars() {
       var initialCars: Car[] = [
+         new Car(this._p5, new HighwayPosition(50, 0), this._p5.color("pink"), 0),
+         new Car(this._p5, new HighwayPosition(20, 0), this._p5.color("blue"), -1),
          new Car(this._p5, new HighwayPosition(10, 0), this._p5.color("red"), 0),
-         new Car(this._p5, new HighwayPosition(20, 0), this._p5.color("blue"), 0),
          new Car(this._p5, new HighwayPosition(15, 1), this._p5.color("green"), 0),
-         new Car(this._p5, new HighwayPosition(30, 1), this._p5.color("yellow"), 0),
+         new Car(this._p5, new HighwayPosition(30, 1), this._p5.color("yellow"), 80),
+         new Car(this._p5, new HighwayPosition(700, 1), this._p5.color("rosybrown"), -1),
       ];
       this._carsAtTime.push({ second: 0, cars: initialCars });
    }
@@ -65,19 +67,33 @@ export default class TrafficCalculator {
       var nextCars: Car[] = [];
 
       for (const lastCar of this.getCarsAtTime(lastSecond)) {
-         var nextCar = this.calculateNextCar(lastCar);
+         var nextCar = this.calculateNextCar(lastCar, lastSecond); // 
          nextCars.push(nextCar);
       };
 
       this._carsAtTime.push({ second: nextSecond, cars: nextCars });
    }
 
-   private calculateNextCar(lastCar: Car) {
+   private getCarInFront(lastCar: Car, lastSecond: number) {
+      var carsInSameLane = this._carsAtTime.find(c => c.second == lastSecond).cars.filter(c => c.highwayPosition.lane === lastCar.highwayPosition.lane);
+      carsInSameLane = carsInSameLane.sort( function(a, b) {
+         return a["highwayPosition"].meter - b["highwayPosition"].meter;
+      });
+
+      var indexOfCar = carsInSameLane.indexOf(lastCar)
+      var carInFront:Car = carsInSameLane[++indexOfCar];
+
+      return carInFront;
+   }
+
+   private calculateNextCar(lastCar: Car, lastSecond: number) {
+      var carInFront:Car = this.getCarInFront(lastCar, lastSecond);
+
       return new Car(
          this._p5,
          lastCar.calculateNextPosition(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
          lastCar.color,
-         lastCar.calculateNextSpeed(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS)
+         lastCar.calculateNextSpeed(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS, carInFront)
       );
    }
 
