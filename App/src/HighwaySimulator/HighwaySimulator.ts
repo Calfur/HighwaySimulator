@@ -51,8 +51,9 @@ export default class HighwaySimulator {
 
          this.drawMap(p5, cars);
 
-         simulatorStatistic.addStatistic("Angezeigte Zeit", `${(Math.round(closestAvailableTime * 10) / 10).toString()} Sekunden`);
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
+         var loadedTime = this._trafficCalculator.getLoadedTime();
+         simulatorStatistic.addStatistic("Geladene Zeit", `${(Math.round(loadedTime * 10) / 10).toString()} Sekunden`);
 
          simulatorStatistic.draw();
       };

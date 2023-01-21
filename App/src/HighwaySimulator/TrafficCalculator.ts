@@ -27,6 +27,10 @@ export default class TrafficCalculator {
       return this._carsAtTime.find(c => c.second == second).cars;
    }
 
+   public getLoadedTime() {
+      return this._lastCalculatedSecond;
+   }
+
    public calculateTraffic() {
       this.createInitialCars();
 
