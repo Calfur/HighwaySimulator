@@ -45,15 +45,19 @@ export default class HighwaySimulator {
 
          const simulatorStatistic = new SimulatorStatistic(p5, this._canvasHeight);
 
-         var requestedTime = this._configurationHandler.timeInSeconds;
-         var closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
-         var cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
+         const requestedTime = this._configurationHandler.timeInSeconds;
+         const closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
+         const cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
 
          this.drawMap(p5, cars);
 
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
-         var loadedTime = this._trafficCalculator.getLoadedTime();
-         simulatorStatistic.addStatistic("Geladene Zeit", `${(Math.round(loadedTime * 10) / 10).toString()} Sekunden`);
+
+         const averageSpeed = this.getAverageSpeed(cars);
+         simulatorStatistic.addStatistic("Ø Geschwindigkeit", `${(Math.round(averageSpeed * 3.6)).toString()} km/h`);
+
+         const loadedTime = this._trafficCalculator.getLoadedTime();
+         simulatorStatistic.addStatistic("Berechnete Zeit", `${(Math.round(loadedTime)).toString()} Sekunden`);
 
          simulatorStatistic.draw();
       };
@@ -74,5 +78,10 @@ export default class HighwaySimulator {
       );
 
       map.draw();
+   }
+
+   private getAverageSpeed(cars: Car[]) {
+      let sum = cars.reduce((a, b) => a + b.speed, 0);
+      return sum / cars.length;
    }
 }
