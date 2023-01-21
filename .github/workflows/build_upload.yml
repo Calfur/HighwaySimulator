@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Build Typescript and SCSS files with Parcel and upload to FTP
+name: Build website and upload to FTP
 on:
   # Runs on pushes targeting the default branch
   push:
@@ -8,28 +8,28 @@ on:
   workflow_dispatch:
 jobs:
   deploy:
-    runs-on: windows-2019
-    steps:     
-      - name: Checkout
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
         uses: actions/checkout@v3
-        
+
       - name: Setup Node.js environment
         uses: actions/setup-node@v3.6.0
         with:
           cache-dependency-path: ./App/package-lock.json
-        
-      - name: NPM commands
+
+      - name: Run npm commands
         working-directory: App
         run: |
           npm ci
           npm run build
-          
-      - name: FTP Uploader
-        uses: zinh/ftp-uploader-action@v0.4
+
+      - name: Deletes and uploads files to FTP
+        uses: hsimah/ftp-action@2.1.0
         with:
-          ftpHostname: www533.your-server.de
-          ftpUsername: pannenp_0
-          ftpPassword: ${{ secrets.FTP_PASSWORD }}
-          files: false
-          src: App/dist
-          dest: public_html
+          host: pannenstreifen.com
+          user: pannenp_0
+          password: ${{ secrets.FTP_PASSWORD }}
+          forceSsl: false
+          localDir: App/dist
+          remoteDir: .

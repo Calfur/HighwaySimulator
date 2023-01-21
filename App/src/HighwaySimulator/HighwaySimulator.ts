@@ -1,5 +1,5 @@
 import P5 from "p5";
-import AutoPlay from "./Autoplay";
+import AutoPlay from "./AutoPlay";
 import Car from "./Car";
 import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
@@ -19,7 +19,7 @@ export default class HighwaySimulator {
    public load() {
       const sketch = (p5: P5) => {
          this._canvasWidth = p5.windowWidth - 50;
-         this._canvasHeight = p5.windowHeight - 200;
+         this._canvasHeight = p5.windowHeight - 400;
          this._trafficCalculator = new TrafficCalculator(p5);
 
          this.setup(p5);
@@ -45,14 +45,25 @@ export default class HighwaySimulator {
 
          const simulatorStatistic = new SimulatorStatistic(p5, this._canvasHeight);
 
-         var requestedTime = this._configurationHandler.timeInSeconds;
-         var closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
-         var cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
+         const requestedTime = this._configurationHandler.timeInSeconds;
+         const closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
+         const cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
 
          this.drawMap(p5, cars);
 
-         simulatorStatistic.addStatistic("Angezeigte Zeit", `${(Math.round(closestAvailableTime * 10) / 10).toString()} Sekunden`);
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
+
+         const heighestSpeed = this.getHeighestSpeed(cars);         
+         simulatorStatistic.addStatistic("↑ Geschwindigkeit", `${(Math.round(heighestSpeed * 3.6)).toString()} km/h`);
+
+         const averageSpeed = this.getAverageSpeed(cars);
+         simulatorStatistic.addStatistic("Ø Geschwindigkeit", `${(Math.round(averageSpeed * 3.6)).toString()} km/h`);
+
+         const lowestSpeed = this.getLowestSpeed(cars);
+         simulatorStatistic.addStatistic("↓ Geschwindigkeit", `${(Math.round(lowestSpeed * 3.6)).toString()} km/h`);         
+
+         const loadedTime = this._trafficCalculator.getLoadedTime();
+         simulatorStatistic.addStatistic("Bereits berechnete Zeit", `${(Math.round(loadedTime)).toString()} Sekunden`);
 
          simulatorStatistic.draw();
       };
@@ -61,17 +72,32 @@ export default class HighwaySimulator {
    private drawMap(p5: P5, cars: Car[]) {
       var mapPosition = p5.createVector(0, 0);
       var mapSize = p5.createVector(this._canvasWidth, this._canvasHeight);
-      var mapXInMeters = this._configurationHandler.mapXInMeters;
+      var lengthInMeter = this._configurationHandler.mapSizeXInMeters;
+      var viewPositionXInMeter = this._configurationHandler.mapPositionXInMeters;
 
       var map = new Highway(
          p5,
          mapPosition,
          mapSize,
-         mapXInMeters,
+         lengthInMeter,
+         viewPositionXInMeter,
          HighwaySimulator.AMOUNT_OF_LANES,
          cars
       );
 
       map.draw();
+   }
+
+   private getAverageSpeed(cars: Car[]) {
+      let sum = cars.reduce((a, b) => a + b.speed, 0);
+      return sum / cars.length;
+   }
+
+   private getLowestSpeed(cars: Car[]) {
+      return Math.min(...cars.map(car => car.speed));
+   }
+
+   private getHeighestSpeed(cars: Car[]) {
+      return Math.max(...cars.map(car => car.speed));
    }
 }

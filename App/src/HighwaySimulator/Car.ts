@@ -25,6 +25,10 @@ export default class Car {
       return this._color;
    }
 
+   public get speed() {
+      return this._speed;
+   }
+
    constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, speed: number) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;

@@ -1,14 +1,20 @@
 
 export default class ConfigurationHandler {
-   private static MAP_X_IN_METERS_INPUT_SELECTOR = "#map-x-in-meters";
+   private static MAP_SIZE_X_IN_METERS_INPUT_SELECTOR = "#map-size-x-in-meters";
+   private static MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR = "#map-size-x-in-meters-value";
+   private static MAP_POSITION_X_IN_METERS_INPUT_SELECTOR = "#map-position-x-in-meters";
+   private static MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR = "#map-position-x-in-meters-value";
    private static TIME_IN_SECONDS_INPUT_SELECTOR = "#time-in-seconds";
-   private static MAP_X_IN_METERS_OUTPUT_SELECTOR = "#map-x-in-meters-value";
    private static TIME_IN_SECONDS_OUTPUT_SELECTOR = "#time-in-seconds-value";
 
    private readonly _rangeInputOutputs: { inputSelector: string, outputSelector: string }[] = [
       {
-         inputSelector: ConfigurationHandler.MAP_X_IN_METERS_INPUT_SELECTOR,
-         outputSelector: ConfigurationHandler.MAP_X_IN_METERS_OUTPUT_SELECTOR
+         inputSelector: ConfigurationHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR,
+         outputSelector: ConfigurationHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR,
+      },
+      {
+         inputSelector: ConfigurationHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR,
+         outputSelector: ConfigurationHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR
       },
       {
          inputSelector: ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR,
@@ -20,14 +26,29 @@ export default class ConfigurationHandler {
       this.addRangeInputEventListeners();
    }
 
-   public get mapXInMeters() {
-      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.MAP_X_IN_METERS_INPUT_SELECTOR);
+   public get mapSizeXInMeters() {
+      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR);
+      const output = document.querySelector(ConfigurationHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR);
+
+      output.textContent = input.value;
+
+      return parseFloat(input.value);
+   }
+
+   public get mapPositionXInMeters() {
+      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR);
+      const output = document.querySelector(ConfigurationHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR);
+
+      output.textContent = input.value;
 
       return parseFloat(input.value);
    }
 
    public get timeInSeconds() {
       const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
+      const output = document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
+
+      output.textContent = input.value;
 
       return parseFloat(input.value);
    }

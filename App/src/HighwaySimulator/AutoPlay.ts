@@ -7,7 +7,7 @@ export default class AutoPlay {
 
    private readonly _configurationHandler: ConfigurationHandler;
 
-   private _isPlaying = true;
+   private _isPlaying = false;
 
    constructor(configurationHandler: ConfigurationHandler) {
       this._configurationHandler = configurationHandler;

@@ -15,7 +15,7 @@ export default class SimulatorStatistic {
    }
 
    public draw(){
-      this._statistics.forEach((statistic, index) => {
+      this._statistics.slice().reverse().forEach((statistic, index) => {
          this.drawStatistic(statistic.description, statistic.value, index);
       });
    }
