@@ -53,8 +53,14 @@ export default class HighwaySimulator {
 
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
 
+         const heighestSpeed = this.getHeighestSpeed(cars);         
+         simulatorStatistic.addStatistic("↑ Geschwindigkeit", `${(Math.round(heighestSpeed * 3.6)).toString()} km/h`);
+
          const averageSpeed = this.getAverageSpeed(cars);
          simulatorStatistic.addStatistic("Ø Geschwindigkeit", `${(Math.round(averageSpeed * 3.6)).toString()} km/h`);
+
+         const lowestSpeed = this.getLowestSpeed(cars);
+         simulatorStatistic.addStatistic("↓ Geschwindigkeit", `${(Math.round(lowestSpeed * 3.6)).toString()} km/h`);         
 
          const loadedTime = this._trafficCalculator.getLoadedTime();
          simulatorStatistic.addStatistic("Berechnete Zeit", `${(Math.round(loadedTime)).toString()} Sekunden`);
@@ -83,5 +89,13 @@ export default class HighwaySimulator {
    private getAverageSpeed(cars: Car[]) {
       let sum = cars.reduce((a, b) => a + b.speed, 0);
       return sum / cars.length;
+   }
+
+   private getLowestSpeed(cars: Car[]) {
+      return Math.min(...cars.map(car => car.speed));
+   }
+
+   private getHeighestSpeed(cars: Car[]) {
+      return Math.max(...cars.map(car => car.speed));
    }
 }
