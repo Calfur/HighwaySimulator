@@ -9,15 +9,12 @@ export default class Highway {
    private static readonly LANE_COLOR = "#575757";
 
    private readonly _p5: P5;
-   private readonly _position: P5.Vector;
+   private readonly _drawPosition: P5.Vector;
    private readonly _size: P5.Vector;
    private readonly _lengthInMeter: number;
+   private readonly _viewPositionXInMeter: number;
    private readonly _amountOfLanes: number;
    private readonly _cars: Car[];
-
-   public get lane() {
-      return this._position;
-   }
 
    private get pixelsPerMeter() {
       return this._size.x / this._lengthInMeter;
@@ -31,11 +28,12 @@ export default class Highway {
       return this.pixelsPerMeter * Highway.LANE_SPACING_IN_METERS;
    }
 
-   constructor(p5: P5, position: P5.Vector, size: P5.Vector, xInMeter: number, amountOfLanes: number, cars: Car[]) {
+   constructor(p5: P5, drawPosition: P5.Vector, size: P5.Vector, lengthInMeter: number, viewPositionXInMeter:number, amountOfLanes: number, cars: Car[]) {
       this._p5 = p5;
-      this._position = position;
+      this._drawPosition = drawPosition;
       this._size = size;
-      this._lengthInMeter = xInMeter;
+      this._lengthInMeter = lengthInMeter;
+      this._viewPositionXInMeter = viewPositionXInMeter;
       this._amountOfLanes = amountOfLanes;
       this._cars = cars;
    }
@@ -51,7 +49,7 @@ export default class Highway {
          const carPositionX = car.highwayPosition.meter * this.pixelsPerMeter;
          const carPositionY = this.getLaneYCenter(car.highwayPosition.lane);
 
-         car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
+         car.draw(this._p5.createVector(carPositionX - this._viewPositionXInMeter, carPositionY), this.pixelsPerMeter);
       });
    }
 
@@ -61,7 +59,7 @@ export default class Highway {
       this._p5.noStroke();
       this._p5.fill(Highway.BACKGROUND_COLOR);
       this._p5.rectMode("corner");
-      this._p5.rect(this._position.x, this._position.y, this._size.x, this._size.y);
+      this._p5.rect(this._drawPosition.x, this._drawPosition.y, this._size.x, this._size.y);
 
       this._p5.pop();
    }
@@ -74,7 +72,7 @@ export default class Highway {
       this._p5.noStroke();
       this._p5.fill(Highway.LANE_COLOR);
       this._p5.rectMode("corner");
-      this._p5.rect(this._position.x, positionY, this._size.x, this.laneHeight);
+      this._p5.rect(this._drawPosition.x, positionY, this._size.x, this.laneHeight);
 
       this._p5.pop();
    }
@@ -82,7 +80,7 @@ export default class Highway {
    private getLaneYTop(laneNumber: number) {
       const spaceUsedByPreviousLanes = laneNumber * (this.laneHeight + this.laneSpacing);
 
-      return this._position.y + spaceUsedByPreviousLanes + this.laneSpacing;
+      return this._drawPosition.y + spaceUsedByPreviousLanes + this.laneSpacing;
    }
 
    private getLaneYCenter(laneNumber: number) {
