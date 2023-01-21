@@ -46,10 +46,10 @@ export default class Highway {
       }
 
       this._cars.forEach(car => {
-         const carPositionX = car.highwayPosition.meter * this.pixelsPerMeter;
+         const carPositionX = (car.highwayPosition.meter - this._viewPositionXInMeter) * this.pixelsPerMeter;
          const carPositionY = this.getLaneYCenter(car.highwayPosition.lane);
 
-         car.draw(this._p5.createVector(carPositionX - this._viewPositionXInMeter, carPositionY), this.pixelsPerMeter);
+         car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
       });
    }
 
