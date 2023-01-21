@@ -1,5 +1,5 @@
 # Simple workflow for deploying static content to GitHub Pages
-name: Build Typescript and SCSS files with Parcel and upload to FTP
+name: Build website and upload to FTP
 on:
   # Runs on pushes targeting the default branch
   push:
@@ -24,8 +24,8 @@ jobs:
           npm ci
           npm run build
 
-      - name: Upload files to FTP
-        uses: sebastianpopp/ftp-action@v2.0.0
+      - name: Deletes and uploads files to FTP
+        uses: hsimah/ftp-action@2.1.0
         with:
           host: pannenstreifen.com
           user: pannenp_0
