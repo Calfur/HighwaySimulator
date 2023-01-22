@@ -6,6 +6,7 @@ export default class AutoPlay {
    private static readonly TIMEOUT = 10;
 
    private readonly _configurationHandler: ConfigurationHandler;
+   private _lastUpdateTime: number;
 
    private _isPlaying = false;
 
@@ -48,8 +49,9 @@ export default class AutoPlay {
    private loadPlayer() {
       setInterval(() => {
          if (this._isPlaying) {
-            this._configurationHandler.timeInSeconds += AutoPlay.TIMEOUT / 1000;
+            this._configurationHandler.timeInSeconds += (Date.now() - this._lastUpdateTime) / 1000;
          }
+         this._lastUpdateTime = Date.now();
       }, AutoPlay.TIMEOUT);
    }
 }
