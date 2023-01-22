@@ -5,8 +5,8 @@ export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
    private static readonly LENGTH = 4.40;
    private static readonly WIDTH = 1.80;
-   private static readonly ACCELERATION = 5;
-   private static readonly DECELERATION = 36;
+   private static readonly ACCELERATION = 5; // Random Value, need to be replaced by something meeningfull
+   private static readonly DECELERATION = 36; // Random Value, need to be replaced by something meeningfull
 
    // private static readonly POWER = 115100; // Watt = 156.5 PS --> https://de.statista.com/statistik/daten/studie/249880/umfrage/ps-zahl-verkaufter-neuwagen-in-deutschland/#:~:text=Die%20Statistik%20zeigt%20die%20durchschnittliche,entspricht%20etwa%20156%2C5%20PS.
    // private static readonly WEIGHT = 1400; // KG --> https://www.meinauto.de/lp-wie-schwer-ist-ein-auto#:~:text=Ein%20normales%20Auto%20wiegt%20heute,1.000%20kg%20und%201.800%20kg.
@@ -50,18 +50,18 @@ export default class Car {
       this._p5.pop();
    }
 
-   private getAccelerationSpeed(secondsBetween : number) {
-      var speed:number = this._speed + secondsBetween * (Car.ACCELERATION)
+   private getAccelerationSpeed(secondsBetweenCalculation : number) {
+      var speed:number = this._speed + secondsBetweenCalculation * (Car.ACCELERATION)
 
       // TODO: maxspeed of line
-      if (speed > 120) {
-         speed = 120;
+      if (speed > 120/3.6) {
+         speed = 120/3.6;
       }
       return speed
    }
 
-   private getDecelerationSpeed(secondsBetween : number) {
-      var speed:number = this._speed - secondsBetween * (Car.DECELERATION);
+   private getDecelerationSpeed(secondsBetweenCalculation : number) {
+      var speed:number = this._speed - secondsBetweenCalculation * (Car.DECELERATION);
 
       if (speed < 0) {
          speed = 0
@@ -70,37 +70,32 @@ export default class Car {
       return speed
    }
 
-   public calculateNextSpeed(secondsBetween: number, carInFront: Car) { //TODO Algorythmus    
-      var distance:number;
-      if(carInFront != null) {
-         distance = carInFront.highwayPosition.meter - this._highwayPosition.meter;   
-      } else {
-         distance = 999;
-      }
-
-      if(this._speed < 0) { // Exit for immovable Vehicles (minus velocity)
+   public calculateNextSpeed(secondsBetweenCalculation: number, carInFront: Car) { //TODO Algorythmus    
+      if(this._speed < 0) { // Exit for immovable Vehicles (minus velocity) DEVONLY
          return this._speed;
       }
 
-      if (distance < Car.LENGTH + 1) { // The Distance should not get smaller than one meter
-         return this.getDecelerationSpeed(secondsBetween);
+      if(carInFront == null) { // If there is no car in Front
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
       }
 
-      if(this._speed == 0) { // Exit for immovable Vehicles
-         return this.getAccelerationSpeed(secondsBetween);
+      var distanceInMeter:number = carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);   
+
+      if(this._speed == 0 && !(distanceInMeter < Car.LENGTH + 1)) { // Cant use the following function when speed = 0 because of math
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
       }
 
-      if (distance / this._speed > 2) { // If Distance is greater than two seconds
-         return this.getAccelerationSpeed(secondsBetween);
+      if (distanceInMeter / this._speed > 2) { // If Distance is greater than two seconds
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
       }
       
-      return this.getDecelerationSpeed(secondsBetween); // If Distance is smaler than two seconds
+      return this.getDecelerationSpeed(secondsBetweenCalculation); // If Distance is smaler than two seconds
    }
 
-   public calculateNextPosition(secondsBetween: number) {
+   public calculateNextPosition(secondsBetweenCalculation: number) {
       // Makes it possible for a Car to stand still (With a minus speed)
       if (this._speed >= 0) {
-         this.highwayPosition.meter += secondsBetween * this._speed;
+         this.highwayPosition.meter += secondsBetweenCalculation * this._speed;
       }
 
       return new HighwayPosition(

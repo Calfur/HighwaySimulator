@@ -78,13 +78,13 @@ export default class TrafficCalculator {
       this._carsAtTime.push({ second: nextSecond, cars: nextCars });
    }
 
-   private getCarInFront(lastCar: Car, lastSecond: number) {
-      var carsInSameLane = this._carsAtTime.find(c => c.second == lastSecond).cars.filter(c => c.highwayPosition.lane === lastCar.highwayPosition.lane);
+   private getCarInFront(car: Car, lastSecond: number) {
+      var carsInSameLane = this._carsAtTime.find(c => c.second == lastSecond).cars.filter(c => c.highwayPosition.lane === car.highwayPosition.lane);
       carsInSameLane = carsInSameLane.sort( function(a, b) {
          return a["highwayPosition"].meter - b["highwayPosition"].meter;
       });
 
-      var indexOfCar = carsInSameLane.indexOf(lastCar)
+      var indexOfCar = carsInSameLane.indexOf(car)
       var carInFront:Car = carsInSameLane[++indexOfCar];
 
       return carInFront;
