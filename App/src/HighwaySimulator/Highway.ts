@@ -97,7 +97,7 @@ export default class Highway {
 
    private drawSign(positionXInMeters: number) {
       const text = `${positionXInMeters / 1000} km`;
-      const textSize = this.pixelsPerMeter * 1.5;
+      const textSize = 15;
       const positionX = this.getDrawPositionX(positionXInMeters);
       const positionY = this.getLaneYTop(this._amountOfLanes) + textSize * 0.8;
 
