@@ -61,43 +61,31 @@ export default class TrafficCalculator {
 
    private calculateNextSeconds() {
       for (var i = 0; i < TrafficCalculator.CALCULATIONS_PER_EVENT_CYCLE && this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE; i++) {
-         this.calculateNextCars(this._lastCalculatedSecond);
+         this.calculateNextVersionCars(this._lastCalculatedSecond);
          this._lastCalculatedSecond = this.calculateNextSecond(this._lastCalculatedSecond);
       }
    }
 
-   private calculateNextCars(lastSecond: number) {
+   private calculateNextVersionCars(lastSecond: number) {
       var nextSecond = this.calculateNextSecond(lastSecond);
-      var nextCars: Car[] = [];
+      var nextVersionCars: Car[] = [];
 
-      for (const lastCar of this.getCarsAtTime(lastSecond)) {
-         var nextCar = this.calculateNextCar(lastCar, lastSecond); // 
-         nextCars.push(nextCar);
+      for (const previousVersionCar of this.getCarsAtTime(lastSecond)) {
+         const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond); // 
+         nextVersionCars.push(nextVersionCar);
       };
 
-      this._carsAtTime.push({ second: nextSecond, cars: nextCars });
+      this._carsAtTime.push({ second: nextSecond, cars: nextVersionCars });
    }
 
-   private getCarInFront(car: Car, lastSecond: number) {
-      var carsInSameLane = this._carsAtTime.find(c => c.second == lastSecond).cars.filter(c => c.highwayPosition.lane === car.highwayPosition.lane);
-      carsInSameLane = carsInSameLane.sort( function(a, b) {
-         return a["highwayPosition"].meter - b["highwayPosition"].meter;
-      });
-
-      var indexOfCar = carsInSameLane.indexOf(car)
-      var carInFront:Car = carsInSameLane[++indexOfCar];
-
-      return carInFront;
-   }
-
-   private calculateNextCar(lastCar: Car, lastSecond: number) {
-      var carInFront:Car = this.getCarInFront(lastCar, lastSecond);
+   private calculateNextCar(previousVersionCar: Car, lastSecond: number) {
+      const cars:Car[] = this._carsAtTime.find(c => c.second == lastSecond).cars;
 
       return new Car(
          this._p5,
-         lastCar.calculateNextPosition(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
-         lastCar.color,
-         lastCar.calculateNextSpeed(TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS, carInFront)
+         previousVersionCar.calculatePositionOfNextVersion(cars, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
+         previousVersionCar.color,
+         previousVersionCar.speed
       );
    }
 
