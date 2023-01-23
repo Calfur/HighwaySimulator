@@ -5,12 +5,11 @@ export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
    private static readonly LENGTH = 4.40;
    private static readonly WIDTH = 1.80;
-   private static readonly ACCELERATION = 5; // Random Value, need to be replaced by something meeningfull
-   private static readonly DECELERATION = 36; // Random Value, need to be replaced by something meeningfull
+   // private static readonly ACCELERATION = 5; // Random Value, need to be replaced by something meeningfull 
+   private static readonly DECELERATION = 8; // m/s^2 --> https://physikunterricht-online.de/jahrgang-10/bremsbewegungen/#:~:text=In%20einer%20realen%20Situation%20im,%2D1m%2Fs2%20sinken.
 
-   // private static readonly POWER = 115100; // Watt = 156.5 PS --> https://de.statista.com/statistik/daten/studie/249880/umfrage/ps-zahl-verkaufter-neuwagen-in-deutschland/#:~:text=Die%20Statistik%20zeigt%20die%20durchschnittliche,entspricht%20etwa%20156%2C5%20PS.
-   // private static readonly WEIGHT = 1400; // KG --> https://www.meinauto.de/lp-wie-schwer-ist-ein-auto#:~:text=Ein%20normales%20Auto%20wiegt%20heute,1.000%20kg%20und%201.800%20kg.
-   // private static readonly BREAKSPEED = -8; // m/s^2 --> https://physikunterricht-online.de/jahrgang-10/bremsbewegungen/#:~:text=In%20einer%20realen%20Situation%20im,%2D1m%2Fs2%20sinken.
+   private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
+   private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
 
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
@@ -51,7 +50,7 @@ export default class Car {
    }
 
    private getAccelerationSpeed(secondsBetweenCalculation : number) {
-      var speed:number = this._speed + secondsBetweenCalculation * (Car.ACCELERATION)
+      var speed:number = Math.sqrt(2 * (Math.pow(this._speed, 2) * Car.WEIGHT / 2 + Car.POWER * secondsBetweenCalculation) / Car.WEIGHT); // E = 1/2mv^2 + P*t ; v = sqrt(2E/m)
 
       // TODO: maxspeed of line
       if (speed > 120/3.6) {
