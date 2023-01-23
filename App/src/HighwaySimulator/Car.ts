@@ -4,7 +4,7 @@ import Lane from "./Lane";
 
 export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
-   private static readonly LENGTH = 4.40;
+   public static readonly LENGTH = 4.40;
    private static readonly WIDTH = 1.80;
    // private static readonly ACCELERATION = 5; // Random Value, need to be replaced by something meeningfull 
    private static readonly DECELERATION = 8; // m/s^2 --> https://physikunterricht-online.de/jahrgang-10/bremsbewegungen/#:~:text=In%20einer%20realen%20Situation%20im,%2D1m%2Fs2%20sinken.
@@ -61,8 +61,8 @@ export default class Car {
       var speed:number = Math.sqrt(2 * (Math.pow(this._previousVersionSpeed, 2) * Car.WEIGHT / 2 + Car.POWER * secondsBetweenCalculation) / Car.WEIGHT); // E = 1/2mv^2 + P*t ; v = sqrt(2E/m)
 
       // TODO: maxspeed of line
-      if (speed > 120 / 3.6) {
-         speed = 120 / 3.6;
+      if (speed > this.highwayPosition.lane.maxSpeed / 3.6) {
+         speed = this.highwayPosition.lane.maxSpeed / 3.6;
       }
       return speed
    }
