@@ -57,7 +57,7 @@ export default class Car {
       this._p5.pop();
    }
 
-   private getAccelerationSpeed(secondsBetweenCalculation : number) {
+   private getAcceleratedSpeed(secondsBetweenCalculation : number) {
       var speed:number = Math.sqrt(2 * (Math.pow(this._previousVersionSpeed, 2) * Car.WEIGHT / 2 + Car.POWER * secondsBetweenCalculation) / Car.WEIGHT); // E = 1/2mv^2 + P*t ; v = sqrt(2E/m)
 
       // TODO: maxspeed of line
@@ -67,7 +67,7 @@ export default class Car {
       return speed
    }
 
-   private getDecelerationSpeed(secondsBetweenCalculation: number) {
+   private getDeceleratedSpeed(secondsBetweenCalculation: number) {
       var speed: number = this._previousVersionSpeed - secondsBetweenCalculation * (Car.DECELERATION);
 
       if (speed < 0) {
@@ -97,58 +97,77 @@ export default class Car {
 
    private calculateMove(secondsBetweenCalculation: number,cars: Car[],lanes: Lane[]) { //TODO Algorythmus    
       var carInFront = this.getCarInFront(cars, this);
-      this._speed = this.calculateSpeed(secondsBetweenCalculation, carInFront);
+      var doAccelerate = this.doAccelerate(secondsBetweenCalculation, carInFront);
       
       var laneright = lanes[this._highwayPosition.lane.id + 1];
       var laneleft = lanes[this._highwayPosition.lane.id - 1];
-      if (laneright != null) {
-         this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneright)
-      } 
-      if (laneleft != null) {
-         this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneleft)
-      }      
-      this._laneOfNextVersion = this.calculateLane();
+      var doAccelerateright = ((laneright == null) || this.doAccelerateforLane(this._speed,secondsBetweenCalculation,cars,laneright))
+      var doAccelerateleft = ((laneleft == null) || this.doAccelerateforLane(this._speed,secondsBetweenCalculation,cars,laneleft))
+      var doAccelerateforGoalLane = ((this.goalLane == null) || this.doAccelerateforGoalLane(this._speed,secondsBetweenCalculation,cars,this.goalLane))
+      console.log(this.goalLane)
+      console.log({doAccelerate, doAccelerateright, doAccelerateleft, doAccelerateforGoalLane})
+      if (doAccelerate && doAccelerateright && doAccelerateleft && doAccelerateforGoalLane) {
+         this._speed = this.getAcceleratedSpeed(secondsBetweenCalculation);
+      } else {
+         this._speed = this.getDeceleratedSpeed(secondsBetweenCalculation);
+      }
+      this._laneOfNextVersion = this.calculateLane(lanes);
    }
 
-   private calculateSpeedforLane(speed:number,secondsBetweenCalculation: number, cars: Car[],lane: Lane) {
+   private doAccelerateforLane(speed:number,secondsBetweenCalculation: number, cars: Car[],lane: Lane) {
       var carInFrontforLane = this.getCarInFrontforLane(cars, this,lane);
       if (carInFrontforLane == null) {
-         return speed;
+         return true;
       }
       if (carInFrontforLane.goalLane != this._highwayPosition.lane) {
-         return speed;
+         return true;
       }
-      var speedforLane = this.calculateSpeed(secondsBetweenCalculation, carInFrontforLane);
-      if (speedforLane < speed) {
-         return speedforLane;
-      } else {
-         return speed;
+      return this.doAccelerate(secondsBetweenCalculation, carInFrontforLane);
+   }
+   private doAccelerateforGoalLane(speed:number,secondsBetweenCalculation: number, cars: Car[],lane: Lane) {
+      var carInFrontforLane = this.getCarInFrontforLane(cars, this,lane);
+      if (carInFrontforLane == null) {
+         return true;
       }
+      return this.doAccelerate(secondsBetweenCalculation, carInFrontforLane);
    }
 
-   private calculateSpeed(secondsBetweenCalculation: number, carInFront: Car) {
+   private doAccelerate(secondsBetweenCalculation: number, carInFront: Car) {
       if (carInFront == null) { // If there is no car in Front
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
+         return true
       }
 
       var distanceToCarInFront: number = carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);
 
       // Cant use the following function when speed = 0 because of math
       if (this._previousVersionSpeed == 0 && !(distanceToCarInFront < Car.LENGTH + 1)) {
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
+         return true
       }
 
       // If Distance is greater than two seconds
       if (distanceToCarInFront / this._previousVersionSpeed > 2) {
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
+         return true
       }
 
       // If Distance is smaler than two seconds
-      return this.getDecelerationSpeed(secondsBetweenCalculation);
+      return false
    }
 
-   private calculateLane() {
+   private calculateLane(lanes: Lane[]) {
       // add here logic for switching lane
+
+      // if (Math.round(Math.random() * 1000) == 1) { //TODO sinnvoller Algorithmus
+      //    if (Math.round(Math.random()) == 1){
+      //       if (lanes[this._highwayPosition.lane.id-1] != null){
+      //          this._GoalLane = lanes[this._highwayPosition.lane.id-1];
+      //       }
+      //    } else {
+      //       if (lanes[this._highwayPosition.lane.id+1] != null){
+      //          this._GoalLane = lanes[this._highwayPosition.lane.id+1];
+      //       }
+      //    }
+      //    this._GoalLane
+      // }
       return this.highwayPosition.lane;
    }
 
@@ -165,14 +184,24 @@ export default class Car {
    } 
 
    private getCarInFrontforLane(cars: Car[], car: Car, lane: Lane) {
-      var carsInSameLane = cars.filter(c => c.highwayPosition.lane == lane);
-      carsInSameLane = carsInSameLane.sort(function (a, b) {
+      var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
+      var carsAheadInLane = carsInLane.filter(c => c.highwayPosition.meter >= car.highwayPosition.meter)
+      carsAheadInLane.sort(function (a, b) {
          return a["highwayPosition"].meter - b["highwayPosition"].meter;
       });
 
-      var indexOfCar = carsInSameLane.indexOf(car)
-      var carInFront: Car = carsInSameLane[++indexOfCar];
+      return carsAheadInLane[0];
+   }
 
-      return carInFront;
+   private getCarInBackforLane(cars: Car[], car: Car, lane: Lane) {
+      var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
+      carsInLane = carsInLane.sort(function (a, b) {
+         return a["highwayPosition"].meter - b["highwayPosition"].meter;
+      });
+
+      var indexOfCar = carsInLane.indexOf(car)
+      var carInBack: Car = carsInLane[--indexOfCar];
+
+      return carInBack;
    }
 }
