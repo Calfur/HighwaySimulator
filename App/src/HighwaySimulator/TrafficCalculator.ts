@@ -57,7 +57,7 @@ export default class TrafficCalculator {
       for (let i:number = 0; i < lanes.length; i++) {
          var newLane:Lane = new Lane(i, lanes[i].maxSpeed, lanes[i].beginning, lanes[i].end);
          for (let j = 0; j < lanes[i].amountOfCars; j++) {
-            var car:Car = new Car(this._p5, new HighwayPosition(Car.length + (lanes[i].distanceBetweeenInitialCars + 1)*j, newLane), this._p5.color("#" + Math.floor((Math.abs(Math.sin((i+1)*(j-2)) * 16777215))).toString(16)), lanes[i].startSpeed)
+            var car:Car = new Car(this._p5, new HighwayPosition((Car.LENGTH + lanes[i].distanceBetweeenInitialCars)*j, newLane), this._p5.color("#" + Math.floor((Math.abs(Math.sin((i+1)*(j-2)) * 16777215))).toString(16)), lanes[i].startSpeed)
             initialCars.push(car)
          }
       }
