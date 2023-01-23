@@ -20,9 +20,6 @@ export default class Car {
    private _laneOfNextVersion: Lane;
    private _GoalLane: Lane;
 
-   public get LENGTH () {
-      return this.LENGTH;
-   }
    public get highwayPosition() {
       return this._highwayPosition;
    }

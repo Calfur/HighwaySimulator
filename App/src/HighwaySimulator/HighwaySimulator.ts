@@ -9,7 +9,7 @@ import environment from '../Environments/RegularHightway.json';
 
 export default class HighwaySimulator {
    private static readonly AMOUNT_OF_LANES = environment.lanes.length;
-
+   
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
