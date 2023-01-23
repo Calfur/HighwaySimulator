@@ -2,6 +2,9 @@ import P5 from "p5";
 import Car from "./Car";
 import HighwayPosition from "./HighwayPosition";
 
+import environment from '../Environments/RegularHightway.json';
+import Lane from "./Lane";
+
 export default class TrafficCalculator {
    private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
    private static readonly MAX_SECONDS_TO_CALCULATE = 60;
@@ -48,15 +51,17 @@ export default class TrafficCalculator {
    }
 
    private createInitialCars() {
-      var initialCars: Car[] = [
-         new Car(this._p5, new HighwayPosition(50, 0), this._p5.color("pink"), 0),
-         new Car(this._p5, new HighwayPosition(20, 0), this._p5.color("blue"), -1),
-         new Car(this._p5, new HighwayPosition(10, 0), this._p5.color("red"), 0),
-         new Car(this._p5, new HighwayPosition(15, 1), this._p5.color("green"), 0),
-         new Car(this._p5, new HighwayPosition(30, 1), this._p5.color("yellow"), 80),
-         new Car(this._p5, new HighwayPosition(700, 1), this._p5.color("rosybrown"), -1),
-      ];
+      var initialCars: Car[] = new Array();
+      
+      for (let i:number = 0; i < environment.lanes.length; i++) {
+         for (let j = 0; j < environment.lanes[i].amountOfCars; j++) {
+            var newLane:Lane = new Lane(i, environment.lanes[i].maxSpeed, environment.lanes[i].beginning, environment.lanes[i].end);
+            initialCars.push(new Car(this._p5, new HighwayPosition(Car.length + (Car.length + 1)*j, newLane), this._p5.color("red"), environment.lanes[i].startSpeed))
+         }
+      }
+
       this._carsAtTime.push({ second: 0, cars: initialCars });
+      console.log(this._carsAtTime);
    }
 
    private calculateNextSeconds() {

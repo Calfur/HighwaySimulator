@@ -3,6 +3,7 @@
       "module": "commonjs",
       "jsx": "preserve",
       "esModuleInterop": true,
+      "resolveJsonModule": true,
       "sourceMap": true,
       "allowJs": true,
       "lib": [

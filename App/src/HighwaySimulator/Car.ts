@@ -1,5 +1,6 @@
 import P5 from "p5";
 import HighwayPosition from "./HighwayPosition";
+import Lane from "./Lane";
 
 export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
@@ -16,8 +17,11 @@ export default class Car {
    private readonly _color: P5.Color;
    private readonly _previousVersionSpeed: number; // the speed of the same care earlier in the calculation in m/s
    private _speed: number; // speed of this car in m/s
-   private _laneOfNextVersion: number;
+   private _laneOfNextVersion: Lane;
 
+   public get LENGTH () {
+      return this.LENGTH;
+   }
    public get highwayPosition() {
       return this._highwayPosition;
    }

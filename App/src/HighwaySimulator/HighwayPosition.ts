@@ -1,6 +1,8 @@
+import Lane from "./Lane";
+
 export default class HighwayPosition {
    private _meter: number;
-   private _lane: number;
+   private _lane: Lane;
 
    public get meter() {
       return this._meter;
@@ -14,11 +16,11 @@ export default class HighwayPosition {
       this._meter = meter;
    }
 
-   public set lane(lane: number) {
+   public set lane(lane: Lane) {
       this._lane = lane;
    }
 
-   constructor(meter: number, lane: number) {
+   constructor(meter: number, lane: Lane) {
       this._meter = meter;
       this._lane = lane;
    }

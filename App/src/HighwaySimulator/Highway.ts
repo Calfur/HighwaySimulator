@@ -76,7 +76,7 @@ export default class Highway {
    private drawCars() {
       this._cars.forEach(car => {
          const carPositionX = this.getDrawPositionX(car.highwayPosition.meter);
-         const carPositionY = this.getLaneYCenter(car.highwayPosition.lane);
+         const carPositionY = this.getLaneYCenter(car.highwayPosition.lane.id);
 
          car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
       });
