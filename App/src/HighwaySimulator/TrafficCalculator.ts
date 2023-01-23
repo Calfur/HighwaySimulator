@@ -69,7 +69,6 @@ export default class TrafficCalculator {
             initialCars.push(car)
          }
       }
-      console.log();
       this._carsAtTime.push({ second: 0, cars: initialCars });
    }
 

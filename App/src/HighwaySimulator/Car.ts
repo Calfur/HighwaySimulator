@@ -104,8 +104,7 @@ export default class Car {
       var doAccelerateright = ((laneright == null) || this.doAccelerateforLane(this._speed,secondsBetweenCalculation,cars,laneright))
       var doAccelerateleft = ((laneleft == null) || this.doAccelerateforLane(this._speed,secondsBetweenCalculation,cars,laneleft))
       var doAccelerateforGoalLane = ((this.goalLane == null) || this.doAccelerateforGoalLane(this._speed,secondsBetweenCalculation,cars,this.goalLane))
-      console.log(this.goalLane)
-      console.log({doAccelerate, doAccelerateright, doAccelerateleft, doAccelerateforGoalLane})
+
       if (doAccelerate && doAccelerateright && doAccelerateleft && doAccelerateforGoalLane) {
          this._speed = this.getAcceleratedSpeed(secondsBetweenCalculation);
       } else {
