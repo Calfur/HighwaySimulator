@@ -14,7 +14,9 @@ export default class Car {
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
    private readonly _color: P5.Color;
-   private readonly _speed: number; // m/s
+   private readonly _previousVersionSpeed: number; // the speed of the same care earlier in the calculation in m/s
+   private _speed: number; // speed of this car in m/s
+   private _laneOfNextVersion: number;
 
    public get highwayPosition() {
       return this._highwayPosition;
@@ -28,11 +30,11 @@ export default class Car {
       return this._speed;
    }
 
-   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, speed: number) {
+   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
       this._color = color;
-      this._speed = speed;
+      this._previousVersionSpeed = previousVersionSpeed;
    }
 
    public draw(position: P5.Vector, pixelsPerMeter: number) {
@@ -50,56 +52,84 @@ export default class Car {
    }
 
    private getAccelerationSpeed(secondsBetweenCalculation : number) {
-      var speed:number = Math.sqrt(2 * (Math.pow(this._speed, 2) * Car.WEIGHT / 2 + Car.POWER * secondsBetweenCalculation) / Car.WEIGHT); // E = 1/2mv^2 + P*t ; v = sqrt(2E/m)
+      var speed:number = Math.sqrt(2 * (Math.pow(this._previousVersionSpeed, 2) * Car.WEIGHT / 2 + Car.POWER * secondsBetweenCalculation) / Car.WEIGHT); // E = 1/2mv^2 + P*t ; v = sqrt(2E/m)
 
       // TODO: maxspeed of line
-      if (speed > 120/3.6) {
-         speed = 120/3.6;
+      if (speed > 120 / 3.6) {
+         speed = 120 / 3.6;
       }
       return speed
    }
 
-   private getDecelerationSpeed(secondsBetweenCalculation : number) {
-      var speed:number = this._speed - secondsBetweenCalculation * (Car.DECELERATION);
+   private getDecelerationSpeed(secondsBetweenCalculation: number) {
+      var speed: number = this._previousVersionSpeed - secondsBetweenCalculation * (Car.DECELERATION);
 
       if (speed < 0) {
          speed = 0
       }
-      
+
       return speed
    }
 
-   public calculateNextSpeed(secondsBetweenCalculation: number, carInFront: Car) { //TODO Algorythmus    
-      if(this._speed < 0) { // Exit for immovable Vehicles (minus velocity) DEVONLY
-         return this._speed;
-      }
-
-      if(carInFront == null) { // If there is no car in Front
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
-      }
-
-      var distanceInMeter:number = carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);   
-
-      if(this._speed == 0 && !(distanceInMeter < Car.LENGTH + 1)) { // Cant use the following function when speed = 0 because of math
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
-      }
-
-      if (distanceInMeter / this._speed > 2) { // If Distance is greater than two seconds
-         return this.getAccelerationSpeed(secondsBetweenCalculation);
-      }
-      
-      return this.getDecelerationSpeed(secondsBetweenCalculation); // If Distance is smaler than two seconds
-   }
-
-   public calculateNextPosition(secondsBetweenCalculation: number) {
+   public calculatePositionOfNextVersion(cars: Car[], secondsBetweenCalculation: number): HighwayPosition {
       // Makes it possible for a Car to stand still (With a minus speed)
-      if (this._speed >= 0) {
-         this.highwayPosition.meter += secondsBetweenCalculation * this._speed;
+      if (this._previousVersionSpeed < 0) {
+         this._speed = this._previousVersionSpeed;
+         return this.highwayPosition;
       }
+
+      var carInFront = this.getCarInFront(cars, this);
+
+      this.calculateMove(secondsBetweenCalculation, carInFront);
+
+      var speedOfNextVersion = this.highwayPosition.meter + secondsBetweenCalculation * this._speed;
 
       return new HighwayPosition(
-         this.highwayPosition.meter,
-         this.highwayPosition.lane
+         speedOfNextVersion,
+         this._laneOfNextVersion
       );
+   }
+
+   private calculateMove(secondsBetweenCalculation: number, carInFront: Car) { //TODO Algorythmus    
+      this._speed = this.calculateSpeed(secondsBetweenCalculation, carInFront);
+      this._laneOfNextVersion = this.calculateLane();
+   }
+
+   private calculateSpeed(secondsBetweenCalculation: number, carInFront: Car) {
+      if (carInFront == null) { // If there is no car in Front
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
+      }
+
+      var distanceToCarInFront: number = carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);
+
+      // Cant use the following function when speed = 0 because of math
+      if (this._previousVersionSpeed == 0 && !(distanceToCarInFront < Car.LENGTH + 1)) {
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
+      }
+
+      // If Distance is greater than two seconds
+      if (distanceToCarInFront / this._previousVersionSpeed > 2) {
+         return this.getAccelerationSpeed(secondsBetweenCalculation);
+      }
+
+      // If Distance is smaler than two seconds
+      return this.getDecelerationSpeed(secondsBetweenCalculation);
+   }
+
+   private calculateLane() {
+      // add here logic for switching lane
+      return this.highwayPosition.lane;
+   }
+
+   private getCarInFront(cars: Car[], car: Car) {
+      var carsInSameLane = cars.filter(c => c.highwayPosition.lane == car.highwayPosition.lane);
+      carsInSameLane = carsInSameLane.sort(function (a, b) {
+         return a["highwayPosition"].meter - b["highwayPosition"].meter;
+      });
+
+      var indexOfCar = carsInSameLane.indexOf(car)
+      var carInFront: Car = carsInSameLane[++indexOfCar];
+
+      return carInFront;
    }
 }
