@@ -13,6 +13,7 @@ export default class TrafficCalculator {
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
    private _lastCalculatedSecond = 0;
+   private _lanes: Lane[] = new Array();
 
    constructor(p5: P5) {
       this._p5 = p5;
@@ -56,8 +57,15 @@ export default class TrafficCalculator {
       var lanes = environment.lanes;
       for (let i:number = 0; i < lanes.length; i++) {
          var newLane:Lane = new Lane(i, lanes[i].maxSpeed, lanes[i].beginning, lanes[i].end);
+         this._lanes.push(newLane);
          for (let j = 0; j < lanes[i].amountOfCars; j++) {
-            var car:Car = new Car(this._p5, new HighwayPosition(Car.length + (lanes[i].distanceBetweeenInitialCars + 1)*j, newLane), this._p5.color("#" + Math.floor((Math.abs(Math.sin((i+1)*(j-2)) * 16777215))).toString(16)), lanes[i].startSpeed)
+            var car:Car = new Car(
+               this._p5, 
+               new HighwayPosition(Car.length + (lanes[i].distanceBetweeenInitialCars + 1)*j, newLane),
+               this._p5.color("#" + Math.floor((Math.abs(Math.sin((i+1)*(j-2)) * 16777215))).toString(16)), 
+               lanes[i].startSpeed, 
+               this._lanes[i-1]
+               )
             initialCars.push(car)
          }
       }
@@ -77,7 +85,7 @@ export default class TrafficCalculator {
       var nextVersionCars: Car[] = [];
 
       for (const previousVersionCar of this.getCarsAtTime(lastSecond)) {
-         const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond); // 
+         const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
          nextVersionCars.push(nextVersionCar);
       };
 
@@ -89,9 +97,10 @@ export default class TrafficCalculator {
 
       return new Car(
          this._p5,
-         previousVersionCar.calculatePositionOfNextVersion(cars, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
+         previousVersionCar.calculatePositionOfNextVersion(cars,this._lanes, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
          previousVersionCar.color,
-         previousVersionCar.speed
+         previousVersionCar.speed,
+         previousVersionCar.goalLane
       );
    }
 

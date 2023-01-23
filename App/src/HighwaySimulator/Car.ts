@@ -31,12 +31,16 @@ export default class Car {
    public get speed() {
       return this._speed;
    }
+   public get goalLane() {
+      return this._GoalLane;
+   }
 
-   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number) {
+   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number, lane: Lane) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
       this._color = color;
       this._previousVersionSpeed = previousVersionSpeed;
+      this._GoalLane = lane;
    }
 
    public draw(position: P5.Vector, pixelsPerMeter: number) {
@@ -73,7 +77,7 @@ export default class Car {
       return speed
    }
 
-   public calculatePositionOfNextVersion(cars: Car[], secondsBetweenCalculation: number): HighwayPosition {
+   public calculatePositionOfNextVersion(cars: Car[],lanes: Lane[], secondsBetweenCalculation: number): HighwayPosition {
       // Makes it possible for a Car to stand still (With a minus speed)
       if (this._previousVersionSpeed < 0) {
          this._speed = this._previousVersionSpeed;
@@ -81,7 +85,7 @@ export default class Car {
       }
 
 
-      this.calculateMove(secondsBetweenCalculation,cars);
+      this.calculateMove(secondsBetweenCalculation,cars,lanes);
 
       var speedOfNextVersion = this.highwayPosition.meter + secondsBetweenCalculation * this._speed;
 
@@ -91,17 +95,29 @@ export default class Car {
       );
    }
 
-   private calculateMove(secondsBetweenCalculation: number,cars: Car[]) { //TODO Algorythmus    
+   private calculateMove(secondsBetweenCalculation: number,cars: Car[],lanes: Lane[]) { //TODO Algorythmus    
       var carInFront = this.getCarInFront(cars, this);
       this._speed = this.calculateSpeed(secondsBetweenCalculation, carInFront);
-      this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneright)//TODO Lane
-      this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneleft)//TODO Lane
       
+      var laneright = lanes[this._highwayPosition.lane.id + 1];
+      var laneleft = lanes[this._highwayPosition.lane.id - 1];
+      if (laneright != null) {
+         this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneright)
+      } 
+      if (laneleft != null) {
+         this._speed = this.calculateSpeedforLane(this._speed,secondsBetweenCalculation,cars,laneleft)
+      }      
       this._laneOfNextVersion = this.calculateLane();
    }
 
    private calculateSpeedforLane(speed:number,secondsBetweenCalculation: number, cars: Car[],lane: Lane) {
       var carInFrontforLane = this.getCarInFrontforLane(cars, this,lane);
+      if (carInFrontforLane == null) {
+         return speed;
+      }
+      if (carInFrontforLane.goalLane != this._highwayPosition.lane) {
+         return speed;
+      }
       var speedforLane = this.calculateSpeed(secondsBetweenCalculation, carInFrontforLane);
       if (speedforLane < speed) {
          return speedforLane;
