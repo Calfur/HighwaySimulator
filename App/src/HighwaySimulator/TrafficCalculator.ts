@@ -50,26 +50,37 @@ export default class TrafficCalculator {
          }
       }, 0, this._lastCalculatedSecond);
    }
-
+   
    private createInitialCars() {
       var initialCars: Car[] = new Array();
       
-      var lanes = environment.lanes;
-      for (let i:number = 0; i < lanes.length; i++) {
-         var newLane:Lane = new Lane(i, lanes[i].maxSpeed, lanes[i].beginning, lanes[i].end);
+      const laneConfigs = environment.lanes;
+      laneConfigs.forEach((laneConfig, i) => {
+         const newLane = new Lane(i, laneConfig.maxSpeed, laneConfig.beginning, laneConfig.end);
          this._lanes.push(newLane);
-         for (let j = 0; j < lanes[i].amountOfCars; j++) {
-            var car:Car = new Car(
+
+         for (var j = 0; j < laneConfig.amountOfCars; j++) {
+            const seed = (i+1)*(j-2);
+            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars)*j, newLane);
+            const color = this.getColor(seed);
+            
+            const car = new Car(
                this._p5, 
-               new HighwayPosition((Car.LENGTH + lanes[i].distanceBetweeenInitialCars)*j, newLane), 
-               this._p5.color("#" + Math.floor((Math.abs(Math.sin((i+1)*(j-2)) * 16777215))).toString(16)), 
-               lanes[i].startSpeed, 
+               highwayPosition, 
+               color, 
+               laneConfig.startSpeed,
                this._lanes[i-1]
             )
+
             initialCars.push(car)
          }
-      }
+      });
+
       this._carsAtTime.push({ second: 0, cars: initialCars });
+   }
+
+   private getColor(seed: number) {
+      return this._p5.color("#" + Math.floor(Math.abs(Math.sin(seed) * 16777215)).toString(16));
    }
 
    private calculateNextSeconds() {
