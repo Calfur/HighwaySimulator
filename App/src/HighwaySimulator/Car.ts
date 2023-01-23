@@ -19,9 +19,6 @@ export default class Car {
    private _speed: number; // speed of this car in m/s
    private _laneOfNextVersion: Lane;
 
-   public get LENGTH () {
-      return this.LENGTH;
-   }
    public get highwayPosition() {
       return this._highwayPosition;
    }
