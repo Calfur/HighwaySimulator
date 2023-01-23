@@ -24,12 +24,14 @@ export default class SimulatorStatistic {
       const positionX = 15;
       const height = 20;
       const spaceBetween = 15;
+      const text = `${description}: ${value}`;
+      const positionY = this._canvasHeight - spaceBetween - index * (height + spaceBetween);
 
       this._p5.push();
    
       this._p5.fill("white");
       this._p5.textSize(20);
-      this._p5.text(`${description}: ${value}`, positionX, this._canvasHeight - spaceBetween - index * (height + spaceBetween));
+      this._p5.text(text, positionX, positionY);
    
       this._p5.pop();
    }

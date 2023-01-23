@@ -28,7 +28,7 @@ export default class Highway {
       return this.pixelsPerMeter * Highway.LANE_SPACING_IN_METERS;
    }
 
-   constructor(p5: P5, drawPosition: P5.Vector, size: P5.Vector, lengthInMeter: number, viewPositionXInMeter:number, amountOfLanes: number, cars: Car[]) {
+   constructor(p5: P5, drawPosition: P5.Vector, size: P5.Vector, lengthInMeter: number, viewPositionXInMeter: number, amountOfLanes: number, cars: Car[]) {
       this._p5 = p5;
       this._drawPosition = drawPosition;
       this._size = size;
@@ -41,16 +41,11 @@ export default class Highway {
    public draw() {
       this.drawBackground();
 
-      for (let i = 0; i < this._amountOfLanes; i++) {
-         this.drawLane(i);
-      }
+      this.drawLanes();
 
-      this._cars.forEach(car => {
-         const carPositionX = (car.highwayPosition.meter - this._viewPositionXInMeter) * this.pixelsPerMeter;
-         const carPositionY = this.getLaneYCenter(car.highwayPosition.lane);
+      this.drawSigns();
 
-         car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
-      });
+      this.drawCars();
    }
 
    private drawBackground() {
@@ -62,6 +57,29 @@ export default class Highway {
       this._p5.rect(this._drawPosition.x, this._drawPosition.y, this._size.x, this._size.y);
 
       this._p5.pop();
+   }
+
+   private drawLanes() {
+      for (let i = 0; i < this._amountOfLanes; i++) {
+         this.drawLane(i);
+      }
+   }
+
+   private drawSigns() {
+      const firstSignPosition = this._viewPositionXInMeter - this._viewPositionXInMeter % 100 + 100;
+      for (var i = 0; i * 100 < this._lengthInMeter; i++) {
+         var positionXInMeters = firstSignPosition + i * 100;
+         this.drawSign(positionXInMeters);
+      }
+   }
+
+   private drawCars() {
+      this._cars.forEach(car => {
+         const carPositionX = this.getDrawPositionX(car.highwayPosition.meter);
+         const carPositionY = this.getLaneYCenter(car.highwayPosition.lane);
+
+         car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
+      });
    }
 
    private drawLane(laneNumber: number) {
@@ -77,6 +95,21 @@ export default class Highway {
       this._p5.pop();
    }
 
+   private drawSign(positionXInMeters: number) {
+      const text = `${positionXInMeters / 1000} km`;
+      const textSize = this.pixelsPerMeter * 1.5;
+      const positionX = this.getDrawPositionX(positionXInMeters);
+      const positionY = this.getLaneYTop(this._amountOfLanes) + textSize * 0.8;
+
+      this._p5.push();
+
+      this._p5.fill("white");
+      this._p5.textSize(textSize);
+      this._p5.text(text, positionX, positionY);
+
+      this._p5.pop();
+   }
+
    private getLaneYTop(laneNumber: number) {
       const spaceUsedByPreviousLanes = laneNumber * (this.laneHeight + this.laneSpacing);
 
@@ -85,5 +118,9 @@ export default class Highway {
 
    private getLaneYCenter(laneNumber: number) {
       return this.getLaneYTop(laneNumber) + this.laneHeight / 2;
+   }
+
+   private getDrawPositionX(meter: number) {
+      return (meter - this._viewPositionXInMeter) * this.pixelsPerMeter
    }
 }
