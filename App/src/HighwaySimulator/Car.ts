@@ -9,6 +9,7 @@ export default class Car {
    private static readonly DECELERATION = 8; // m/s^2 --> https://physikunterricht-online.de/jahrgang-10/bremsbewegungen/#:~:text=In%20einer%20realen%20Situation%20im,%2D1m%2Fs2%20sinken.
    private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
+   private static readonly CHECKSWITCHAFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
 
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
@@ -17,6 +18,7 @@ export default class Car {
    private _speed: number; // speed of this car in m/s
    private _laneOfNextVersion: Lane;
    private _goalLane: Lane;
+   private _checkSwitchInTicks: number;
 
    public get highwayPosition() {
       return this._highwayPosition;
@@ -33,12 +35,16 @@ export default class Car {
    public get goalLane() {
       return this._goalLane;
    }
+   public get checkSwitchInTicks() {
+      return this._checkSwitchInTicks;
+   }
 
-   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number) {
+   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number,checkSwitchInTicks: number) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
       this._color = color;
       this._previousVersionSpeed = previousVersionSpeed;
+      this._checkSwitchInTicks = checkSwitchInTicks;
    }
 
    public draw(position: P5.Vector, pixelsPerMeter: number) {
@@ -100,7 +106,7 @@ export default class Car {
          return this.highwayPosition;
       }
 
-      this._goalLane = this.calculateGoalLane(cars, lanes);
+      this.calculateGoalLane(cars, lanes);
 
       this.calculateMove(secondsBetweenCalculation, cars, lanes);
 
@@ -184,6 +190,10 @@ export default class Car {
    }
 
    private calculateGoalLane(cars: Car[], lanes: Lane[]) {
+      if (this._checkSwitchInTicks > 0) {
+         this._checkSwitchInTicks = --this._checkSwitchInTicks;
+         return null;
+      }
       var currentLaneKey: number = lanes.indexOf(this.highwayPosition.lane);
 
       var currentLane = this.getCarsInFront(cars, this);
@@ -201,19 +211,19 @@ export default class Car {
       var highterSpeedNeeded = 10; // in %
       var speedNeededForLaneSwitch = avgSpeedCurrent / 100 * (100 + highterSpeedNeeded);
 
+      this._color = this._p5.color("white");
       if (avgSpeedRight > avgSpeedLeft) {
          if (avgSpeedRight > speedNeededForLaneSwitch) {
             this._color = this._p5.color("red");
-            return lanes[++currentLaneKey];
+            this._goalLane =  lanes[++currentLaneKey];
          }
       } else {
          if (avgSpeedLeft > speedNeededForLaneSwitch) {
             this._color = this._p5.color("green");
-            return lanes[--currentLaneKey];
+            this._goalLane =  lanes[--currentLaneKey];
          }
       }
 
-      this._color = this._p5.color("white");
       return null;
    }
 
@@ -250,7 +260,8 @@ export default class Car {
          if (doAccelerateinBack && doAccelerateinFront) {
             var tempGoalLane = this.goalLane
             this._goalLane = null;
-
+            this._checkSwitchInTicks = Car.CHECKSWITCHAFTER;
+            this._color = this._p5.color("white");
             return tempGoalLane;
          }
       }

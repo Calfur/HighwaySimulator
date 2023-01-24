@@ -73,6 +73,7 @@ export default class TrafficCalculator {
                highwayPosition, 
                color, 
                startSpeed,
+               j,
             )
 
             initialCars.push(car)
@@ -113,6 +114,7 @@ export default class TrafficCalculator {
          previousVersionCar.calculatePositionOfNextVersion(cars,this._lanes, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
          previousVersionCar.color,
          previousVersionCar.speed,
+         previousVersionCar.checkSwitchInTicks
       );
    }
 
