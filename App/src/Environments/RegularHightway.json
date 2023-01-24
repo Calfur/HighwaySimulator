@@ -2,26 +2,26 @@
    "lanes": [
       {
          "maxSpeed": 120,
-         "amountOfCars": 20,
          "beginning": 0,
          "end": null,
-         "startSpeed": 0,
+         "amountOfCars": 20,
+         "startSpeedOfCars": 0,
          "distanceBetweeenInitialCars": 20
       },
       {
          "maxSpeed": 120,
-         "amountOfCars": 20,
          "beginning": 0,
          "end": null,
-         "startSpeed": 10,
+         "amountOfCars": 20,
+         "startSpeedOfCars": 10,
          "distanceBetweeenInitialCars": 7
       },
       {
          "maxSpeed": 30,
-         "amountOfCars": 0,
          "beginning": 0,
          "end": null,
-         "startSpeed": 0,
+         "amountOfCars": 0,
+         "startSpeedOfCars": 0,
          "distanceBetweeenInitialCars": 8
       }
    ]
