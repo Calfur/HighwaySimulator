@@ -1,6 +1,6 @@
 export default class Lane {
    private _id: number;
-   private _maxSpeed: number;
+   private _maxSpeed: number; // in m/s
    private _beginning: number;
    private _end: number;
 
