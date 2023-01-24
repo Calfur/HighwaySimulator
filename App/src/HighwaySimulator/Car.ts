@@ -108,10 +108,6 @@ export default class Car {
       var doAccelerateright = (laneRight == null) || this.doAccelerateforLane(cars, laneRight);
       var doAccelerateleft = (laneLeft == null) || this.doAccelerateforLane(cars, laneLeft);
       var doAccelerateforGoalLane = (this.goalLane == null) || this.doAccelerateforGoalLane(cars, this.goalLane);
-
-      if (this.highwayPosition.lane.id == 0) {
-         console.log({doAccelerate, doAccelerateright, doAccelerateleft, doAccelerateforGoalLane});
-      }
       
       if (doAccelerate && doAccelerateright && doAccelerateleft && doAccelerateforGoalLane) {
          return this.getAcceleratedSpeed(secondsBetweenCalculation);
@@ -168,14 +164,13 @@ export default class Car {
       var leftLane = this.getCarsInFrontforLane(cars, this, lanes[--currentLaneKey]);
       var rightLane = this.getCarsInFrontforLane(cars, this, lanes[++currentLaneKey]);
 
-      var avgSpeedCurrent = this.calculateAvgSpeed(currentLane, 0, 1, lanes[currentLaneKey]);
-      var avgSpeedLeft = this.calculateAvgSpeed(leftLane, 0, 1, lanes[--currentLaneKey]);
-      var avgSpeedRight = this.calculateAvgSpeed(rightLane, 0, 1, lanes[++currentLaneKey]);
+      var avgSpeedCurrent = this._previousVersionSpeed;
+      var avgSpeedLeft = this.calculateAvgSpeed(leftLane, 0, 10, lanes[--currentLaneKey]);
+      var avgSpeedRight = this.calculateAvgSpeed(rightLane, 0, 10, lanes[++currentLaneKey]);
 
-      // console.log("_----------_");
-      // console.log(avgSpeedCurrent);
-      // console.log(avgSpeedLeft);
-      // console.log(avgSpeedRight);
+      if (currentLane.length == 0) {
+         avgSpeedCurrent = lanes[currentLaneKey].maxSpeed;
+      }
 
       var highterSpeedNeeded = 10; // in %
       var speedNeededForLaneSwitch = avgSpeedCurrent / 100 * (100 + highterSpeedNeeded);
@@ -224,12 +219,7 @@ export default class Car {
 
          var doAccelerateinFront = this.doAccelerate(carInFront[0]);
 
-         if (carInBack != null) {
-            var doAccelerateinBack = carInBack.doAccelerate(this);
-         } else {
-            var doAccelerateinBack = true;
-         }
-
+         var doAccelerateinBack = (carInBack == null) || carInBack.doAccelerate(this);
 
          if (doAccelerateinBack && doAccelerateinFront) {
             var tempGoalLane = this.goalLane
