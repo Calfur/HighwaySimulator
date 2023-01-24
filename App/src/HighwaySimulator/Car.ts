@@ -11,6 +11,7 @@ export default class Car {
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly CHECKSWITCHAFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 10; // in %
+   private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
 
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
@@ -42,7 +43,7 @@ export default class Car {
    }
 
    private get reactionTimeDistance() {
-      return 2 * this._previousVersionSpeed;
+      return this._previousVersionSpeed * Car.REQUIRED_REACTION_TIME_SECONDS;
    }
 
    constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number, checkSwitchInTicks: number) {
@@ -72,19 +73,26 @@ export default class Car {
       const carPixelWidth = Car.WIDTH * pixelsPerMeter;
 
       const breakPath = this.getBreakPath();
-      const breakPathWithReactionTime = breakPath + this.reactionTimeDistance;
+      const reactionTime = this.reactionTimeDistance
+      const breakPathWithReactionTime = breakPath + reactionTime;
 
-      const pixelSizeX = breakPathWithReactionTime * pixelsPerMeter;
+      const pixelSizeXBreakPathWithReactionTime = breakPathWithReactionTime * pixelsPerMeter;
       const pixelSizeY = 2;
       const pixelPositionX = carPosition.x + carPixelLength;
       const pixelPositionY = carPosition.y + carPixelWidth / 2;
-
+      
       this._p5.push();
-
+      
       this._p5.noStroke();
-      this._p5.fill(this._p5.color("coral"));
       this._p5.rectMode("corner");
-      this._p5.rect(pixelPositionX, pixelPositionY, pixelSizeX, pixelSizeY);
+      this._p5.fill(this._p5.color("coral"));
+      this._p5.rect(pixelPositionX, pixelPositionY, pixelSizeXBreakPathWithReactionTime, pixelSizeY);
+      // const pixelSizeXBreakPath = breakPath * pixelsPerMeter;
+      // const pixelSizeXReactionTime = reactionTime * pixelsPerMeter;
+      // this._p5.fill(this._p5.color("lightgreen"));
+      // this._p5.rect(pixelPositionX, pixelPositionY + pixelSizeY * 2, pixelSizeXReactionTime, pixelSizeY);
+      // this._p5.fill(this._p5.color("lightblue"));
+      // this._p5.rect(pixelPositionX, pixelPositionY + pixelSizeY * 4, pixelSizeXBreakPath, pixelSizeY);
 
       this._p5.pop();
    }
@@ -204,11 +212,14 @@ export default class Car {
 
    private calculateMaximumPossibleSpeedAtCurrentPosition(carInFront: Car, laneMaxSpeed: number) {
       const distanceToCarInFront = this.getDistanceBetween(carInFront);
-      const breakPathInFront = carInFront.getBreakPath();
+      
+      const maximumPossibleSpeed = distanceToCarInFront / Car.REQUIRED_REACTION_TIME_SECONDS;
 
-      //const maximumPossibleSpeed = this.reactionTimeDistance + breakPathSelf - breakPathInFront + (Car.LENGTH + 1);
-
-      return this._previousVersionSpeed * 2;
+      if(maximumPossibleSpeed > laneMaxSpeed){
+         return laneMaxSpeed;
+      }
+      
+      return maximumPossibleSpeed;
    }
 
    private calculateGoalLane(cars: Car[], lanes: Lane[]) {

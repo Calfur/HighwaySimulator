@@ -6,7 +6,7 @@
          "beginning": 0,
          "end": null,
          "amountOfCars": 20,
-         "startSpeedOfCars": 30,
+         "startSpeedOfCars": 10,
          "distanceBetweeenInitialCars": 25,
          "isBreakdownLane": false
       },
