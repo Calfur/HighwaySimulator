@@ -73,7 +73,7 @@ export default class TrafficCalculator {
                highwayPosition, 
                color, 
                startSpeed,
-               j,
+               j*10,
             )
 
             initialCars.push(car)
