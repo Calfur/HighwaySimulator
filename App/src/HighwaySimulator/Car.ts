@@ -15,7 +15,7 @@ export default class Car {
 
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
-   private _color: P5.Color;
+   private readonly _color: P5.Color;
    private readonly _previousVersionSpeed: number; // the speed of the same care earlier in the calculation in m/s
    private _speed: number; // speed of this car in m/s
    private _laneOfNextVersion: Lane;
@@ -61,11 +61,33 @@ export default class Car {
       this._p5.push();
 
       this._p5.noStroke();
-      this._p5.fill(this._color);
       this._p5.rectMode("center");
+      this._p5.fill(this._color);
       this._p5.rect(position.x + carPixelLength / 2, position.y, carPixelLength, carPixelWidth);
 
+      this.drawBlinkers(position, carPixelLength, carPixelWidth);
+
       this._p5.pop();
+   }
+
+   private drawBlinkers(carPosition: P5.Vector, carPixelLength: number, carPixelWidth: number) {
+      if (this.goalLane != null) {
+         const blinkerPixelWidth = carPixelWidth * 0.25;
+         
+         // blinker left
+         if (this.highwayPosition.lane.id - 1 == this.goalLane.id) {
+            this._p5.rectMode("corner");
+            this._p5.fill(this._p5.color("rgb(255, 255, 0)"));
+            this._p5.rect(carPosition.x, carPosition.y - carPixelWidth / 2, carPixelLength, blinkerPixelWidth);
+         }
+
+         // blinker right
+         if (this.highwayPosition.lane.id + 1 == this.goalLane.id) {
+            this._p5.rectMode("corner");
+            this._p5.fill(this._p5.color("rgb(255, 255, 0)"));
+            this._p5.rect(carPosition.x, carPosition.y + carPixelWidth / 2 - blinkerPixelWidth, carPixelLength, blinkerPixelWidth);
+         }
+      }
    }
 
    public drawBreakPathWithReactionTime(carPosition: P5.Vector, pixelsPerMeter: number) {
@@ -244,20 +266,17 @@ export default class Car {
 
       const avgSpeedLeft = this.calculateAvgSpeed(carsInFrontLeft, 0, 10, leftLane);
       const avgSpeedRight = this.calculateAvgSpeed(carsInFrontRight, 0, 10, rightLane);
-      
+
       const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH);
       const maximumPossibleSpeedAtCurrentPosition = this.calculateMaximumPossibleSpeedAtCurrentPosition(carsInFront[0], currentLane.maxSpeed);
       const speedNeededForLaneSwitch = wantedImprovementFactor * maximumPossibleSpeedAtCurrentPosition;
 
-      this._color = this._p5.color("white");
       if (avgSpeedRight > avgSpeedLeft) {
          if (avgSpeedRight > speedNeededForLaneSwitch) {
-            this._color = this._p5.color("red");
             this._goalLane = rightLane;
          }
       } else {
          if (avgSpeedLeft > speedNeededForLaneSwitch) {
-            this._color = this._p5.color("green");
             this._goalLane = leftLane;
          }
       }
@@ -284,13 +303,7 @@ export default class Car {
       var avg: number = sum / slicedArray.length;
 
       if (avg == null || isNaN(avg) || slicedArray.length == 0) {
-         var laneMaxSpeed: number
-         try {
-            laneMaxSpeed = lane.maxSpeed;
-         } catch (TypeError) {
-            laneMaxSpeed = 0;
-         }
-         avg = laneMaxSpeed;
+         avg = lane.maxSpeed;
       }
       return avg;
    }
@@ -308,7 +321,6 @@ export default class Car {
             var tempGoalLane = this.goalLane
             this._goalLane = null;
             this._checkSwitchInTicks = Car.CHECKSWITCHAFTER;
-            this._color = this._p5.color("white");
             return tempGoalLane;
          }
       }
