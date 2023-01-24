@@ -82,7 +82,7 @@ export default class Highway {
          car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
 
          if(environment["debug"]){
-            car.drawBreakPath(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
+            car.drawBreakPathWithReactionTime(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
          }
       });
    }

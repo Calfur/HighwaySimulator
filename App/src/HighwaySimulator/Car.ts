@@ -39,6 +39,10 @@ export default class Car {
       return this._checkSwitchInTicks;
    }
 
+   private get reactionTimeDistance() {
+      return 2 * this._previousVersionSpeed;
+   }
+   
    constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number,checkSwitchInTicks: number) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
@@ -56,25 +60,29 @@ export default class Car {
       this._p5.noStroke();
       this._p5.fill(this._color);
       this._p5.rectMode("center");
-      this._p5.rect(position.x + carPixelLength/2, position.y, carPixelLength, carPixelWidth);
+      this._p5.rect(position.x + carPixelLength / 2, position.y, carPixelLength, carPixelWidth);
 
       this._p5.pop();
    }
 
-   public drawBreakPath(carPosition: P5.Vector, pixelsPerMeter: number) {
+   public drawBreakPathWithReactionTime(carPosition: P5.Vector, pixelsPerMeter: number) {
       const carPixelLength = Car.LENGTH * pixelsPerMeter;
+      const carPixelWidth = Car.WIDTH * pixelsPerMeter;
 
       const breakPath = this.getBreakPath();
-      const breakPathPixelLength = breakPath * pixelsPerMeter;
-      
-      const breakPathPixelWidth = 2;
+      const breakPathWithReactionTime = breakPath + this.reactionTimeDistance;
+
+      const pixelSizeX = breakPathWithReactionTime * pixelsPerMeter;
+      const pixelSizeY = 2;
+      const pixelPositionX = carPosition.x + carPixelLength;
+      const pixelPositionY = carPosition.y + carPixelWidth / 2;
 
       this._p5.push();
 
       this._p5.noStroke();
-      this._p5.fill(this._p5.color("red"));
-      this._p5.rectMode("center");
-      this._p5.rect(carPosition.x + carPixelLength + breakPathPixelLength/2, carPosition.y, breakPathPixelLength, breakPathPixelWidth);
+      this._p5.fill(this._p5.color("coral"));
+      this._p5.rectMode("corner");
+      this._p5.rect(pixelPositionX, pixelPositionY, pixelSizeX, pixelSizeY);
 
       this._p5.pop();
    }
@@ -136,7 +144,7 @@ export default class Car {
       var doAccelerateright = (laneRight == null) || this.doAccelerateforLane(cars, laneRight);
       var doAccelerateleft = (laneLeft == null) || this.doAccelerateforLane(cars, laneLeft);
       var doAccelerateforGoalLane = (this.goalLane == null) || this.doAccelerateforGoalLane(cars, this.goalLane);
-      
+
       if (doAccelerate && doAccelerateright && doAccelerateleft && doAccelerateforGoalLane) {
          return this.getAcceleratedSpeed(secondsBetweenCalculation);
       } else {
@@ -176,16 +184,16 @@ export default class Car {
          return true
       }
 
-      //Bremsweg: S = vo²/2a
-      var BreakPathSelf = this.getBreakPath();
-      var BreakPathInFront = carInFront.getBreakPath();
+      // Bremsweg: S = vo²/2a
+      var breakPathSelf = this.getBreakPath();
+      var breakPathInFront = carInFront.getBreakPath();
 
-      // If Distance is greater than two seconds
-      if (distanceToCarInFront > 2 * this._previousVersionSpeed + BreakPathSelf - BreakPathInFront) { 
+      var minimumRequiredDistanceToAllowAccelleration = this.reactionTimeDistance + breakPathSelf - breakPathInFront;
+
+      if (distanceToCarInFront > minimumRequiredDistanceToAllowAccelleration) {
          return true
       }
 
-      // If Distance is smaler than two seconds
       return false
    }
 
