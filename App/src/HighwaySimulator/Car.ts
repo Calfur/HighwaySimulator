@@ -148,8 +148,12 @@ export default class Car {
          return true
       }
 
+      //Bremsweg: S = vo²/2a
+      var BreakPathSelf = Math.pow(this._previousVersionSpeed,2) / (2 * Car.DECELERATION);
+      var BreakPathInFront = Math.pow(carInFront._previousVersionSpeed,2) / (2 * Car.DECELERATION);
+
       // If Distance is greater than two seconds
-      if (distanceToCarInFront / this._previousVersionSpeed > 2) {
+      if (distanceToCarInFront > 2 * this._previousVersionSpeed + BreakPathSelf - BreakPathInFront) { 
          return true
       }
 
