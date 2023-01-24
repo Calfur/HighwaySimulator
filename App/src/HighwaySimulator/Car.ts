@@ -132,7 +132,7 @@ export default class Car {
 
    private calculateMove(secondsBetweenCalculation: number, cars: Car[], lanes: Lane[]) {
       this._speed = this.calculateSpeed(cars, lanes, secondsBetweenCalculation);
-      this._laneOfNextVersion = this.calculateLane(lanes, cars);
+      this._laneOfNextVersion = this.calculateLane(cars);
    }
 
    private calculateSpeed(cars: Car[], lanes: Lane[], secondsBetweenCalculation: number) {
@@ -188,9 +188,9 @@ export default class Car {
       var breakPathSelf = this.getBreakPath();
       var breakPathInFront = carInFront.getBreakPath();
 
-      var minimumRequiredDistanceToAllowAccelleration = this.reactionTimeDistance + breakPathSelf - breakPathInFront;
+      var minimumRequiredDistance = this.reactionTimeDistance + breakPathSelf - breakPathInFront + (Car.LENGTH + 1);
 
-      if (distanceToCarInFront > minimumRequiredDistanceToAllowAccelleration) {
+      if (distanceToCarInFront > minimumRequiredDistance) {
          return true
       }
 
@@ -256,7 +256,7 @@ export default class Car {
       return avg;
    }
 
-   private calculateLane(lanes: Lane[], cars: Car[]) {
+   private calculateLane(cars: Car[]) {
       if (this.goalLane != null) {
          var carInFront = this.getCarsInFrontforLane(cars, this, this.goalLane);
          var carInBack = this.getCarInBackforLane(cars, this, this.goalLane);
