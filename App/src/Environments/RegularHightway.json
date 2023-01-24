@@ -5,8 +5,9 @@
          "beginning": 0,
          "end": null,
          "amountOfCars": 20,
-         "startSpeedOfCars": 0,
-         "distanceBetweeenInitialCars": 20
+         "startSpeedOfCars": 30,
+         "distanceBetweeenInitialCars": 20,
+         "isBreakdownLane": false
       },
       {
          "maxSpeed": 120,
@@ -14,7 +15,8 @@
          "end": null,
          "amountOfCars": 20,
          "startSpeedOfCars": 10,
-         "distanceBetweeenInitialCars": 7
+         "distanceBetweeenInitialCars": 7,
+         "isBreakdownLane": false
       },
       {
          "maxSpeed": 30,
@@ -22,7 +24,8 @@
          "end": null,
          "amountOfCars": 0,
          "startSpeedOfCars": 0,
-         "distanceBetweeenInitialCars": 8
+         "distanceBetweeenInitialCars": 8,
+         "isBreakdownLane": false
       }
    ]
 }
