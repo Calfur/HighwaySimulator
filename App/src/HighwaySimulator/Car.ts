@@ -144,7 +144,7 @@ export default class Car {
       var distanceToCarInFront: number = carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);
 
       // Cant use the following function when speed = 0 because of math
-      if (this._previousVersionSpeed == 0 && !(distanceToCarInFront < Car.LENGTH + 1)) {
+      if (this._previousVersionSpeed == 0 && distanceToCarInFront > 0) {
          return true
       }
 
