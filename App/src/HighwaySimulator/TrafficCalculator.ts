@@ -63,12 +63,13 @@ export default class TrafficCalculator {
             const seed = (i+1)*(j-2);
             const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars)*j, newLane);
             const color = this.getColor(seed);
+            const startSpeed = laneConfig.startSpeed / 3.6;
             
             const car = new Car(
                this._p5, 
                highwayPosition, 
                color, 
-               laneConfig.startSpeed,
+               startSpeed,
                this._lanes[i-1]
             )
 

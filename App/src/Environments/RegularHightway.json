@@ -1,31 +1,28 @@
 {
-    "lanes":[
-    {
-        "maxSpeed":120,
-        "amountOfCars":20,
-        "speedOfCars":10,
-        "beginning":0,
-        "end":null,
-        "startSpeed":0,
-        "distanceBetweeenInitialCars":20
-    },
-    {
-        "maxSpeed":120,
-        "amountOfCars":20,
-        "speedOfCars":10,
-        "beginning":0,
-        "end":null,
-        "startSpeed":10,
-        "distanceBetweeenInitialCars":1
-    },
-    {
-        "maxSpeed":30,
-        "amountOfCars":0,
-        "speedOfCars":5,
-        "beginning":0,
-        "end":null,
-        "startSpeed":0,
-        "distanceBetweeenInitialCars":8
-    }
-    ]
+   "lanes": [
+      {
+         "maxSpeed": 120,
+         "amountOfCars": 20,
+         "beginning": 0,
+         "end": null,
+         "startSpeed": 0,
+         "distanceBetweeenInitialCars": 20
+      },
+      {
+         "maxSpeed": 120,
+         "amountOfCars": 20,
+         "beginning": 0,
+         "end": null,
+         "startSpeed": 10,
+         "distanceBetweeenInitialCars": 7
+      },
+      {
+         "maxSpeed": 30,
+         "amountOfCars": 0,
+         "beginning": 0,
+         "end": null,
+         "startSpeed": 0,
+         "distanceBetweeenInitialCars": 8
+      }
+   ]
 }
