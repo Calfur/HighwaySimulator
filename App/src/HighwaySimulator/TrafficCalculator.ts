@@ -62,14 +62,14 @@ export default class TrafficCalculator {
          for (var j = 0; j < laneConfig.amountOfCars; j++) {
             const seed = (i+1)*(j-2);
             const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars)*j, newLane);
-            const color = this.getColor(seed);
+            const color = this._p5.color("white");
+            // this.getColor(seed);
             
             const car = new Car(
                this._p5, 
                highwayPosition, 
                color, 
                laneConfig.startSpeed,
-               this._lanes[i-1]
             )
 
             initialCars.push(car)
@@ -98,7 +98,7 @@ export default class TrafficCalculator {
          const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
          nextVersionCars.push(nextVersionCar);
       };
-
+      
       this._carsAtTime.push({ second: nextSecond, cars: nextVersionCars });
    }
 
@@ -110,7 +110,6 @@ export default class TrafficCalculator {
          previousVersionCar.calculatePositionOfNextVersion(cars,this._lanes, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
          previousVersionCar.color,
          previousVersionCar.speed,
-         previousVersionCar.goalLane
       );
    }
 

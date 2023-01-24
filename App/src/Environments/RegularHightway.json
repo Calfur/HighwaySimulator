@@ -6,8 +6,8 @@
         "speedOfCars":10,
         "beginning":0,
         "end":null,
-        "startSpeed":0,
-        "distanceBetweeenInitialCars":20
+        "startSpeed":20,
+        "distanceBetweeenInitialCars":100
     },
     {
         "maxSpeed":120,
@@ -15,7 +15,7 @@
         "speedOfCars":10,
         "beginning":0,
         "end":null,
-        "startSpeed":10,
+        "startSpeed":20,
         "distanceBetweeenInitialCars":1
     },
     {
