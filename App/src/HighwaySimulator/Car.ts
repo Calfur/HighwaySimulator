@@ -43,15 +43,33 @@ export default class Car {
    }
 
    public draw(position: P5.Vector, pixelsPerMeter: number) {
-      const pixelLength = Car.LENGTH * pixelsPerMeter;
-      const pixelWidth = Car.WIDTH * pixelsPerMeter;
+      const carPixelLength = Car.LENGTH * pixelsPerMeter;
+      const carPixelWidth = Car.WIDTH * pixelsPerMeter;
 
       this._p5.push();
 
       this._p5.noStroke();
       this._p5.fill(this._color);
       this._p5.rectMode("center");
-      this._p5.rect(position.x, position.y, pixelLength, pixelWidth);
+      this._p5.rect(position.x + carPixelLength/2, position.y, carPixelLength, carPixelWidth);
+
+      this._p5.pop();
+   }
+
+   public drawBreakPath(carPosition: P5.Vector, pixelsPerMeter: number) {
+      const carPixelLength = Car.LENGTH * pixelsPerMeter;
+
+      const breakPath = this.getBreakPath();
+      const breakPathPixelLength = breakPath * pixelsPerMeter;
+      
+      const breakPathPixelWidth = 2;
+
+      this._p5.push();
+
+      this._p5.noStroke();
+      this._p5.fill(this._p5.color("red"));
+      this._p5.rectMode("center");
+      this._p5.rect(carPosition.x + carPixelLength + breakPathPixelLength/2, carPosition.y, breakPathPixelLength, breakPathPixelWidth);
 
       this._p5.pop();
    }
@@ -92,6 +110,10 @@ export default class Car {
          speedOfNextVersion,
          this._laneOfNextVersion
       );
+   }
+
+   public getBreakPath() {
+      return Math.pow(this._previousVersionSpeed, 2) / (2 * Car.DECELERATION);
    }
 
    private calculateMove(secondsBetweenCalculation: number, cars: Car[], lanes: Lane[]) {
@@ -149,8 +171,8 @@ export default class Car {
       }
 
       //Bremsweg: S = vo²/2a
-      var BreakPathSelf = Math.pow(this._previousVersionSpeed,2) / (2 * Car.DECELERATION);
-      var BreakPathInFront = Math.pow(carInFront._previousVersionSpeed,2) / (2 * Car.DECELERATION);
+      var BreakPathSelf = this.getBreakPath();
+      var BreakPathInFront = carInFront.getBreakPath();
 
       // If Distance is greater than two seconds
       if (distanceToCarInFront > 2 * this._previousVersionSpeed + BreakPathSelf - BreakPathInFront) { 
