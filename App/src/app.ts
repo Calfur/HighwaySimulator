@@ -9,7 +9,7 @@ const variantSelection = document.getElementById('variantSelection');
 
 var htmlText:string = "<ul>";
 environments.forEach(environment => {
-    htmlText += "<li><a href=/?environment=" + environment.name + ">" + environment.name + "</a></li>"
+    htmlText += "<li><a href='/?environment=" + environment.name + "'>" + environment.name + "</a></li>"
 }); 
 htmlText += "</ul>";
 
