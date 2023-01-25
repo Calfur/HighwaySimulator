@@ -1,4 +1,5 @@
 import P5 from "p5";
+import Blinker from "./Blinker";
 import HighwayPosition from "./HighwayPosition";
 import Lane from "./Lane";
 
@@ -65,29 +66,10 @@ export default class Car {
       this._p5.fill(this._color);
       this._p5.rect(position.x + carPixelLength / 2, position.y, carPixelLength, carPixelWidth);
 
-      this.drawBlinkers(position, carPixelLength, carPixelWidth);
+      const blinker = new Blinker(this._p5, this._highwayPosition.lane, this.goalLane);
+      blinker.drawBlinkers(position, carPixelLength, carPixelWidth);
 
       this._p5.pop();
-   }
-
-   private drawBlinkers(carPosition: P5.Vector, carPixelLength: number, carPixelWidth: number) {
-      if (this.goalLane != null) {
-         const blinkerPixelWidth = carPixelWidth * 0.25;
-         
-         // blinker left
-         if (this.highwayPosition.lane.id - 1 == this.goalLane.id) {
-            this._p5.rectMode("corner");
-            this._p5.fill(this._p5.color("rgb(255, 255, 0)"));
-            this._p5.rect(carPosition.x, carPosition.y - carPixelWidth / 2, carPixelLength, blinkerPixelWidth);
-         }
-
-         // blinker right
-         if (this.highwayPosition.lane.id + 1 == this.goalLane.id) {
-            this._p5.rectMode("corner");
-            this._p5.fill(this._p5.color("rgb(255, 255, 0)"));
-            this._p5.rect(carPosition.x, carPosition.y + carPixelWidth / 2 - blinkerPixelWidth, carPixelLength, blinkerPixelWidth);
-         }
-      }
    }
 
    public drawBreakPathWithReactionTime(carPosition: P5.Vector, pixelsPerMeter: number) {
@@ -109,12 +91,6 @@ export default class Car {
       this._p5.rectMode("corner");
       this._p5.fill(this._p5.color("coral"));
       this._p5.rect(pixelPositionX, pixelPositionY, pixelSizeXBreakPathWithReactionTime, pixelSizeY);
-      // const pixelSizeXBreakPath = breakPath * pixelsPerMeter;
-      // const pixelSizeXReactionTime = reactionTime * pixelsPerMeter;
-      // this._p5.fill(this._p5.color("lightgreen"));
-      // this._p5.rect(pixelPositionX, pixelPositionY + pixelSizeY * 2, pixelSizeXReactionTime, pixelSizeY);
-      // this._p5.fill(this._p5.color("lightblue"));
-      // this._p5.rect(pixelPositionX, pixelPositionY + pixelSizeY * 4, pixelSizeXBreakPath, pixelSizeY);
 
       this._p5.pop();
    }
