@@ -26,4 +26,8 @@ export default class Lane {
    public get end() {
       return this._end;
    }
+
+   public isAvailableAt(meter: number){
+      return meter >= this.beginning && meter <= (this.end || Number.MAX_VALUE);
+   }
 }

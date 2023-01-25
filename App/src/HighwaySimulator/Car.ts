@@ -117,6 +117,10 @@ export default class Car {
       );
    }
 
+   public isOnLane() {
+      return this.highwayPosition.lane.isAvailableAt(this.highwayPosition.meter);
+   }
+
    private clone() {
       return new Car(
          this._p5,
