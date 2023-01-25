@@ -67,7 +67,14 @@ export default class TrafficCalculator {
 
       const laneConfigs = JSONHandler.getInstance().getSelectedEnvironment().lanes;
       laneConfigs.forEach((laneConfig, i) => {
-         const newLane = new Lane(i, laneConfig.maxSpeed / 3.6, laneConfig.beginning, laneConfig.end);
+         const newLane = new Lane(
+            this._p5, 
+            i, 
+            laneConfig.maxSpeed / 3.6, 
+            laneConfig.isBreakdownLane, 
+            laneConfig.beginning, 
+            laneConfig.end
+         );
          this._lanes.push(newLane);
 
          for (var j = 0; j < laneConfig.amountOfCars; j++) {

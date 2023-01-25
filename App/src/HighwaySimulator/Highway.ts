@@ -4,11 +4,7 @@ import JSONHandler from "./JSONConfigHandler";
 import Lane from "./Lane";
 
 export default class Highway {
-   // Lane width from: https://www.saldo.ch/artikel/artikeldetail/mit-den-aussenspiegeln-wirds-eng-auf-der-ueberholspur/
-   private static readonly LANE_WIDTH_IN_METERS = 3.5;
-   private static readonly LANE_SPACING_IN_METERS = 0.3;
    private static readonly BACKGROUND_COLOR = "#008f00";
-   private static readonly LANE_COLOR = "#575757";
 
    private readonly _p5: P5;
    private readonly _drawPosition: P5.Vector;
@@ -20,14 +16,6 @@ export default class Highway {
 
    private get pixelsPerMeter() {
       return this._size.x / this._lengthInMeter;
-   }
-
-   private get laneHeight() {
-      return this.pixelsPerMeter * Highway.LANE_WIDTH_IN_METERS;
-   }
-
-   private get laneSpacing() {
-      return this.pixelsPerMeter * Highway.LANE_SPACING_IN_METERS;
    }
 
    constructor(p5: P5, drawPosition: P5.Vector, size: P5.Vector, lengthInMeter: number, viewPositionXInMeter: number, lanes: Lane[], cars: Car[]) {
@@ -63,7 +51,7 @@ export default class Highway {
 
    private drawLanes() {
       this._lanes.forEach(lane => {
-         this.drawLane(lane);
+         lane.draw(this._drawPosition.y, this.pixelsPerMeter, this._viewPositionXInMeter, this._lengthInMeter);
       });
    }
 
@@ -77,37 +65,16 @@ export default class Highway {
 
    private drawCars() {
       this._cars.forEach(car => {
-         const carPositionX = this.getDrawPositionX(car.highwayPosition.meter);
-         const carPositionY = this.getLaneYCenter(car.highwayPosition.lane.id);
-
-         car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
-
-         if(JSONHandler.getInstance().getDebugState()){
-            car.drawBreakPathWithReactionTime(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
-         }
+         this.drawCar(car)
       });
-   }
-
-   private drawLane(lane: Lane) {
-      const positionX = this.getDrawPositionX(lane.beginning);
-      const positionY = this.getLaneYTop(lane.id);
-      const sizeX = (this.getDrawPositionX(lane.end || this._viewPositionXInMeter + this._lengthInMeter)) - positionX;
-
-      this._p5.push();
-
-      this._p5.noStroke();
-      this._p5.fill(Highway.LANE_COLOR);
-      this._p5.rectMode("corner");
-      this._p5.rect(positionX, positionY, sizeX, this.laneHeight);
-
-      this._p5.pop();
    }
 
    private drawSign(positionXInMeters: number) {
       const text = `${positionXInMeters / 1000} km`;
       const textSize = 15;
       const positionX = this.getDrawPositionX(positionXInMeters);
-      const positionY = this.getLaneYTop(this._lanes.length) + textSize * 0.8;
+      const lastLane = this._lanes[this._lanes.length-1];
+      const positionY = lastLane.getLaneYTop(this._drawPosition.y, this.pixelsPerMeter) + textSize * 0.8 + lastLane.getLaneHeight(this.pixelsPerMeter);
 
       this._p5.push();
 
@@ -120,23 +87,13 @@ export default class Highway {
 
    private drawCar(car: Car) {
       const carPositionX = this.getDrawPositionX(car.highwayPosition.meter);
-      const carPositionY = this.getLaneYCenter(car.highwayPosition.lane.id);
+      const carPositionY = car.highwayPosition.lane.getLaneYCenter(this._drawPosition.y, this.pixelsPerMeter);
 
       car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
 
       if (JSONHandler.getInstance().getDebugState()) {
          car.drawBreakPathWithReactionTime(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
       }
-   }
-
-   private getLaneYTop(laneNumber: number) {
-      const spaceUsedByPreviousLanes = laneNumber * (this.laneHeight + this.laneSpacing);
-
-      return this._drawPosition.y + spaceUsedByPreviousLanes + this.laneSpacing;
-   }
-
-   private getLaneYCenter(laneNumber: number) {
-      return this.getLaneYTop(laneNumber) + this.laneHeight / 2;
    }
 
    private getDrawPositionX(meter: number) {
