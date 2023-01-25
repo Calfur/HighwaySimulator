@@ -87,7 +87,14 @@ export default class TrafficCalculator {
          }
       });
 
+      this.sortCars(initialCars);
+      console.log(initialCars)
+
       this._carsAtTime.push({ second: 0, cars: initialCars });
+   }
+
+   private sortCars(cars: Car[]) {
+      cars.sort((c1, c2) => { return c1.highwayPosition.meter - c2.highwayPosition.meter });
    }
 
    private getColor(seed: number) {
@@ -109,6 +116,8 @@ export default class TrafficCalculator {
          const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
          nextVersionCars.push(nextVersionCar);
       };
+
+      this.sortCars(nextVersionCars);
 
       this._carsAtTime.push({ second: nextSecond, cars: nextVersionCars });
    }
