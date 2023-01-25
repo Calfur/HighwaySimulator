@@ -13,12 +13,12 @@ export default class Lane {
    private _beginning: number;
    private _end: number;
 
-   public getLaneHeight(pixelsPerMeter: number) {
-      return pixelsPerMeter * Lane.LANE_WIDTH_IN_METERS;
+   public get id() {
+      return this._id;
    }
 
-   private getLaneSpacing(pixelsPerMeter: number) {
-      return pixelsPerMeter * Lane.LANE_SPACING_IN_METERS;
+   public get maxSpeed() {
+      return this._maxSpeed;
    }
 
    constructor(p5: P5, id: number, maxSpeed: number, isBreakdownLane: boolean,beginning?: number, end?: number) {
@@ -29,25 +29,17 @@ export default class Lane {
       this._beginning = beginning;
       this._end = end;
    }
-
-   public get id() {
-      return this._id;
+   public getLaneHeight(pixelsPerMeter: number) {
+      return pixelsPerMeter * Lane.LANE_WIDTH_IN_METERS;
    }
 
-   public get maxSpeed() {
-      return this._maxSpeed;
-   }
-
-   public get beginning() {
-      return this._beginning;
-   }
-
-   public get end() {
-      return this._end;
+   private getLaneSpacing(pixelsPerMeter: number) {
+      return pixelsPerMeter * Lane.LANE_SPACING_IN_METERS;
    }
 
    public draw(firstLaneY: number, pixelsPerMeter: number, viewPositionXInMeter: number, totalXInMeters: number) {
-      const positionX = this.getDrawPositionX(this.beginning, viewPositionXInMeter, pixelsPerMeter);
+      const beginningMeters = this._isBreakdownLane ? 0 : this._beginning; 
+      const positionX = this.getDrawPositionX(beginningMeters, viewPositionXInMeter, pixelsPerMeter);
       const positionY = this.getLaneYTop(firstLaneY, pixelsPerMeter);
       const sizeX = this.getLaneSizeX(positionX, viewPositionXInMeter, pixelsPerMeter, totalXInMeters);
 
@@ -62,7 +54,7 @@ export default class Lane {
    }
 
    private getLaneSizeX(positionX: number, viewPositionXInMeter: number, pixelsPerMeter: number, totalXInMeters: number) {
-      const endPositionXInMeters = this.end || (viewPositionXInMeter + totalXInMeters);
+      const endPositionXInMeters = (this._isBreakdownLane || this._end == null) ? (viewPositionXInMeter + totalXInMeters) : this._end;
       const endPositionX = this.getDrawPositionX(endPositionXInMeters, viewPositionXInMeter, pixelsPerMeter);
       const sizeX = endPositionX - positionX;
       return sizeX;
@@ -72,7 +64,7 @@ export default class Lane {
       if (this._isBreakdownLane) {
          return true;
       }
-      return meter >= this.beginning && meter <= (this.end || Number.MAX_VALUE);
+      return meter >= this._beginning && meter <= (this._end || Number.MAX_VALUE);
    }
 
    public getLaneYTop(firstLaneY: number, pixelsPerMeter: number) {
