@@ -1,7 +1,7 @@
 import P5 from "p5";
 import AutoPlay from "./AutoPlay";
 import Car from "./Car";
-import ConfigurationHandler from "./ConfigurationHandler";
+import UISliderHandler from "./UISliderHandler";
 import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
@@ -14,8 +14,8 @@ export default class HighwaySimulator {
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
-   private _configurationHandler = new ConfigurationHandler();
-   private _autoPlay = new AutoPlay(this._configurationHandler);
+   private _uiSliderHandler = new UISliderHandler();
+   private _autoPlay = new AutoPlay(this._uiSliderHandler);
 
    public load() {
       const sketch = (p5: P5) => {
@@ -43,7 +43,7 @@ export default class HighwaySimulator {
       p5.draw = () => {
          const simulatorStatistic = new SimulatorStatistic(p5, this._canvasHeight);
 
-         const requestedTime = this._configurationHandler.timeInSeconds;
+         const requestedTime = this._uiSliderHandler.timeInSeconds;
          const closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
          const cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
          const lanes = this._trafficCalculator.lanes;
@@ -71,8 +71,8 @@ export default class HighwaySimulator {
    private drawMap(p5: P5, cars: Car[], lanes: Lane[]) {
       var mapPosition = p5.createVector(0, 0);
       var mapSize = p5.createVector(this._canvasWidth, this._canvasHeight);
-      var lengthInMeter = this._configurationHandler.mapSizeXInMeters;
-      var viewPositionXInMeter = this._configurationHandler.mapPositionXInMeters;
+      var lengthInMeter = this._uiSliderHandler.mapSizeXInMeters;
+      var viewPositionXInMeter = this._uiSliderHandler.mapPositionXInMeters;
 
       var map = new Highway(
          p5,

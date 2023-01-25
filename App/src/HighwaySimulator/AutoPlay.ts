@@ -1,17 +1,17 @@
-import ConfigurationHandler from "./ConfigurationHandler";
+import UISliderHandler from "./UISliderHandler";
 
 export default class AutoPlay {
    private static readonly PLAY_PAUSE_SELECTOR = ".play-pause-button";
    private static readonly PAUSE_SELECTOR = ".pause-button";
    private static readonly TIMEOUT = 10;
 
-   private readonly _configurationHandler: ConfigurationHandler;
+   private readonly _uiSliderHandlerHandler: UISliderHandler;
    private _lastUpdateTime: number;
 
    private _isPlaying = false;
 
-   constructor(configurationHandler: ConfigurationHandler) {
-      this._configurationHandler = configurationHandler;
+   constructor(uiSliderHandler: UISliderHandler) {
+      this._uiSliderHandlerHandler = uiSliderHandler;
 
       this.loadPlayPauseButtons();
       this.loadPauseButtons();
@@ -49,7 +49,7 @@ export default class AutoPlay {
    private loadPlayer() {
       setInterval(() => {
          if (this._isPlaying) {
-            this._configurationHandler.timeInSeconds += (Date.now() - this._lastUpdateTime) / 1000;
+            this._uiSliderHandlerHandler.timeInSeconds += (Date.now() - this._lastUpdateTime) / 1000;
          }
          this._lastUpdateTime = Date.now();
       }, AutoPlay.TIMEOUT);

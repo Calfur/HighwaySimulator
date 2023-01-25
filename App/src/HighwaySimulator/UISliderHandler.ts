@@ -1,5 +1,5 @@
 
-export default class ConfigurationHandler {
+export default class UISliderHandler {
    private static MAP_SIZE_X_IN_METERS_INPUT_SELECTOR = "#map-size-x-in-meters";
    private static MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR = "#map-size-x-in-meters-value";
    private static MAP_POSITION_X_IN_METERS_INPUT_SELECTOR = "#map-position-x-in-meters";
@@ -9,16 +9,16 @@ export default class ConfigurationHandler {
 
    private readonly _rangeInputOutputs: { inputSelector: string, outputSelector: string }[] = [
       {
-         inputSelector: ConfigurationHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR,
-         outputSelector: ConfigurationHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR,
+         inputSelector: UISliderHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR,
+         outputSelector: UISliderHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR,
       },
       {
-         inputSelector: ConfigurationHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR,
-         outputSelector: ConfigurationHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR
+         inputSelector: UISliderHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR,
+         outputSelector: UISliderHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR
       },
       {
-         inputSelector: ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR,
-         outputSelector: ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR
+         inputSelector: UISliderHandler.TIME_IN_SECONDS_INPUT_SELECTOR,
+         outputSelector: UISliderHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR
       }
    ];
 
@@ -27,8 +27,8 @@ export default class ConfigurationHandler {
    }
 
    public get mapSizeXInMeters() {
-      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR);
-      const output = document.querySelector(ConfigurationHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR);
+      const input = <HTMLInputElement>document.querySelector(UISliderHandler.MAP_SIZE_X_IN_METERS_INPUT_SELECTOR);
+      const output = document.querySelector(UISliderHandler.MAP_SIZE_X_IN_METERS_OUTPUT_SELECTOR);
 
       output.textContent = input.value;
 
@@ -36,8 +36,8 @@ export default class ConfigurationHandler {
    }
 
    public get mapPositionXInMeters() {
-      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR);
-      const output = document.querySelector(ConfigurationHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR);
+      const input = <HTMLInputElement>document.querySelector(UISliderHandler.MAP_POSITION_X_IN_METERS_INPUT_SELECTOR);
+      const output = document.querySelector(UISliderHandler.MAP_POSITION_X_IN_METERS_OUTPUT_SELECTOR);
 
       output.textContent = input.value;
 
@@ -45,8 +45,8 @@ export default class ConfigurationHandler {
    }
 
    public get timeInSeconds() {
-      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
-      const output = document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
+      const input = <HTMLInputElement>document.querySelector(UISliderHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
+      const output = document.querySelector(UISliderHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
 
       output.textContent = input.value;
 
@@ -54,8 +54,8 @@ export default class ConfigurationHandler {
    }
 
    public set timeInSeconds(value: number) {
-      const input = <HTMLInputElement>document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
-      const output = document.querySelector(ConfigurationHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
+      const input = <HTMLInputElement>document.querySelector(UISliderHandler.TIME_IN_SECONDS_INPUT_SELECTOR);
+      const output = document.querySelector(UISliderHandler.TIME_IN_SECONDS_OUTPUT_SELECTOR);
 
       input.value = (Math.round(value * 100) / 100).toString();
       output.textContent = (Math.round(value * 10) / 10).toString();
