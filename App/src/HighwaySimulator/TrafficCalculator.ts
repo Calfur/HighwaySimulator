@@ -15,6 +15,14 @@ export default class TrafficCalculator {
    private _lastCalculatedSecond = 0;
    private _lanes: Lane[] = new Array();
 
+   public get loadedTime() {
+      return this._lastCalculatedSecond;
+   }
+
+   public get lanes() {
+      return this._lanes;
+   }
+
    constructor(p5: P5) {
       this._p5 = p5;
    }
@@ -29,10 +37,6 @@ export default class TrafficCalculator {
 
    public getCarsAtTime(second: number) {
       return this._carsAtTime.find(c => c.second == second).cars;
-   }
-
-   public getLoadedTime() {
-      return this._lastCalculatedSecond;
    }
 
    public calculateTraffic() {
@@ -88,7 +92,6 @@ export default class TrafficCalculator {
       });
 
       this.sortCars(initialCars);
-      console.log(initialCars)
 
       this._carsAtTime.push({ second: 0, cars: initialCars });
    }

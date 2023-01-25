@@ -6,6 +6,7 @@ import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
 import environment from '../Environments/RegularHightway.json';
+import Lane from "./Lane";
 
 export default class HighwaySimulator {
    private static readonly AMOUNT_OF_LANES = environment.lanes.length;
@@ -20,7 +21,7 @@ export default class HighwaySimulator {
       const sketch = (p5: P5) => {
          this._canvasWidth = p5.windowWidth - 50;
          this._canvasHeight = p5.windowHeight - 400;
-         
+
          this._trafficCalculator = new TrafficCalculator(p5);
          this._trafficCalculator.calculateTraffic();
 
@@ -45,8 +46,9 @@ export default class HighwaySimulator {
          const requestedTime = this._configurationHandler.timeInSeconds;
          const closestAvailableTime = this._trafficCalculator.getClosestAvailableTime(requestedTime);
          const cars = this._trafficCalculator.getCarsAtTime(closestAvailableTime);
+         const lanes = this._trafficCalculator.lanes;
 
-         this.drawMap(p5, cars);
+         this.drawMap(p5, cars, lanes);
 
          simulatorStatistic.addStatistic("Anzahl Autos", cars.length.toString());
 
@@ -59,14 +61,14 @@ export default class HighwaySimulator {
          const lowestSpeed = this.getLowestSpeed(cars);
          simulatorStatistic.addStatistic("↓ Geschwindigkeit", `${(Math.round(lowestSpeed * 3.6)).toString()} km/h`);         
 
-         const loadedTime = this._trafficCalculator.getLoadedTime();
+         const loadedTime = this._trafficCalculator.loadedTime;
          simulatorStatistic.addStatistic("Bereits berechnete Zeit", `${(Math.round(loadedTime)).toString()} Sekunden`);
 
          simulatorStatistic.draw();
       };
    }
 
-   private drawMap(p5: P5, cars: Car[]) {
+   private drawMap(p5: P5, cars: Car[], lanes: Lane[]) {
       var mapPosition = p5.createVector(0, 0);
       var mapSize = p5.createVector(this._canvasWidth, this._canvasHeight);
       var lengthInMeter = this._configurationHandler.mapSizeXInMeters;
@@ -78,7 +80,7 @@ export default class HighwaySimulator {
          mapSize,
          lengthInMeter,
          viewPositionXInMeter,
-         HighwaySimulator.AMOUNT_OF_LANES,
+         lanes,
          cars
       );
 
