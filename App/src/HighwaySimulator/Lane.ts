@@ -5,6 +5,7 @@ export default class Lane {
    private static readonly LANE_WIDTH_IN_METERS = 3.5;
    private static readonly LANE_SPACING_IN_METERS = 0.3;
    private static readonly COLOR = "#575757";
+   private static readonly MARKING_COLOR = "#FFF";
 
    private _p5: P5;
    private _id: number;
@@ -41,23 +42,38 @@ export default class Lane {
       const beginningMeters = this._isBreakdownLane ? 0 : this._beginning; 
       const positionX = this.getDrawPositionX(beginningMeters, viewPositionXInMeter, pixelsPerMeter);
       const positionY = this.getLaneYTop(firstLaneY, pixelsPerMeter);
-      const sizeX = this.getLaneSizeX(positionX, viewPositionXInMeter, pixelsPerMeter, totalXInMeters);
+
+      const endPositionXInMeters = (this._isBreakdownLane || this._end == null) ? (viewPositionXInMeter + totalXInMeters) : this._end;
+      const endPositionX = this.getDrawPositionX(endPositionXInMeters, viewPositionXInMeter, pixelsPerMeter);
+      const sizeX = endPositionX - positionX;
+
+      const laneHeight = this.getLaneHeight(pixelsPerMeter);
 
       this._p5.push();
 
       this._p5.noStroke();
-      this._p5.fill(Lane.COLOR);
       this._p5.rectMode("corner");
-      this._p5.rect(positionX, positionY, sizeX, this.getLaneHeight(pixelsPerMeter));
+
+      this._p5.fill(Lane.COLOR);
+      this._p5.rect(positionX, positionY, sizeX, laneHeight);
+
+      if(this._beginning != 0){
+         const positionX = this.getDrawPositionX(this._beginning, viewPositionXInMeter, pixelsPerMeter);
+         this.drawMarking(pixelsPerMeter, positionX, positionY, laneHeight);
+      }
+
+      if(this._end != null){
+         const positionX = this.getDrawPositionX(this._end, viewPositionXInMeter, pixelsPerMeter);
+         this.drawMarking(pixelsPerMeter, positionX, positionY, laneHeight);
+      }
 
       this._p5.pop();
    }
 
-   private getLaneSizeX(positionX: number, viewPositionXInMeter: number, pixelsPerMeter: number, totalXInMeters: number) {
-      const endPositionXInMeters = (this._isBreakdownLane || this._end == null) ? (viewPositionXInMeter + totalXInMeters) : this._end;
-      const endPositionX = this.getDrawPositionX(endPositionXInMeters, viewPositionXInMeter, pixelsPerMeter);
-      const sizeX = endPositionX - positionX;
-      return sizeX;
+   private drawMarking(pixelsPerMeter: number, positionX: number, positionY: number, laneHeight: number) {
+      const markingWidth = 0.2 * pixelsPerMeter;
+      this._p5.fill(Lane.MARKING_COLOR);
+      this._p5.rect(positionX, positionY, markingWidth, laneHeight);
    }
 
    public isAvailableAt(meter: number) {
