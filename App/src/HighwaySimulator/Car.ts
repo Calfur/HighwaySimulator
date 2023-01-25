@@ -129,9 +129,9 @@ export default class Car {
       var laneLeft = lanes[this._highwayPosition.lane.id - 1];
 
       var doAccelerate = this.doAccelerate(carInFront);
-      var doAccelerateRight = (laneRight == null) || this.doAccelerateforLane(cars, laneRight);
-      var doAccelerateLeft = (laneLeft == null) || this.doAccelerateforLane(cars, laneLeft);
-      var doAccelerateForGoalLane = (this.goalLane == null) || this.doAccelerateforGoalLane(cars, this.goalLane);
+      var doAccelerateRight = (laneRight == null) || this.doAccelerateForLane(cars, laneRight);
+      var doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
+      var doAccelerateForGoalLane = (this.goalLane == null) || this.doAccelerateForGoalLane(cars, this.goalLane);
 
       if (doAccelerate && doAccelerateRight && doAccelerateLeft && doAccelerateForGoalLane) {
          return this.calculateAcceleratedSpeed(secondsBetweenCalculation);
@@ -140,7 +140,7 @@ export default class Car {
       }
    }
 
-   private doAccelerateforLane(cars: Car[], lane: Lane) {
+   private doAccelerateForLane(cars: Car[], lane: Lane) {
       var carInFrontforLane = this.getCarsInFrontForLane(cars, this, lane)[0];
       if (carInFrontforLane == null) {
          return true;
@@ -151,7 +151,7 @@ export default class Car {
       return this.doAccelerate(carInFrontforLane);
    }
 
-   private doAccelerateforGoalLane(cars: Car[], lane: Lane) {
+   private doAccelerateForGoalLane(cars: Car[], lane: Lane) {
       var carInFrontforLane = this.getCarsInFrontForLane(cars, this, lane)[0];
       if (carInFrontforLane == null) {
          return true;
