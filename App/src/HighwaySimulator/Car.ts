@@ -29,6 +29,10 @@ export default class Car {
       return this._checkSwitchInTicks;
    }
 
+   public get previousVersionSpeed() {
+      return this._previousVersionSpeed;
+   }
+
    public get previousVersionGoalLane() {
       return this._previousVersionGoalLane;
    }

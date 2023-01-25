@@ -90,15 +90,15 @@ export default class HighwaySimulator {
    }
 
    private getAverageSpeed(cars: Car[]) {
-      let sum = cars.reduce((a, b) => a + b.speed, 0);
+      let sum = cars.reduce((a, b) => a + b.previousVersionSpeed, 0);
       return sum / cars.length;
    }
 
    private getLowestSpeed(cars: Car[]) {
-      return Math.min(...cars.map(car => car.speed));
+      return Math.min(...cars.map(car => car.previousVersionSpeed));
    }
 
    private getHeighestSpeed(cars: Car[]) {
-      return Math.max(...cars.map(car => car.speed));
+      return Math.max(...cars.map(car => car.previousVersionSpeed));
    }
 }
