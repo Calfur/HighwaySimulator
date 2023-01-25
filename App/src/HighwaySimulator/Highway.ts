@@ -91,7 +91,7 @@ export default class Highway {
    private drawLane(lane: Lane) {
       const positionX = this.getDrawPositionX(lane.beginning);
       const positionY = this.getLaneYTop(lane.id);
-      const sizeX = (this.getDrawPositionX(lane.end || lane.beginning + this._size.x)) - positionX;
+      const sizeX = (this.getDrawPositionX(lane.end || this._viewPositionXInMeter + this._lengthInMeter)) - positionX;
 
       this._p5.push();
 
