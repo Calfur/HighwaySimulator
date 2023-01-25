@@ -72,7 +72,7 @@ export default class TrafficCalculator {
             const color = this.getColor(seed);
             const startSpeed = laneConfig.startSpeedOfCars / 3.6;
             const goalLane = null;
-            const checkSwitchInTicks = j * 10;
+            const checkSwitchInTicks = (laneConfig.amountOfCars - j) * 10;
 
             const car = new Car(
                this._p5,

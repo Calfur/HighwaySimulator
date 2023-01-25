@@ -11,7 +11,7 @@ export default class Car {
    private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly CHECK_SWITCH_AFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
-   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 10; // in %
+   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 30; // in %
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
 
    private readonly _p5: P5;
@@ -240,7 +240,6 @@ export default class Car {
       }
 
       const currentLaneIndex = lanes.indexOf(this.highwayPosition.lane);
-      const highwayPosition = this.highwayPosition;
 
       const currentLane = lanes[currentLaneIndex];
       const leftLane = lanes[currentLaneIndex - 1];
