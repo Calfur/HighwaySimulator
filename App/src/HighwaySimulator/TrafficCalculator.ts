@@ -89,6 +89,24 @@ export default class TrafficCalculator {
             );
 
             initialCars.push(car);
+         };
+         if (laneConfig.standingCar != null)
+         {
+            const highwayPosition = new HighwayPosition(laneConfig.standingCar, newLane);
+            const color = this._p5.color("#FF0000");
+            const startSpeed = -1;
+            const goalLane = null;
+            const checkSwitchInTicks = 9999999;
+
+            const car = new Car(
+               this._p5,
+               highwayPosition,
+               color,
+               startSpeed,
+               goalLane,
+               checkSwitchInTicks,
+            );
+            initialCars.push(car);
          }
       });
 

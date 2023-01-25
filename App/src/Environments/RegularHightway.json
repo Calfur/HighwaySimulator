@@ -128,6 +128,41 @@
                "isBreakdownLane": false
             }
          ]
+      },
+      {
+         "name": "Dev Tobias",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 30,
+               "startSpeedOfCars": 40,
+               "distanceBetweeenInitialCars": 25,
+               "isBreakdownLane": false,
+               "standingCar": 1000
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 20,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 50,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
       }
    ]
 }
