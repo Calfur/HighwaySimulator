@@ -12,7 +12,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 120,
@@ -22,7 +23,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 30,
@@ -32,7 +34,8 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             }
          ]
       },
@@ -47,7 +50,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 120,
@@ -57,7 +61,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 30,
@@ -67,7 +72,8 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             }
          ]
       },
@@ -82,7 +88,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 120,
@@ -92,7 +99,8 @@
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 30,
@@ -102,7 +110,8 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             }
          ]
       },
@@ -117,7 +126,8 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 25,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 120,
@@ -126,8 +136,9 @@
                "amountOfCars": 5,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 7,
-               "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false
+               "everyNthCarLeavesHighway": 2,
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 300,
@@ -137,7 +148,8 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": true
+               "isBreakdownLane": false,
+               "standingCar": null
             }
          ]
       },
@@ -151,6 +163,7 @@
                "amountOfCars": 30,
                "startSpeedOfCars": 40,
                "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": 1000
             },
@@ -161,6 +174,7 @@
                "amountOfCars": 20,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
             },
@@ -171,6 +185,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
             }

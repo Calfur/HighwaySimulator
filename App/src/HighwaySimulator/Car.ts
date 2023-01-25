@@ -19,6 +19,7 @@ export default class Car {
    private readonly _color: P5.Color;
    private readonly _previousVersionSpeed: number; // the speed of the same care earlier in the calculation in m/s
    private readonly _previousVersionGoalLane: Lane;
+   private readonly _mustLeaveTheHighway: boolean;
    private _checkSwitchInTicks: number;
 
    public get highwayPosition() {
@@ -45,13 +46,22 @@ export default class Car {
       return Math.pow(this._previousVersionSpeed, 2) / (2 * Car.DECELERATION);
    }
 
-   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number, previousVersionGoalLane: Lane, checkSwitchInTicks: number) {
+   constructor(
+      p5: P5,
+      highwayPosition: HighwayPosition,
+      color: P5.Color,
+      previousVersionSpeed: number,
+      previousVersionGoalLane: Lane,
+      checkSwitchInTicks: number,
+      mustLeaveTheHighway: boolean
+   ) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
       this._color = color;
       this._previousVersionSpeed = previousVersionSpeed;
       this._previousVersionGoalLane = previousVersionGoalLane;
       this._checkSwitchInTicks = checkSwitchInTicks;
+      this._mustLeaveTheHighway = mustLeaveTheHighway;
    }
 
    public draw(position: P5.Vector, pixelsPerMeter: number) {
@@ -113,7 +123,8 @@ export default class Car {
          this._color,
          speed,
          goalLane,
-         this.checkSwitchInTicks
+         this.checkSwitchInTicks,
+         this._mustLeaveTheHighway
       );
    }
 
@@ -128,7 +139,8 @@ export default class Car {
          this._color,
          this._previousVersionSpeed,
          this._previousVersionGoalLane,
-         this._checkSwitchInTicks
+         this._checkSwitchInTicks,
+         this._mustLeaveTheHighway
       );
    }
 
@@ -163,7 +175,7 @@ export default class Car {
       if (carInFrontforLane.previousVersionGoalLane != this._highwayPosition.lane) {
          return true;
       }
-      
+
       var doAccelerate = this.doAccelerate(carInFrontforLane);
       return doAccelerate;
    }
@@ -298,7 +310,7 @@ export default class Car {
       if (avg == null || isNaN(avg) || slicedArray.length == 0) {
          return lane.maxSpeed;
       }
-      
+
       return avg;
    }
 
@@ -336,7 +348,12 @@ export default class Car {
 
    private getCarsInBreakRangeForLane(cars: Car[], car: Car, lane: Lane) {
       var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
-      var carsAheadInLane = carsInLane.filter(c => c.highwayPosition.meter >= car.highwayPosition.meter && c != car && car.getDistanceBetween(c) < car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) && car.getDistanceBetween(c) + 1 > car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) );
+      var carsAheadInLane = carsInLane.filter(
+         c => c.highwayPosition.meter >= car.highwayPosition.meter 
+         && c != car 
+         && car.getDistanceBetween(c) < car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) 
+         && car.getDistanceBetween(c) + 1 > car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1)
+      );
       this.sortCarsByPosition(carsAheadInLane);
       if (carsAheadInLane[0] == null) {
          return carsAheadInLane;

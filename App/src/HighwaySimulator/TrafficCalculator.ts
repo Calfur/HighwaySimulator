@@ -85,6 +85,7 @@ export default class TrafficCalculator {
             const startSpeed = laneConfig.startSpeedOfCars / 3.6;
             const goalLane = null;
             const checkSwitchInTicks = (laneConfig.amountOfCars - j) * 10;
+            const mustLeaveTheHighway = (j % laneConfig.everyNthCarLeavesHighway) == 0;
 
             const car = new Car(
                this._p5,
@@ -93,6 +94,7 @@ export default class TrafficCalculator {
                startSpeed,
                goalLane,
                checkSwitchInTicks,
+               mustLeaveTheHighway
             );
 
             initialCars.push(car);
@@ -104,6 +106,7 @@ export default class TrafficCalculator {
             const startSpeed = -1;
             const goalLane = null;
             const checkSwitchInTicks = 9999999;
+            const mustLeaveTheHighway = false;
 
             const car = new Car(
                this._p5,
@@ -112,6 +115,7 @@ export default class TrafficCalculator {
                startSpeed,
                goalLane,
                checkSwitchInTicks,
+               mustLeaveTheHighway
             );
             initialCars.push(car);
          }

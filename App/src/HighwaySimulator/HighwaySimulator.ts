@@ -5,12 +5,9 @@ import UISliderHandler from "./UISliderHandler";
 import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
-import JSONHandler from "./JSONConfigHandler";
 import Lane from "./Lane";
 
-export default class HighwaySimulator {
-   private static readonly AMOUNT_OF_LANES = JSONHandler.getInstance().getSelectedEnvironment().lanes.length;
-   
+export default class HighwaySimulator {   
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
