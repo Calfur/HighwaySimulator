@@ -156,15 +156,15 @@ export default class Car {
    }
 
    private doAccelerateForLane(cars: Car[], lane: Lane) {
-      var carInFrontforLane = this.getCarsInFrontForLane(cars, this, lane)[0];
+      var carInFrontforLane = this.getCarsInBreakRangeForLane(cars, this, lane)[0];
       if (carInFrontforLane == null) {
          return true;
       }
       if (carInFrontforLane.previousVersionGoalLane != this._highwayPosition.lane) {
          return true;
       }
+      
       var doAccelerate = this.doAccelerate(carInFrontforLane);
-
       return doAccelerate;
    }
 
@@ -330,6 +330,17 @@ export default class Car {
       var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
       var carsAheadInLane = carsInLane.filter(c => c.highwayPosition.meter >= car.highwayPosition.meter && c != car);
       this.sortCarsByPosition(carsAheadInLane);
+
+      return carsAheadInLane;
+   }
+
+   private getCarsInBreakRangeForLane(cars: Car[], car: Car, lane: Lane) {
+      var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
+      var carsAheadInLane = carsInLane.filter(c => c.highwayPosition.meter >= car.highwayPosition.meter && c != car && car.getDistanceBetween(c) < car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) && car.getDistanceBetween(c) + 1 > car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) );
+      this.sortCarsByPosition(carsAheadInLane);
+      if (carsAheadInLane[0] == null) {
+         return carsAheadInLane;
+      }
 
       return carsAheadInLane;
    }
