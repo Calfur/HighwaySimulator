@@ -1,8 +1,7 @@
 import P5 from "p5";
 import Car from "./Car";
 import HighwayPosition from "./HighwayPosition";
-
-import environment from '../Environments/RegularHightway.json';
+import JSONHandler from "./JSONConfigHandler";
 import Lane from "./Lane";
 
 export default class TrafficCalculator {
@@ -54,13 +53,15 @@ export default class TrafficCalculator {
    }
 
    private onAllSecondsCalculated() {
-      console.log(this._carsAtTime)
+      if (JSONHandler.getInstance().getDebugState()) {
+         console.log(this._carsAtTime)
+      }
    }
 
    private createInitialCars() {
       var initialCars: Car[] = new Array();
 
-      const laneConfigs = environment.lanes;
+      const laneConfigs = JSONHandler.getInstance().getSelectedEnvironment().lanes;
       laneConfigs.forEach((laneConfig, i) => {
          const newLane = new Lane(i, laneConfig.maxSpeed / 3.6, laneConfig.beginning, laneConfig.end);
          this._lanes.push(newLane);

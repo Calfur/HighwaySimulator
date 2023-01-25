@@ -5,10 +5,10 @@ import ConfigurationHandler from "./ConfigurationHandler";
 import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
-import environment from '../Environments/RegularHightway.json';
+import JSONHandler from "./JSONConfigHandler";
 
 export default class HighwaySimulator {
-   private static readonly AMOUNT_OF_LANES = environment.lanes.length;
+   private static readonly AMOUNT_OF_LANES = JSONHandler.getInstance().getSelectedEnvironment().lanes.length;
    
    private _canvasWidth: number;
    private _canvasHeight: number;

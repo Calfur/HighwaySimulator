@@ -1,32 +1,101 @@
 {
    "debug": false,
-   "lanes": [
+   "environments": [
       {
-         "maxSpeed": 120,
-         "beginning": 0,
-         "end": null,
-         "amountOfCars": 20,
-         "startSpeedOfCars": 10,
-         "distanceBetweeenInitialCars": 25,
-         "isBreakdownLane": false
+         "name": "Uno",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 20,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 25,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 20,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 8,
+               "isBreakdownLane": false
+            }
+         ]
       },
       {
-         "maxSpeed": 120,
-         "beginning": 0,
-         "end": null,
-         "amountOfCars": 20,
-         "startSpeedOfCars": 10,
-         "distanceBetweeenInitialCars": 7,
-         "isBreakdownLane": false
+         "name": "Due",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 99,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 25,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 99,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 99,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 8,
+               "isBreakdownLane": false
+            }
+         ]
       },
       {
-         "maxSpeed": 30,
-         "beginning": 0,
-         "end": null,
-         "amountOfCars": 0,
-         "startSpeedOfCars": 0,
-         "distanceBetweeenInitialCars": 8,
-         "isBreakdownLane": false
+         "name": "Tres",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 25,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 8,
+               "isBreakdownLane": false
+            }
+         ]
       }
    ]
 }

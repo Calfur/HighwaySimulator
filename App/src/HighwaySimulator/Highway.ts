@@ -1,6 +1,6 @@
 import P5 from "p5";
 import Car from "./Car";
-import environment from '../Environments/RegularHightway.json';
+import JSONHandler from "./JSONConfigHandler";
 
 export default class Highway {
    // Lane width from: https://www.saldo.ch/artikel/artikeldetail/mit-den-aussenspiegeln-wirds-eng-auf-der-ueberholspur/
@@ -81,7 +81,7 @@ export default class Highway {
 
          car.draw(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
 
-         if(environment["debug"]){
+         if(JSONHandler.getInstance().getDebugState()){
             car.drawBreakPathWithReactionTime(this._p5.createVector(carPositionX, carPositionY), this.pixelsPerMeter);
          }
       });
