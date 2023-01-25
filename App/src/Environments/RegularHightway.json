@@ -11,6 +11,7 @@
                "amountOfCars": 20,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -20,6 +21,7 @@
                "amountOfCars": 20,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -29,6 +31,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             }
          ]
@@ -43,6 +46,7 @@
                "amountOfCars": 99,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -52,6 +56,7 @@
                "amountOfCars": 99,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -61,6 +66,7 @@
                "amountOfCars": 99,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             }
          ]
@@ -75,6 +81,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -84,6 +91,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -93,6 +101,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 8,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             }
          ]
@@ -107,6 +116,7 @@
                "amountOfCars": 3,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -116,6 +126,7 @@
                "amountOfCars": 5,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             },
             {
@@ -125,6 +136,7 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false
             }
          ]
