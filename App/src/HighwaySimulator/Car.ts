@@ -117,6 +117,10 @@ export default class Car {
       );
    }
 
+   public isOnLane() {
+      return this.highwayPosition.lane.isAvailableAt(this.highwayPosition.meter);
+   }
+
    private clone() {
       return new Car(
          this._p5,
@@ -278,22 +282,23 @@ export default class Car {
    }
 
    private calculateAvgSpeed(carsOfLane: Car[], start: number, end: number, lane: Lane) {
-      if (lane == null) {
+      if (lane == null || !lane.isAvailableAt(this.highwayPosition.meter)) {
          return 0;
       }
 
-      var slicedArray = carsOfLane.slice(start, end);
-      var sum: number = 0;
+      const slicedArray = carsOfLane.slice(start, end);
+      var sum = 0;
 
       slicedArray.forEach(car => {
          sum += car._previousVersionSpeed;
       });
 
-      var avg: number = sum / slicedArray.length;
+      const avg = sum / slicedArray.length;
 
       if (avg == null || isNaN(avg) || slicedArray.length == 0) {
-         avg = lane.maxSpeed;
+         return lane.maxSpeed;
       }
+      
       return avg;
    }
 

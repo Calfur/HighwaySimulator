@@ -14,6 +14,14 @@ export default class TrafficCalculator {
    private _lastCalculatedSecond = 0;
    private _lanes: Lane[] = new Array();
 
+   public get loadedTime() {
+      return this._lastCalculatedSecond;
+   }
+
+   public get lanes() {
+      return this._lanes;
+   }
+
    constructor(p5: P5) {
       this._p5 = p5;
    }
@@ -28,10 +36,6 @@ export default class TrafficCalculator {
 
    public getCarsAtTime(second: number) {
       return this._carsAtTime.find(c => c.second == second).cars;
-   }
-
-   public getLoadedTime() {
-      return this._lastCalculatedSecond;
    }
 
    public calculateTraffic() {
@@ -88,7 +92,13 @@ export default class TrafficCalculator {
          }
       });
 
+      this.sortCars(initialCars);
+
       this._carsAtTime.push({ second: 0, cars: initialCars });
+   }
+
+   private sortCars(cars: Car[]) {
+      cars.sort((c1, c2) => { return c1.highwayPosition.meter - c2.highwayPosition.meter });
    }
 
    private getColor(seed: number) {
@@ -108,8 +118,13 @@ export default class TrafficCalculator {
 
       for (const previousVersionCar of this.getCarsAtTime(lastSecond)) {
          const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
-         nextVersionCars.push(nextVersionCar);
+
+         if (nextVersionCar.isOnLane()) {
+            nextVersionCars.push(nextVersionCar);
+         }
       };
+
+      this.sortCars(nextVersionCars);
 
       this._carsAtTime.push({ second: nextSecond, cars: nextVersionCars });
    }
