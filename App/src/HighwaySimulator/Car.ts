@@ -10,7 +10,7 @@ export default class Car {
    private static readonly DECELERATION = 8; // m/s^2 --> https://physikunterricht-online.de/jahrgang-10/bremsbewegungen/#:~:text=In%20einer%20realen%20Situation%20im,%2D1m%2Fs2%20sinken.
    private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
-   private static readonly CHECKSWITCHAFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
+   private static readonly CHECK_SWITCH_AFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 10; // in %
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
 
@@ -18,29 +18,19 @@ export default class Car {
    private readonly _highwayPosition: HighwayPosition;
    private readonly _color: P5.Color;
    private readonly _previousVersionSpeed: number; // the speed of the same care earlier in the calculation in m/s
-   private _speed: number; // speed of this car in m/s
-   private _laneOfNextVersion: Lane;
-   private _goalLane: Lane;
+   private readonly _previousVersionGoalLane: Lane;
    private _checkSwitchInTicks: number;
 
    public get highwayPosition() {
       return this._highwayPosition;
    }
 
-   public get color() {
-      return this._color;
-   }
-
-   public get speed() {
-      return this._speed;
-   }
-
-   public get goalLane() {
-      return this._goalLane;
-   }
-
    public get checkSwitchInTicks() {
       return this._checkSwitchInTicks;
+   }
+
+   public get previousVersionGoalLane() {
+      return this._previousVersionGoalLane;
    }
 
    private get reactionTimeDistance() {
@@ -51,11 +41,12 @@ export default class Car {
       return Math.pow(this._previousVersionSpeed, 2) / (2 * Car.DECELERATION);
    }
 
-   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number, checkSwitchInTicks: number) {
+   constructor(p5: P5, highwayPosition: HighwayPosition, color: P5.Color, previousVersionSpeed: number, previousVersionGoalLane: Lane, checkSwitchInTicks: number) {
       this._p5 = p5;
       this._highwayPosition = highwayPosition;
       this._color = color;
       this._previousVersionSpeed = previousVersionSpeed;
+      this._previousVersionGoalLane = previousVersionGoalLane;
       this._checkSwitchInTicks = checkSwitchInTicks;
    }
 
@@ -70,7 +61,7 @@ export default class Car {
       this._p5.fill(this._color);
       this._p5.rect(position.x + carPixelLength / 2, position.y, carPixelLength, carPixelWidth);
 
-      const blinker = new Blinker(this._p5, this._highwayPosition.lane, this.goalLane);
+      const blinker = new Blinker(this._p5, this._highwayPosition.lane, this._previousVersionGoalLane);
       blinker.drawBlinkers(position, carPixelLength, carPixelWidth);
 
       this._p5.pop();
@@ -99,39 +90,55 @@ export default class Car {
       this._p5.pop();
    }
 
-   public calculatePositionOfNextVersion(cars: Car[], lanes: Lane[], secondsBetweenCalculation: number): HighwayPosition {
+   public createNextVersion(cars: Car[], lanes: Lane[], secondsBetweenCalculation: number): Car {
       // Makes it possible for a Car to stand still (With a minus speed)
       if (this._previousVersionSpeed < 0) {
-         this._speed = this._previousVersionSpeed;
-         return this.highwayPosition;
+         return this.clone();
       }
 
-      this.calculateMove(secondsBetweenCalculation, cars, lanes);
+      const goalLane = this.calculateGoalLane(cars, lanes);
+      const speed = this.calculateSpeed(cars, lanes, secondsBetweenCalculation)
 
-      var speedOfNextVersion = this.highwayPosition.meter + secondsBetweenCalculation * this._speed;
+      const lane = this.calculateLaneOfNextVersion(cars, goalLane);
+      const meter = this.calculateMeterOfNextVersion(speed, secondsBetweenCalculation)
+      const highwayPosition = new HighwayPosition(meter, lane)
 
-      return new HighwayPosition(
-         speedOfNextVersion,
-         this._laneOfNextVersion
+      return new Car(
+         this._p5,
+         highwayPosition,
+         this._color,
+         speed,
+         goalLane,
+         this.checkSwitchInTicks
       );
    }
 
-   private calculateMove(secondsBetweenCalculation: number, cars: Car[], lanes: Lane[]) {
-      this._speed = this.calculateSpeed(cars, lanes, secondsBetweenCalculation);
+   private clone() {
+      return new Car(
+         this._p5,
+         this._highwayPosition,
+         this._color,
+         this._previousVersionSpeed,
+         this._previousVersionGoalLane,
+         this._checkSwitchInTicks
+      );
+   }
 
-      this.calculateGoalLane(cars, lanes);
-      this._laneOfNextVersion = this.calculateLane(cars);
+   private calculateMeterOfNextVersion(speed: number, secondsBetweenCalculation: number) {
+      var metersOfNextVersion = this.highwayPosition.meter + secondsBetweenCalculation * speed;
+
+      return metersOfNextVersion;
    }
 
    private calculateSpeed(cars: Car[], lanes: Lane[], secondsBetweenCalculation: number) {
-      var carInFront = this.getCarsInFront(cars, this)[0];
-      var laneRight = lanes[this._highwayPosition.lane.id + 1];
-      var laneLeft = lanes[this._highwayPosition.lane.id - 1];
+      const carInFront = this.getCarsInFront(cars, this)[0];
+      const laneRight = lanes[this._highwayPosition.lane.id + 1];
+      const laneLeft = lanes[this._highwayPosition.lane.id - 1];
 
-      var doAccelerate = this.doAccelerate(carInFront);
-      var doAccelerateRight = (laneRight == null) || this.doAccelerateForLane(cars, laneRight);
-      var doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
-      var doAccelerateForGoalLane = (this.goalLane == null) || this.doAccelerateForGoalLane(cars, this.goalLane);
+      const doAccelerate = this.doAccelerate(carInFront);
+      const doAccelerateRight = (laneRight == null) || this.doAccelerateForLane(cars, laneRight);
+      const doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
+      const doAccelerateForGoalLane = (this._previousVersionGoalLane == null) || this.doAccelerateForGoalLane(cars);
 
       if (doAccelerate && doAccelerateRight && doAccelerateLeft && doAccelerateForGoalLane) {
          return this.calculateAcceleratedSpeed(secondsBetweenCalculation);
@@ -145,14 +152,16 @@ export default class Car {
       if (carInFrontforLane == null) {
          return true;
       }
-      if (carInFrontforLane.goalLane != this._highwayPosition.lane) {
+      if (carInFrontforLane.previousVersionGoalLane != this._highwayPosition.lane) {
          return true;
       }
-      return this.doAccelerate(carInFrontforLane);
+      var doAccelerate = this.doAccelerate(carInFrontforLane);
+
+      return doAccelerate;
    }
 
-   private doAccelerateForGoalLane(cars: Car[], lane: Lane) {
-      var carInFrontforLane = this.getCarsInFrontForLane(cars, this, lane)[0];
+   private doAccelerateForGoalLane(cars: Car[]) {
+      var carInFrontforLane = this.getCarsInFrontForLane(cars, this, this._previousVersionGoalLane)[0];
       if (carInFrontforLane == null) {
          return true;
       }
@@ -231,6 +240,7 @@ export default class Car {
       }
 
       const currentLaneIndex = lanes.indexOf(this.highwayPosition.lane);
+      const highwayPosition = this.highwayPosition;
 
       const currentLane = lanes[currentLaneIndex];
       const leftLane = lanes[currentLaneIndex - 1];
@@ -249,11 +259,11 @@ export default class Car {
 
       if (avgSpeedRight > avgSpeedLeft) {
          if (avgSpeedRight > speedNeededForLaneSwitch) {
-            this._goalLane = rightLane;
+            return rightLane;
          }
       } else {
          if (avgSpeedLeft > speedNeededForLaneSwitch) {
-            this._goalLane = leftLane;
+            return leftLane;
          }
       }
 
@@ -284,22 +294,23 @@ export default class Car {
       return avg;
    }
 
-   private calculateLane(cars: Car[]) {
-      if (this.goalLane != null) {
-         var carInFront = this.getCarsInFrontForLane(cars, this, this.goalLane);
-         var carInBack = this.getCarInBackForLane(cars, this, this.goalLane);
-
-         var doAccelerateinFront = this.doAccelerate(carInFront[0]);
-
-         var doAccelerateinBack = (carInBack == null) || carInBack.doAccelerate(this);
-
-         if (doAccelerateinBack && doAccelerateinFront) {
-            var tempGoalLane = this.goalLane
-            this._goalLane = null;
-            this._checkSwitchInTicks = Car.CHECKSWITCHAFTER;
-            return tempGoalLane;
-         }
+   private calculateLaneOfNextVersion(cars: Car[], goalLane: Lane) {
+      if (goalLane == null) {
+         return this.highwayPosition.lane;
       }
+
+      var carInFront = this.getCarsInFrontForLane(cars, this, goalLane);
+      var carInBack = this.getCarInBackForLane(cars, this, goalLane);
+
+      var doAccelerateinFront = this.doAccelerate(carInFront[0]);
+
+      var doAccelerateinBack = (carInBack == null) || carInBack.doAccelerate(this);
+
+      if (doAccelerateinBack && doAccelerateinFront) {
+         this._checkSwitchInTicks = Car.CHECK_SWITCH_AFTER;
+         return goalLane;
+      }
+
       return this.highwayPosition.lane;
    }
 

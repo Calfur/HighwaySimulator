@@ -47,35 +47,43 @@ export default class TrafficCalculator {
 
          if (this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE) {
             this.calculateNextSecondsAsync();
+         } else {
+            this.onAllSecondsCalculated()
          }
-      }, 0, this._lastCalculatedSecond);
+      }, 0);
    }
-   
+
+   private onAllSecondsCalculated() {
+      console.log(this._carsAtTime)
+   }
+
    private createInitialCars() {
       var initialCars: Car[] = new Array();
-      
+
       const laneConfigs = environment.lanes;
       laneConfigs.forEach((laneConfig, i) => {
          const newLane = new Lane(i, laneConfig.maxSpeed / 3.6, laneConfig.beginning, laneConfig.end);
          this._lanes.push(newLane);
 
          for (var j = 0; j < laneConfig.amountOfCars; j++) {
-            const seed = (i+1)*(j-2);
-            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars)*j, newLane);
+            const seed = (i + 1) * (j - 2);
 
+            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars) * j, newLane);
             const color = this.getColor(seed);
-            
             const startSpeed = laneConfig.startSpeedOfCars / 3.6;
-            
-            const car = new Car(
-               this._p5, 
-               highwayPosition, 
-               color, 
-               startSpeed,
-               j*10,
-            )
+            const goalLane = null;
+            const checkSwitchInTicks = j * 10;
 
-            initialCars.push(car)
+            const car = new Car(
+               this._p5,
+               highwayPosition,
+               color,
+               startSpeed,
+               goalLane,
+               checkSwitchInTicks,
+            );
+
+            initialCars.push(car);
          }
       });
 
@@ -101,25 +109,19 @@ export default class TrafficCalculator {
          const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
          nextVersionCars.push(nextVersionCar);
       };
-      
+
       this._carsAtTime.push({ second: nextSecond, cars: nextVersionCars });
    }
 
    private calculateNextCar(previousVersionCar: Car, lastSecond: number) {
-      const cars:Car[] = this._carsAtTime.find(c => c.second == lastSecond).cars;
+      const previousVersionCars: Car[] = this._carsAtTime.find(c => c.second == lastSecond).cars;
 
-      return new Car(
-         this._p5,
-         previousVersionCar.calculatePositionOfNextVersion(cars,this._lanes, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS),
-         previousVersionCar.color,
-         previousVersionCar.speed,
-         previousVersionCar.checkSwitchInTicks
-      );
+      const car = previousVersionCar.createNextVersion(previousVersionCars, this._lanes, TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS);
+
+      return car;
    }
 
    private calculateNextSecond(lastSecond: number) {
       return Math.round((lastSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) * 10000) / 10000;
    }
 }
-
-   
