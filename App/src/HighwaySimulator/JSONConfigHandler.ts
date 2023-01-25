@@ -25,6 +25,9 @@ export default class JSONHandler {
 
    public getSelectedEnvironment() {
       var selectedEnvironment:string = this.searchParams.get("environment")
+      if (selectedEnvironment == null) { // Select first environment if no environment is selected
+         selectedEnvironment = this.environments[0].name;
+      }
       return this.environments.find(e => e.name == selectedEnvironment);
    }
 }
