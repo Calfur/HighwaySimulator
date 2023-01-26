@@ -2,7 +2,7 @@
    "debug": false,
    "environments": [
       {
-         "name": "Normalverkehr mit",
+         "name": "Normaler Verkehr mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -40,7 +40,7 @@
          ]
       },
       {
-         "name": "Normalverkehr",
+         "name": "Normaler Verkehr",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -67,7 +67,7 @@
          ]
       },
       {
-         "name": "Dichter Verkehr",
+         "name": "Dichter Verkehr mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -131,7 +131,7 @@
          ]
       },
       {
-         "name": "Stau",
+         "name": "Stau mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -196,7 +196,7 @@
          ]
       },
       {
-         "name": "Starker Stau",
+         "name": "Starker Stau mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -261,7 +261,7 @@
          ]
       },
       {
-         "name": "Unfall",
+         "name": "Unfall mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -326,7 +326,7 @@
          ]
       },
       {
-         "name": "Unfall Stau mit",
+         "name": "Unfall Stau mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
