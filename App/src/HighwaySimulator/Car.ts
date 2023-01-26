@@ -3,6 +3,7 @@ import Blinker from "./Blinker";
 import HighwayPosition from "./HighwayPosition";
 import Lane from "./Lane";
 import LaneHelper from "./LaneHelper";
+import LaneRecommendation from "./LaneRecommendation";
 
 export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
@@ -83,9 +84,9 @@ export default class Car {
       const blinker = new Blinker(this._p5, this._highwayPosition.lane, this._previousVersionGoalLane);
       blinker.drawBlinkers(position, carPixelLength, carPixelWidth);
 
-      if(this._mustLeaveTheHighway){
+      if (this._mustLeaveTheHighway) {
          this._p5.fill(Car.MUST_EXIT_HIGHWAY_COLOR);
-         this._p5.rect(positionX, position.y, carPixelLength/4, carPixelWidth/4);
+         this._p5.rect(positionX, position.y, carPixelLength / 4, carPixelWidth / 4);
       }
 
       this._p5.pop();
@@ -120,7 +121,7 @@ export default class Car {
          return this.clone();
       }
 
-      const goalLane = this.calculateGoalLane(cars, lanes);
+      const goalLane = this.calculateGoalLane(lanes, cars);
       const speed = this.calculateSpeed(cars, lanes, secondsBetweenCalculation)
 
       const lane = this.calculateLaneOfNextVersion(cars, goalLane);
@@ -263,73 +264,135 @@ export default class Car {
       return speed
    }
 
-   private calculateGoalLane(cars: Car[], lanes: Lane[]) {
-      if (this._mustLeaveTheHighway) {
-         const forcedLane = this.claculateForcedLaneBecauseOfExit(lanes);
+   private calculateLaneRecommendations(lanes: Lane[], cars: Car[]): LaneRecommendation[] {
+      const laneRecommendations = new Array();
 
-         if (forcedLane != null) {
-            return forcedLane;
-         }
+      lanes.forEach(lane => {
+         const laneRecommendation = this.calculateLaneRecommendation(lane, cars, lanes);
+
+         laneRecommendations.push(laneRecommendation);
+      });
+
+      return laneRecommendations;
+   }
+
+   private calculateLaneRecommendation(lane: Lane, cars: Car[], lanes: Lane[]): LaneRecommendation {
+      const laneRecommendation = new LaneRecommendation(lane);
+      const meter = this.highwayPosition.meter;
+      const currentLane = this.highwayPosition.lane;
+
+      laneRecommendation.isAvailable = lane.isAvailableAt(meter);
+      if (!laneRecommendation.isAvailable) {
+         return laneRecommendation;
       }
 
+      laneRecommendation.isLaneInRange = lane.id >= currentLane.id - 1 && lane.id <= currentLane.id + 1;
+      if (!laneRecommendation.isLaneInRange) {
+         return laneRecommendation;
+      }
+
+      laneRecommendation.isOnlyForExitingCars = lane.isOnlyForExitingCarsAt(meter);
+      laneRecommendation.isOnlyForNotExitingCars = lane.isOnlyForNotExitingCarsAt(meter, lanes);
+
+      laneRecommendation.isRecommendedForExitingCars = lane.isRecommendedForExitingCarsAt(meter, lanes);
+      laneRecommendation.isRecommendedForNotExitingCars = lane.isRecommendedForNotExitingCarsAt(meter);
+
+      laneRecommendation.estimatedSpeedOnLane = this.getSpeedforLane(cars, lane)
+
+      return laneRecommendation;
+   }
+
+   private calculateGoalLane(lanes: Lane[], cars: Car[]): Lane {
+      const laneRecommendations = this.calculateLaneRecommendations(lanes, cars);
+
+      var possibleLaneRecommendations = laneRecommendations.filter(lr =>
+         lr.isAvailable && lr.isLaneInRange
+      );
+
+      if (this._mustLeaveTheHighway) {
+         possibleLaneRecommendations = possibleLaneRecommendations.filter(lr => !lr.isOnlyForNotExitingCars);
+      } else {
+         possibleLaneRecommendations = possibleLaneRecommendations.filter(lr => !lr.isOnlyForExitingCars);
+      }
+
+      if (possibleLaneRecommendations.length == 0) {
+         console.error("No possible goal lane found for car", this, laneRecommendations.filter(lr =>
+            lr.isAvailable && lr.isLaneInRange
+         ));
+         return null;
+      }
+
+      const bestRecommendedLaneRecommendation = this.getBestLaneRecommendation(possibleLaneRecommendations);
+
+      // returns if current lane is not possible
+      if (!this.currentLaneIsInPossibleRecommendations(possibleLaneRecommendations)) {
+         return bestRecommendedLaneRecommendation.lane;
+      }
+
+      // returns if ticks are not ready
       if (this._checkSwitchInTicks > 0) {
          this._checkSwitchInTicks--;
          return null;
       }
 
-      const currentLaneIndex = lanes.indexOf(this.highwayPosition.lane);
+      const recommendationForCurrentLane = this.calculateLaneRecommendation(this.highwayPosition.lane, cars, lanes);
 
-      const currentLane = lanes[currentLaneIndex];
-      const leftLane = lanes[currentLaneIndex - 1];
-      const rightLane = lanes[currentLaneIndex + 1];
-
-      const speedLeft = this.getSpeedforLane(cars, leftLane);
-      const speedRight = this.getSpeedforLane(cars, rightLane);
-
-      const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH);
-      const currentspeed = this.getSpeedforLane(cars, currentLane);
-      const speedNeededForLaneSwitch = wantedImprovementFactor * currentspeed;
-
-      if (speedRight > speedLeft) {
-         if (speedRight > speedNeededForLaneSwitch) {
-            return rightLane;
+      // returns if more recommended
+      if (this._mustLeaveTheHighway) {
+         if (!recommendationForCurrentLane.isRecommendedForExitingCars && bestRecommendedLaneRecommendation.isRecommendedForExitingCars) {
+            return bestRecommendedLaneRecommendation.lane;
          }
       } else {
-         if (speedLeft > speedNeededForLaneSwitch) {
-            return leftLane;
+         if (!recommendationForCurrentLane.isRecommendedForNotExitingCars && bestRecommendedLaneRecommendation.isRecommendedForNotExitingCars) {
+            return bestRecommendedLaneRecommendation.lane;
          }
       }
 
+      const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH);
+      const speedNeededForLaneSwitch = wantedImprovementFactor * recommendationForCurrentLane.estimatedSpeedOnLane;
+
+      // returns if speed improvement big enough
+      if (bestRecommendedLaneRecommendation.estimatedSpeedOnLane > speedNeededForLaneSwitch) {
+         return bestRecommendedLaneRecommendation.lane;
+      }
+
+      // returns null to stay on current lane
       return null;
    }
 
-   private claculateForcedLaneBecauseOfExit(lanes: Lane[]) {
-      const exitLane = this._laneHelper.getExitLane(lanes);
-
-      if (exitLane == null) {
-         return null;
+   private getBestLaneRecommendation(possibleLaneRecommendations: LaneRecommendation[]) {
+      if (this._mustLeaveTheHighway) {
+         if (possibleLaneRecommendations.some(lr => lr.isRecommendedForExitingCars)) {
+            possibleLaneRecommendations = possibleLaneRecommendations.filter(lr => lr.isRecommendedForExitingCars);
+         }
+      } else {
+         if (possibleLaneRecommendations.some(lr => lr.isRecommendedForNotExitingCars)) {
+            possibleLaneRecommendations = possibleLaneRecommendations.filter(lr => lr.isRecommendedForNotExitingCars);
+         }
       }
 
-      const lanesAwayFromExit = exitLane.id - this.highwayPosition.lane.id;
+      // fastest first
+      possibleLaneRecommendations.sort((a, b) => {
+         return b.estimatedSpeedOnLane - a.estimatedSpeedOnLane;
+      });
 
-      //console.log(lanesAwayFromExit);
-      if (this.highwayPosition.meter > exitLane.beginning - Car.HEAD_TO_EXIT_DISTANCE_PER_LANE * (lanesAwayFromExit - 1)) {
-         const laneNearerToExit = lanes[this.highwayPosition.lane.id + 1];
-         return laneNearerToExit;
-      }
-      return null;
+      return possibleLaneRecommendations[0];
    }
 
-   private getSpeedforLane(cars: Car[], lane: Lane){
+   private currentLaneIsInPossibleRecommendations(possibleLaneRecommendations: LaneRecommendation[]) {
+      return possibleLaneRecommendations.map(lr => lr.lane).some(l => l == this.highwayPosition.lane);
+   }
+
+   private getSpeedforLane(cars: Car[], lane: Lane) {
       if (lane == null || !lane.isAvailableAt(this.highwayPosition.meter)) {
          return 0;
       }
-      
+
       const carsInFront = this.getCarsInFrontForLane(cars, this, lane);
       if (carsInFront[0] == null) {
          return lane.maxSpeed;
       }
-      
+
       const distance = this.getDistanceBetween(carsInFront[0]);
       if (distance > 50) {
          return lane.maxSpeed * (1 - 50 / (distance + 50));
