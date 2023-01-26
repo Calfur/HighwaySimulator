@@ -2,7 +2,7 @@
    "debug": false,
    "environments": [
       {
-         "name": "Normalverkehr",
+         "name": "Normalverkehr mit",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -33,6 +33,33 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Normalverkehr",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 110,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 100,
+               "distanceBetweeenInitialCars": 100,
                "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
@@ -71,6 +98,32 @@
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },{
+         "name": "Dichter Verkehr",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 65,
+               "distanceBetweeenInitialCars": 40,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 60,
+               "distanceBetweeenInitialCars": 40,
                "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
@@ -116,6 +169,33 @@
          ]
       },
       {
+         "name": "Stau",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
          "name": "Starker Stau",
          "lanes": [
             {
@@ -154,15 +234,15 @@
          ]
       },
       {
-         "name": "Dev Robin",
+         "name": "Starker Stau",
          "lanes": [
             {
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 3,
+               "amountOfCars": 50,
                "startSpeedOfCars": 0,
-               "distanceBetweeenInitialCars": 25,
+               "distanceBetweeenInitialCars": 5,
                "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
@@ -171,20 +251,9 @@
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 5,
+               "amountOfCars": 50,
                "startSpeedOfCars": 0,
-               "distanceBetweeenInitialCars": 7,
-               "everyNthCarLeavesHighway": 2,
-               "isBreakdownLane": false,
-               "standingCar": null
-            },
-            {
-               "maxSpeed": 300,
-               "beginning": 100,
-               "end": 180,
-               "amountOfCars": 0,
-               "startSpeedOfCars": 0,
-               "distanceBetweeenInitialCars": 0,
+               "distanceBetweeenInitialCars": 5,
                "everyNthCarLeavesHighway": 0,
                "isBreakdownLane": false,
                "standingCar": null
@@ -230,7 +299,34 @@
          ]
       },
       {
-         "name": "Unfall Stau",
+         "name": "Unfall",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 110,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": 1000
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 100,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Unfall Stau mit",
          "lanes": [
             {
                "maxSpeed": 120,
@@ -258,6 +354,71 @@
                "maxSpeed": 50,
                "beginning": 0,
                "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Unfall Stau",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 30,
+               "distanceBetweeenInitialCars": 18,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": 1000
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 30,
+               "distanceBetweeenInitialCars": 18,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Dev Robin",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 3,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 25,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 5,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 7,
+               "everyNthCarLeavesHighway": 2,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 300,
+               "beginning": 100,
+               "end": 180,
                "amountOfCars": 0,
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
