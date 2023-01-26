@@ -15,6 +15,7 @@ export default class Car {
    private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 30; // in %
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
    private static readonly HEAD_TO_EXIT_DISTANCE_PER_LANE = 500;
+   private static readonly MUST_EXIT_HIGHWAY_COLOR = "#FF0000";
 
    private readonly _laneHelper = new LaneHelper();
    private readonly _p5: P5;
@@ -70,16 +71,22 @@ export default class Car {
    public draw(position: P5.Vector, pixelsPerMeter: number) {
       const carPixelLength = Car.LENGTH * pixelsPerMeter;
       const carPixelWidth = Car.WIDTH * pixelsPerMeter;
+      const positionX = position.x + carPixelLength / 2;
 
       this._p5.push();
 
       this._p5.noStroke();
       this._p5.rectMode("center");
       this._p5.fill(this._color);
-      this._p5.rect(position.x + carPixelLength / 2, position.y, carPixelLength, carPixelWidth);
+      this._p5.rect(positionX, position.y, carPixelLength, carPixelWidth);
 
       const blinker = new Blinker(this._p5, this._highwayPosition.lane, this._previousVersionGoalLane);
       blinker.drawBlinkers(position, carPixelLength, carPixelWidth);
+
+      if(this._mustLeaveTheHighway){
+         this._p5.fill(Car.MUST_EXIT_HIGHWAY_COLOR);
+         this._p5.rect(positionX, position.y, carPixelLength/4, carPixelWidth/4);
+      }
 
       this._p5.pop();
    }
