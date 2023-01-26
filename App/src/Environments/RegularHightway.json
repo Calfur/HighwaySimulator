@@ -141,7 +141,7 @@
                "standingCar": null
             },
             {
-               "maxSpeed": 300,
+               "maxSpeed": 30,
                "beginning": 100,
                "end": 180,
                "amountOfCars": 0,

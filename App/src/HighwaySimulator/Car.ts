@@ -2,6 +2,7 @@ import P5 from "p5";
 import Blinker from "./Blinker";
 import HighwayPosition from "./HighwayPosition";
 import Lane from "./Lane";
+import LaneHelper from "./LaneHelper";
 
 export default class Car {
    // car size from: https://www.bazonline.ch/autos-werden-immer-breiter-und-laenger-288912673833
@@ -13,7 +14,9 @@ export default class Car {
    private static readonly CHECK_SWITCH_AFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 30; // in %
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
+   private static readonly HEAD_TO_EXIT_DISTANCE_PER_LANE = 500;
 
+   private readonly _laneHelper = new LaneHelper();
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
    private readonly _color: P5.Color;
@@ -254,6 +257,14 @@ export default class Car {
    }
 
    private calculateGoalLane(cars: Car[], lanes: Lane[]) {
+      if (this._mustLeaveTheHighway) {
+         const forcedLane = this.claculateForcedLaneBecauseOfExit(lanes);
+
+         if (forcedLane != null) {
+            return forcedLane;
+         }
+      }
+
       if (this._checkSwitchInTicks > 0) {
          this._checkSwitchInTicks--;
          return null;
@@ -286,6 +297,23 @@ export default class Car {
          }
       }
 
+      return null;
+   }
+
+   private claculateForcedLaneBecauseOfExit(lanes: Lane[]) {
+      const exitLane = this._laneHelper.getExitLane(lanes);
+
+      if (exitLane == null) {
+         return null;
+      }
+
+      const lanesAwayFromExit = exitLane.id - this.highwayPosition.lane.id;
+
+      //console.log(lanesAwayFromExit);
+      if (this.highwayPosition.meter > exitLane.beginning - Car.HEAD_TO_EXIT_DISTANCE_PER_LANE * (lanesAwayFromExit - 1)) {
+         const laneNearerToExit = lanes[this.highwayPosition.lane.id + 1];
+         return laneNearerToExit;
+      }
       return null;
    }
 
@@ -349,10 +377,10 @@ export default class Car {
    private getCarsInBreakRangeForLane(cars: Car[], car: Car, lane: Lane) {
       var carsInLane = cars.filter(c => c.highwayPosition.lane == lane);
       var carsAheadInLane = carsInLane.filter(
-         c => c.highwayPosition.meter >= car.highwayPosition.meter 
-         && c != car 
-         && car.getDistanceBetween(c) < car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1) 
-         && car.getDistanceBetween(c) + 1 > car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1)
+         c => c.highwayPosition.meter >= car.highwayPosition.meter
+            && c != car
+            && car.getDistanceBetween(c) < car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1)
+            && car.getDistanceBetween(c) + 1 > car.reactionTimeDistance + car.breakPath - c.breakPath + (Car.LENGTH + 1)
       );
       this.sortCarsByPosition(carsAheadInLane);
       if (carsAheadInLane[0] == null) {

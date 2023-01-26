@@ -22,6 +22,10 @@ export default class Lane {
       return this._maxSpeed;
    }
 
+   public get beginning(){
+      return this._beginning;
+   }
+
    constructor(p5: P5, id: number, maxSpeed: number, isBreakdownLane: boolean,beginning?: number, end?: number) {
       this._p5 = p5;
       this._id = id;
