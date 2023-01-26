@@ -12,7 +12,7 @@ export default class Car {
    private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly CHECK_SWITCH_AFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
-   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 30; // in %
+   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 20; // in %
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
    private static readonly HEAD_TO_EXIT_DISTANCE_PER_LANE = 500;
    private static readonly MUST_EXIT_HIGHWAY_COLOR = "#FF0000";
@@ -283,23 +283,19 @@ export default class Car {
       const leftLane = lanes[currentLaneIndex - 1];
       const rightLane = lanes[currentLaneIndex + 1];
 
-      const carsInFront = this.getCarsInFront(cars, this);
-      const carsInFrontLeft = this.getCarsInFrontForLane(cars, this, leftLane);
-      const carsInFrontRight = this.getCarsInFrontForLane(cars, this, rightLane);
-
-      const avgSpeedLeft = this.calculateAvgSpeed(carsInFrontLeft, 0, 10, leftLane);
-      const avgSpeedRight = this.calculateAvgSpeed(carsInFrontRight, 0, 10, rightLane);
+      const speedLeft = this.getSpeedforLane(cars, leftLane);
+      const speedRight = this.getSpeedforLane(cars, rightLane);
 
       const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH);
-      const maximumPossibleSpeedAtCurrentPosition = this.calculateMaximumPossibleSpeedAtCurrentPosition(carsInFront[0], currentLane.maxSpeed);
-      const speedNeededForLaneSwitch = wantedImprovementFactor * maximumPossibleSpeedAtCurrentPosition;
+      const currentspeed = this.getSpeedforLane(cars, currentLane);
+      const speedNeededForLaneSwitch = wantedImprovementFactor * currentspeed;
 
-      if (avgSpeedRight > avgSpeedLeft) {
-         if (avgSpeedRight > speedNeededForLaneSwitch) {
+      if (speedRight > speedLeft) {
+         if (speedRight > speedNeededForLaneSwitch) {
             return rightLane;
          }
       } else {
-         if (avgSpeedLeft > speedNeededForLaneSwitch) {
+         if (speedLeft > speedNeededForLaneSwitch) {
             return leftLane;
          }
       }
@@ -322,6 +318,25 @@ export default class Car {
          return laneNearerToExit;
       }
       return null;
+   }
+
+   private getSpeedforLane(cars: Car[], lane: Lane){
+      if (lane == null || !lane.isAvailableAt(this.highwayPosition.meter)) {
+         return 0;
+      }
+      
+      const carsInFront = this.getCarsInFrontForLane(cars, this, lane);
+      if (carsInFront[0] == null) {
+         return lane.maxSpeed;
+      }
+      
+      const distance = this.getDistanceBetween(carsInFront[0]);
+      if (distance > 50) {
+         return lane.maxSpeed * (1 - 50 / (distance + 50));
+      } else {
+         var carsInFrontfiltered = carsInFront.filter(c => c.highwayPosition.meter <= this.highwayPosition.meter + 50);
+         return this.calculateAvgSpeed(carsInFrontfiltered, 0, 5, lane);
+      }
    }
 
    private getDistanceBetween(carInFront: Car) {
