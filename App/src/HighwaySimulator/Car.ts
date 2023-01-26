@@ -166,12 +166,21 @@ export default class Car {
       const laneRight = lanes[this._highwayPosition.lane.id + 1];
       const laneLeft = lanes[this._highwayPosition.lane.id - 1];
 
+      const doDecelerateToExit = (this._mustLeaveTheHighway) && this.highwayPosition.lane.isOnlyForNotExitingCarsAt(this.highwayPosition.meter, lanes)
+      const doDecelerateToNotExit = (!this._mustLeaveTheHighway) && this.highwayPosition.lane.isOnlyForExitingCarsAt(this.highwayPosition.meter)
       const doAccelerate = this.doAccelerate(carInFront);
       const doAccelerateRight = (laneRight == null) || this.doAccelerateForLane(cars, laneRight);
       const doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
       const doAccelerateForGoalLane = (this._previousVersionGoalLane == null) || this.doAccelerateForGoalLane(cars);
 
-      if (doAccelerate && doAccelerateRight && doAccelerateLeft && doAccelerateForGoalLane) {
+      if (
+         !doDecelerateToExit 
+         && !doDecelerateToNotExit 
+         && doAccelerate 
+         && doAccelerateRight 
+         && doAccelerateLeft 
+         && doAccelerateForGoalLane
+      ) {
          return this.calculateAcceleratedSpeed(secondsBetweenCalculation);
       } else {
          return this.calculateDeceleratedSpeed(secondsBetweenCalculation);
@@ -227,22 +236,6 @@ export default class Car {
       }
 
       return false
-   }
-
-   private calculateMaximumPossibleSpeedAtCurrentPosition(carInFront: Car, laneMaxSpeed: number) {
-      if (carInFront == null) {
-         return laneMaxSpeed;
-      }
-
-      const distanceToCarInFront = this.getDistanceBetween(carInFront);
-
-      const maximumPossibleSpeedForDistance = distanceToCarInFront / Car.REQUIRED_REACTION_TIME_SECONDS;
-
-      if (maximumPossibleSpeedForDistance > laneMaxSpeed) {
-         return laneMaxSpeed;
-      }
-
-      return maximumPossibleSpeedForDistance;
    }
 
    private calculateAcceleratedSpeed(secondsBetweenCalculation: number) {

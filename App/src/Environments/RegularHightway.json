@@ -423,7 +423,7 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false,
+               "isBreakdownLane": true,
                "standingCar": null
             }
          ]
@@ -435,8 +435,8 @@
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 3,
-               "startSpeedOfCars": 120,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
                "distanceBetweeenInitialCars": 12,
                "everyNthCarLeavesHighway": 5,
                "isBreakdownLane": false,
@@ -461,7 +461,45 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": true,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Dev Robin",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 3,
+               "startSpeedOfCars": 120,
+               "distanceBetweeenInitialCars": 90,
+               "everyNthCarLeavesHighway": 1,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 5,
+               "startSpeedOfCars": 120,
+               "distanceBetweeenInitialCars": 70,
+               "everyNthCarLeavesHighway": 2,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 500,
+               "end": 600,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
                "standingCar": null
             }
          ]
