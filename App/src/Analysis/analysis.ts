@@ -18,6 +18,7 @@ var environments = JSONHandler.getInstance().getEnvironments();
 var selectedEnvironments = new Array();
 var simulations = new Array();
 var chart1: Chart;
+var chart2: Chart;
 
 
 
@@ -53,13 +54,12 @@ function getData() {
 			selectedEnvironments.push(environments[i]);
 		}
 	}
-	console.log(selectedEnvironments)
+	console.log(selectedEnvironments);
 	getSimulation(0);
 };
 
 
 async function getSimulation(i: number) {
-	var selectedEnvironments = JSONHandler.getInstance().getEnvironments();
 	var trafficCalculator = new TrafficCalculator(p5, selectedEnvironments[i]);
 	trafficCalculator.calculateTraffic(callback);
 }
@@ -81,6 +81,7 @@ function generateCharts(simulations) {
 	generateLineSpeedChart(simulations);
 	generateLineBreakChart(simulations);
 }
+
 function generateLineMeterChart(simulations) {
 	var datasets = [];
 
@@ -194,9 +195,10 @@ function generateLineSpeedChart(simulations) {
 		datasets.push(data);
 	}
 
-	console.log(datasets);
-
-	new Chart(<HTMLCanvasElement>document.getElementById("time-speed-line-chart"), {
+	if (chart2 != null) {
+		chart2.destroy();
+	}
+	chart2 = new Chart(<HTMLCanvasElement>document.getElementById("time-speed-line-chart"), {
 		type: 'line',
 		data: {
 			labels: labels,
