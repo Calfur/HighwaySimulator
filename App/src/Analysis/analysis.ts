@@ -1,9 +1,9 @@
+import Chart from "chart.js/auto";
 import P5 from "p5";
 import Car from "../HighwaySimulator/Car";
 import JSONHandler from "../HighwaySimulator/JSONConfigHandler";
 import TrafficCalculator from "../HighwaySimulator/TrafficCalculator";
 import "./analysis.scss";
-import Chart from "chart.js";
 
 const sketch = (p5: P5) => {
    p5.setup = () => {
@@ -76,7 +76,7 @@ function generateCharts(simulations) {
 
    console.log(datasets);
 
-   new Chart.Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
+   new Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
       type: 'line',
       data: {
          labels: labels,
