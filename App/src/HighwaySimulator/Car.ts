@@ -13,9 +13,9 @@ export default class Car {
    private static readonly POWER = 117679.8; // Watt = 160 PS --> https://auto-wirtschaft.ch/news/4811-schweizerinnen-und-schweizer-mogen-ps-starke-autos#:~:text=Autos%20in%20der%20Schweiz%20sind%20mit%20durchschnittlich%20160,PS%2C%20am%20wenigsten%20die%20Tessiner%20mit%20145%20PS.
    private static readonly WEIGHT = 1723; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
    private static readonly CHECK_SWITCH_AFTER = 500; // KG --> https://de.statista.com/statistik/daten/studie/787633/umfrage/durchschnittliches-leergewicht-neuer-personenwagen-in-der-schweiz/
-   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH = 20; // in %
+   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH_PERCENTAGE = 20; // in %
+   private static readonly REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH_ABSOLUTE = 2; // in m/s
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
-   private static readonly HEAD_TO_EXIT_DISTANCE_PER_LANE = 500;
    private static readonly MUST_EXIT_HIGHWAY_COLOR = "#FF0000";
 
    private readonly _laneHelper = new LaneHelper();
@@ -342,8 +342,8 @@ export default class Car {
          }
       }
 
-      const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH);
-      const speedNeededForLaneSwitch = wantedImprovementFactor * recommendationForCurrentLane.estimatedSpeedOnLane;
+      const wantedImprovementFactor = 1 / 100 * (100 + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH_PERCENTAGE);
+      const speedNeededForLaneSwitch = Math.max(wantedImprovementFactor * recommendationForCurrentLane.estimatedSpeedOnLane, recommendationForCurrentLane.estimatedSpeedOnLane + Car.REQUIRED_SPEED_IMPROVEMENT_FOR_SWITCH_ABSOLUTE);
 
       // returns if speed improvement big enough
       if (bestRecommendedLaneRecommendation.estimatedSpeedOnLane > speedNeededForLaneSwitch) {
