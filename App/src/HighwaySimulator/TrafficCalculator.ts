@@ -6,7 +6,7 @@ import Lane from "./Lane";
 
 export default class TrafficCalculator {
    private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
-   private static readonly MAX_SECONDS_TO_CALCULATE = 60;
+   private static readonly MAX_SECONDS_TO_CALCULATE = 120;
    private static readonly CALCULATIONS_PER_EVENT_CYCLE = 10;
 
    private _p5: P5;
@@ -119,7 +119,16 @@ export default class TrafficCalculator {
 
             initialCars.push(car);
          }
+
+         if (laneConfig.standingCar != null)
+         {
+            const highwayPosition = new HighwayPosition(laneConfig.standingCar, newLane);
+            const standingCar = this.getStandingCar(highwayPosition);
+
+            initialCars.push(standingCar);
+         }
       });
+
 
       this.sortCars(initialCars);
 

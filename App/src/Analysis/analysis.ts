@@ -1,8 +1,10 @@
+import Chart from "chart.js/auto";
 import P5 from "p5";
 import Car from "../HighwaySimulator/Car";
 import JSONHandler from "../HighwaySimulator/JSONConfigHandler";
 import TrafficCalculator from "../HighwaySimulator/TrafficCalculator";
-import Chart from 'chart.js/auto';
+import "./analysis.scss";
+import "./../styles.scss";
 
 const sketch = (p5: P5) => {
 	p5.setup = () => {
@@ -15,7 +17,7 @@ var p5 = new P5(sketch);
 var environments = JSONHandler.getInstance().getEnvironments();
 var selectedEnvironments = new Array();
 var simulations = new Array();
-var chart1:Chart;
+var chart1: Chart;
 
 
 
@@ -46,8 +48,8 @@ function getData() {
 	selectedEnvironments = new Array();
 	var simulations = new Array();
 	for (let i = 0; i < environments.length; i++) {
-		var checkbox = <HTMLInputElement>document.getElementById(i.toString());  
-		if(checkbox.checked == true) {
+		var checkbox = <HTMLInputElement>document.getElementById(i.toString());
+		if (checkbox.checked == true) {
 			selectedEnvironments.push(environments[i]);
 		}
 	}
@@ -57,17 +59,19 @@ function getData() {
 
 
 async function getSimulation(i: number) {
-	var trafficCalculator = new TrafficCalculator(p5, selectedEnvironments[i]);
+	var environments = JSONHandler.getInstance().getEnvironments();
+	var trafficCalculator = new TrafficCalculator(p5, environments[i]);
 	trafficCalculator.calculateTraffic(callback);
 }
 
 function callback(arrayOfCars, environment) {
-	var i = selectedEnvironments.indexOf(environment);
+	var environments = JSONHandler.getInstance().getEnvironments();
+	var i = environments.indexOf(environment);
 
 	simulations.push([environment.name, arrayOfCars]);
 
 	i++;
-	if (i < selectedEnvironments.length) {
+	if (i < environments.length) {
 		getSimulation(i);
 	} else {
 		generateCharts(simulations);
@@ -110,6 +114,8 @@ function generateCharts(simulations) {
 		datasets.push(data);
 	}
 
+	console.log(datasets);
+
 	if (chart1 != null) {
 		chart1.destroy();
 	}
@@ -123,7 +129,7 @@ function generateCharts(simulations) {
 			plugins: {
 				title: {
 					display: true,
-					text: 'Line chart'
+					text: 'Chart.js Line Chart - Cubic interpolation mode'
 				},
 			}
 		}
