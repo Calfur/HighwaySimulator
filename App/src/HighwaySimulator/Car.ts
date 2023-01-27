@@ -26,6 +26,8 @@ export default class Car {
    private readonly _previousVersionGoalLane: Lane;
    private readonly _mustLeaveTheHighway: boolean;
    private _checkSwitchInTicks: number;
+   private _didBreakforSwitch;
+   private _didBreakforFront;
 
    public get highwayPosition() {
       return this._highwayPosition;
@@ -41,6 +43,13 @@ export default class Car {
 
    public get previousVersionGoalLane() {
       return this._previousVersionGoalLane;
+   }
+
+   private get didBreakforSwitch() {
+      return this._didBreakforSwitch;
+   }
+   private get didBreakforFront() {
+      return this._didBreakforFront;
    }
 
    private get reactionTimeDistance() {
@@ -172,6 +181,9 @@ export default class Car {
       const doAccelerateRight = (laneRight == null) || this.doAccelerateForLane(cars, laneRight);
       const doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
       const doAccelerateForGoalLane = (this._previousVersionGoalLane == null) || this.doAccelerateForGoalLane(cars);
+
+      this._didBreakforFront = doAccelerate;
+      this._didBreakforSwitch = doAccelerateForGoalLane || doAccelerateLeft || doAccelerateRight || !doDecelerateToExit || !doDecelerateToNotExit;
 
       if (
          !doDecelerateToExit 
