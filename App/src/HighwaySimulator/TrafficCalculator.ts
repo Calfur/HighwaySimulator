@@ -14,31 +14,35 @@ export default class TrafficCalculator {
    private _lanes: Lane[] = new Array();
    private _environment;
 
-   public get lastCalculatedSecond(){
-      if(this._carsAtTime.length == 0){
+   public get lastCalculatedSecond() {
+      if (this._carsAtTime.length == 0) {
          return 0;
       }
 
-      return this._carsAtTime[this._carsAtTime.length-1].second;
+      return this._carsAtTime[this._carsAtTime.length - 1].second;
    }
 
    public get lanes() {
       return this._lanes;
    }
 
+   public get carsAtTime() {
+      return this._carsAtTime;
+   }
+
    constructor(p5: P5, environment?) {
       this._p5 = p5;
 
       if (environment != null) {
-         this._environment = environment;         
+         this._environment = environment;
       }
    }
 
    public getClosestAvailableTime(requestedTime: number): number {
-      if(this._carsAtTime.length == 0){
+      if (this._carsAtTime.length == 0) {
          return 0;
       }
-      
+
       var closest = this._carsAtTime.reduce(function (prev, curr) {
          return (Math.abs(curr.second - requestedTime) < Math.abs(prev.second - requestedTime) ? curr : prev);
       });
@@ -47,7 +51,7 @@ export default class TrafficCalculator {
    }
 
    public getCarsAtTime(second: number): Car[] {
-      if(this._carsAtTime.length == 0){
+      if (this._carsAtTime.length == 0) {
          return new Array();
       }
 
@@ -63,10 +67,6 @@ export default class TrafficCalculator {
       this.calculateNextSecondsAsync(callBack);
    }
 
-   public loadTraffic(carsAtTime: { second: number, cars: Car[] }){
-
-   }
-
    private calculateNextSecondsAsync(callBack?) {
       setTimeout(() => {
          this.calculateNextSeconds();
@@ -80,10 +80,8 @@ export default class TrafficCalculator {
    }
 
    private onAllSecondsCalculated(callBack?) {
-      if (JSONHandler.getInstance().getDebugState()) {
-      }
       if (callBack != null) {
-         callBack(this._carsAtTime, this._environment);
+         callBack();
       }
    }
 
@@ -98,11 +96,11 @@ export default class TrafficCalculator {
 
       laneConfigs.forEach((laneConfig, i: number) => {
          const newLane = new Lane(
-            this._p5, 
-            i, 
-            laneConfig.maxSpeed / 3.6, 
-            laneConfig.isBreakdownLane, 
-            laneConfig.beginning, 
+            this._p5,
+            i,
+            laneConfig.maxSpeed / 3.6,
+            laneConfig.isBreakdownLane,
+            laneConfig.beginning,
             laneConfig.end
          );
          this._lanes.push(newLane);
@@ -135,8 +133,7 @@ export default class TrafficCalculator {
             initialCars.push(car);
          }
 
-         if (laneConfig.standingCar != null)
-         {
+         if (laneConfig.standingCar != null) {
             const highwayPosition = new HighwayPosition(laneConfig.standingCar, newLane);
             const standingCar = this.getStandingCar(highwayPosition);
 
@@ -181,7 +178,7 @@ export default class TrafficCalculator {
          this.calculateNextVersionCars();
       }
    }
- 
+
    private calculateNextVersionCars() {
       var nextSecond = this.calculateNextSecond();
       var nextVersionCars: Car[] = [];

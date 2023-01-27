@@ -13,12 +13,14 @@ const sketch = (p5: P5) => {
 	};
 };
 
-var p5 = new P5(sketch);
-var environments = JSONHandler.getInstance().getEnvironments();
-var selectedEnvironments = new Array();
+const p5 = new P5(sketch);
+const environments = JSONHandler.getInstance().getEnvironments();
+const trafficCalculatorItems: {evironmentIndex: number, trafficCalculator: TrafficCalculator}[] = new Array();
+var selectedEnvironments:number[] = new Array();
 var simulations = new Array();
 var chart1: Chart;
 var chart2: Chart;
+var chart3: Chart;
 
 
 
@@ -51,29 +53,44 @@ function getData() {
 	for (let i = 0; i < environments.length; i++) {
 		var checkbox = <HTMLInputElement>document.getElementById(i.toString());
 		if (checkbox.checked == true) {
-			selectedEnvironments.push(environments[i]);
 			selectedEnvironments.push(i);
 		}
 	}
 	console.log(selectedEnvironments);
-	getSimulation(0);
+	getSimulation(selectedEnvironments[0]);
 };
 
 
-async function getSimulation(i: number) {
-	var trafficCalculator = new TrafficCalculator(p5, selectedEnvironments[i]);
-	var trafficCalculator = new TrafficCalculator(p5, environments[i]);
+async function getSimulation(environmentIndex: number) {
+   var trafficCalculatorItem = trafficCalculatorItems.filter(t => t.evironmentIndex == environmentIndex)[0]
+   if(trafficCalculatorItem != null){
+      callback();
+      return;
+   }
+
+	const trafficCalculator = new TrafficCalculator(p5, environments[environmentIndex]);
+
+   trafficCalculatorItems.push({evironmentIndex: environmentIndex, trafficCalculator: trafficCalculator});
+
 	trafficCalculator.calculateTraffic(callback);
 }
 
-function callback(arrayOfCars, environment) {
-	var i = selectedEnvironments.indexOf(environment);
-	simulations.push([environment.name, arrayOfCars]);
+function callback() { 
+   const notLoadedSelectedEnvironments = selectedEnvironments.filter(
+      s => trafficCalculatorItems.filter(
+         t => t.evironmentIndex == s
+      )[0] == null
+   )
 
-	i++;
-	if (i < selectedEnvironments.length) {
-		getSimulation(i);
+	if (notLoadedSelectedEnvironments.length != 0) {
+		getSimulation(notLoadedSelectedEnvironments[0]);
 	} else {
+      selectedEnvironments.forEach(selectedEnvironment => {
+         const environment = environments[selectedEnvironment];
+         const arrayOfCars = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0].trafficCalculator.carsAtTime;
+	      simulations.push([environment.name, arrayOfCars]);
+      });
+
 		generateCharts(simulations);
 	}
 }
@@ -280,7 +297,10 @@ function generateLineBreakChart(simulations) {
 
 	console.log(datasets);
 
-	new Chart(<HTMLCanvasElement>document.getElementById("time-break-line-chart"), {
+	if (chart3 != null) {
+		chart3.destroy();
+	}
+	chart3 = new Chart(<HTMLCanvasElement>document.getElementById("time-break-line-chart"), {
 		type: 'line',
 		data: {
 			labels: labels,
