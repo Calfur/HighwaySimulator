@@ -22,7 +22,7 @@ jobs:
         working-directory: App
         run: |
           npm ci
-          npm run build
+          npm run start
 
       - name: Deletes and uploads files to FTP
         uses: hsimah/ftp-action@2.1.0
