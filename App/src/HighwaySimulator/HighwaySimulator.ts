@@ -5,12 +5,9 @@ import UISliderHandler from "./UISliderHandler";
 import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
-import JSONHandler from "./JSONConfigHandler";
 import Lane from "./Lane";
 
-export default class HighwaySimulator {
-   private static readonly AMOUNT_OF_LANES = JSONHandler.getInstance().getSelectedEnvironment().lanes.length;
-   
+export default class HighwaySimulator {   
    private _canvasWidth: number;
    private _canvasHeight: number;
    private _trafficCalculator: TrafficCalculator;
@@ -20,7 +17,7 @@ export default class HighwaySimulator {
    public load() {
       const sketch = (p5: P5) => {
          this._canvasWidth = p5.windowWidth - 50;
-         this._canvasHeight = p5.windowHeight - 400;
+         this._canvasHeight = 300;
 
          this._trafficCalculator = new TrafficCalculator(p5);
          this._trafficCalculator.calculateTraffic();

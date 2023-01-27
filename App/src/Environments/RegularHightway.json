@@ -2,22 +2,153 @@
    "debug": false,
    "environments": [
       {
-         "name": "U no",
+         "name": "Normaler Verkehr mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 1,
-               "startSpeedOfCars": 10,
-               "distanceBetweeenInitialCars": 25,
-               "isBreakdownLane": false
+               "amountOfCars": 50,
+               "startSpeedOfCars": 110,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
             },
             {
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 1,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 100,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Normaler Verkehr",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 110,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 100,
+               "distanceBetweeenInitialCars": 100,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Dichter Verkehr mit Pannenstreifen",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 65,
+               "distanceBetweeenInitialCars": 40,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 60,
+               "distanceBetweeenInitialCars": 40,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },{
+         "name": "Dichter Verkehr",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 65,
+               "distanceBetweeenInitialCars": 40,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 60,
+               "distanceBetweeenInitialCars": 40,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Stau mit Pannenstreifen",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 20,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
                "isBreakdownLane": false
@@ -28,19 +159,48 @@
                "end": null,
                "amountOfCars": 1,
                "startSpeedOfCars": 0,
-               "distanceBetweeenInitialCars": 8,
-               "isBreakdownLane": false
+               "distanceBetweeenInitialCars": 0,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
             }
          ]
       },
       {
-         "name": "Due",
+         "name": "Stau",
          "lanes": [
             {
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 10,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            }
+         ]
+      },
+      {
+         "name": "Starker Stau mit Pannenstreifen",
+         "lanes": [
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 99,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
                "isBreakdownLane": false
@@ -49,23 +209,72 @@
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
-               "amountOfCars": 10,
+               "amountOfCars": 99,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 99,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 8,
                "isBreakdownLane": false
             }
          ]
       },
       {
-         "name": "Tres",
+         "name": "Unfall Stau mit Pannenstreifen",
          "lanes": [
             {
                "maxSpeed": 120,
                "beginning": 0,
                "end": null,
                "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": 1000
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 50,
+               "startSpeedOfCars": 20,
+               "distanceBetweeenInitialCars": 12,
+               "everyNthCarLeavesHighway": 0,
+               "isBreakdownLane": false,
+               "standingCar": null
+            },
+            {
+               "maxSpeed": 50,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
                "startSpeedOfCars": 10,
                "distanceBetweeenInitialCars": 25,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 120,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 10,
+               "distanceBetweeenInitialCars": 7,
+               "isBreakdownLane": false
+            },
+            {
+               "maxSpeed": 30,
+               "beginning": 0,
+               "end": null,
+               "amountOfCars": 0,
+               "startSpeedOfCars": 0,
+               "distanceBetweeenInitialCars": 8,
                "isBreakdownLane": false
             }
          ]

@@ -17,21 +17,21 @@
       <h2><a href="./src/Analysis/analysis.html/?analysis" target="_blank">Analysis</a></h2>
 
       <div class="slider-container">
-         <div>Angezeigte Breite in Meter</div>
-         <input id="map-size-x-in-meters" type="range" min="50" max="800" value="200">
-         <div id="map-size-x-in-meters-value">200</div>
+         <div class="slider-label">Angezeigte Breite in Meter</div>
+         <input class="slider-input" id="map-size-x-in-meters" type="range" min="50" max="800" value="200">
+         <div class="slider-output" id="map-size-x-in-meters-value">200</div>
       </div>
 
       <div class="slider-container">
-         <div>Angezeigte Position in Meter</div>
-         <input id="map-position-x-in-meters" type="range" min="0" max="5000" value="0">
-         <div id="map-position-x-in-meters-value">0</div>
+         <div class="slider-label">Angezeigte Position in Meter</div>
+         <input class="slider-input" id="map-position-x-in-meters" type="range" min="0" max="5000" value="0">
+         <div class="slider-output" id="map-position-x-in-meters-value">0</div>
       </div>
 
       <div class="slider-container">
-         <div>Zeit in Sekunden <span class="play-pause-button">⏯</span></div>
-         <input id="time-in-seconds" class="pause-button" type="range" min="0" max="60" value="0" step="0.01">
-         <div id="time-in-seconds-value">0</div>
+         <div class="slider-label">Zeit in Sekunden <span class="play-pause-button">⏯</span></div>
+         <input class="slider-input pause-button" id="time-in-seconds" type="range" min="0" max="60" value="0" step="0.01">
+         <div class="slider-output" id="time-in-seconds-value">0</div>
       </div>
 
       <div id="p5js-app"></div>

@@ -1,3 +1,4 @@
+$tablet-breakpoint: 850px;
 $bg-color: #283747;
 $txt-color: white;
 
@@ -12,11 +13,39 @@ body {
 
 .slider-container {
    display: grid;
-   grid-template-columns: 2fr 3fr 1fr;
+   grid-template-rows: 1fr 1fr;
+   grid-template-columns: 2fr 1fr 0.5fr;
+   grid-template-areas: 
+      "slider-label slider-label slider-label"
+      "slider-input slider-input slider-output";
 
    >* {
-      margin: 10px;
+      margin: 5px 10px;
    }
+
+   @media screen and (min-width: $tablet-breakpoint) {
+      grid-template-columns: 2fr 3fr 0.5fr;
+      grid-template-rows: 1fr;
+      grid-template-areas: 
+         "slider-label slider-input slider-output";
+
+         
+      >* {
+         margin: 10px;
+      }
+   }
+}
+
+.slider-label{
+   grid-area: slider-label;
+}
+
+.slider-input{
+   grid-area: slider-input;
+}
+
+.slider-output{
+   grid-area: slider-output;
 }
 
 main {
