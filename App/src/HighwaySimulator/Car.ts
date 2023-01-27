@@ -128,6 +128,11 @@ export default class Car {
       const meter = this.calculateMeterOfNextVersion(speed, secondsBetweenCalculation)
       const highwayPosition = new HighwayPosition(meter, lane)
 
+      const isExitedHighway = lane.isExitLane && lane.end <= meter;
+      if(isExitedHighway){
+         return null;
+      }
+
       return new Car(
          this._p5,
          highwayPosition,
@@ -137,10 +142,6 @@ export default class Car {
          this.checkSwitchInTicks,
          this._mustLeaveTheHighway
       );
-   }
-
-   public isOnLane() {
-      return this.highwayPosition.lane.isAvailableAt(this.highwayPosition.meter);
    }
 
    private clone() {

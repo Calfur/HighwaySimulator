@@ -499,7 +499,7 @@
                "startSpeedOfCars": 0,
                "distanceBetweeenInitialCars": 0,
                "everyNthCarLeavesHighway": 0,
-               "isBreakdownLane": false,
+               "isBreakdownLane": true,
                "standingCar": null
             }
          ]

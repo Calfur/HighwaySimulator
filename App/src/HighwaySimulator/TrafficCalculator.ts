@@ -148,7 +148,7 @@ export default class TrafficCalculator {
       for (const previousVersionCar of this.getCarsAtTime(lastSecond)) {
          const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
 
-         if (nextVersionCar.isOnLane()) {
+         if (nextVersionCar != null) {
             nextVersionCars.push(nextVersionCar);
          }
       };

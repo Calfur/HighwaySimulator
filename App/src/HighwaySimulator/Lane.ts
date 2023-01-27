@@ -46,6 +46,7 @@ export default class Lane {
       this._beginning = beginning;
       this._end = end;
    }
+   
    public getLaneHeight(pixelsPerMeter: number) {
       return pixelsPerMeter * Lane.LANE_WIDTH_IN_METERS;
    }
