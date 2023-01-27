@@ -46,7 +46,7 @@ document.getElementById("getData").addEventListener("click", getData)
 
 function getData() {
 	selectedEnvironments = new Array();
-	var simulations = new Array();
+	simulations = new Array();
 	for (let i = 0; i < environments.length; i++) {
 		var checkbox = <HTMLInputElement>document.getElementById(i.toString());
 		if (checkbox.checked == true) {
