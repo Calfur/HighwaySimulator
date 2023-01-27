@@ -302,7 +302,7 @@ export default class Car {
       laneRecommendation.isRecommendedForExitingCars = lane.isRecommendedForExitingCarsAt(meter, lanes);
       laneRecommendation.isRecommendedForNotExitingCars = lane.isRecommendedForNotExitingCarsAt(meter);
 
-      laneRecommendation.estimatedSpeedOnLane = this.getSpeedforLane(cars, lane)
+      laneRecommendation.estimatedSpeedOnLane = this.getExpectedSpeedforLane(cars, lane)
 
       return laneRecommendation;
    }
@@ -388,48 +388,53 @@ export default class Car {
       return possibleLaneRecommendations.map(lr => lr.lane).some(l => l == this.highwayPosition.lane);
    }
 
-   private getSpeedforLane(cars: Car[], lane: Lane) {
+   private getExpectedSpeedforLane(cars: Car[], lane: Lane) {
       if (lane == null || !lane.isAvailableAt(this.highwayPosition.meter)) {
          return 0;
       }
 
       const carsInFront = this.getCarsInFrontForLane(cars, this, lane);
+      
+      var distance;
+      var lowestSpeed;
       if (carsInFront[0] == null) {
-         return lane.maxSpeed;
+         lowestSpeed = lane.maxSpeed;
+         distance = 100;
+      } else {
+         distance = this.getDistanceBetween(carsInFront[0]);
+         var carsInFrontfiltered = carsInFront.filter(c => c.highwayPosition.meter <= this.highwayPosition.meter + 100);
+         lowestSpeed = this.calculateLowestSpeed(carsInFrontfiltered, 0, 5, lane);
       }
 
-      const distance = this.getDistanceBetween(carsInFront[0]);
-      if (distance > 50) {
-         return lane.maxSpeed * (1 - 50 / (distance + 50));
-      } else {
-         var carsInFrontfiltered = carsInFront.filter(c => c.highwayPosition.meter <= this.highwayPosition.meter + 50);
-         return this.calculateAvgSpeed(carsInFrontfiltered, 0, 5, lane);
+      if (distance > 100) {
+         distance = 100;
       }
+
+      return (distance/100 + 20) * (lowestSpeed);
    }
 
    private getDistanceBetween(carInFront: Car) {
       return carInFront.highwayPosition.meter - this._highwayPosition.meter - (Car.LENGTH + 1);
    }
 
-   private calculateAvgSpeed(carsOfLane: Car[], start: number, end: number, lane: Lane) {
+   private calculateLowestSpeed(carsOfLane: Car[], start: number, end: number, lane: Lane) {
       if (lane == null || !lane.isAvailableAt(this.highwayPosition.meter)) {
          return 0;
       }
 
       const slicedArray = carsOfLane.slice(start, end);
-      var sum = 0;
 
-      slicedArray.forEach(car => {
-         sum += car._previousVersionSpeed;
-      });
-
-      const avg = sum / slicedArray.length;
-
-      if (avg == null || isNaN(avg) || slicedArray.length == 0) {
+      if (slicedArray[0] == null) {
          return lane.maxSpeed;
       }
+      const sortedArray = slicedArray.sort(function (a, b) {
+         return a.previousVersionSpeed - b.previousVersionSpeed;
+      })
 
-      return avg;
+      if (sortedArray[0] == null) {
+         return lane.maxSpeed;
+      }
+      return sortedArray[0].previousVersionSpeed;
    }
 
    private calculateLaneOfNextVersion(cars: Car[], goalLane: Lane) {

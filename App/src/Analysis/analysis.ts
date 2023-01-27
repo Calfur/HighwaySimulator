@@ -31,65 +31,159 @@ function callback(arrayOfCars: { second: number, cars: Car[] }[], environment) {
 
    simulations.push([environment.name, arrayOfCars]);
 
-   i++;
-   if (i < environments.length) {
-      getSimulation(i);
-   } else {
-      generateCharts(simulations);
-   }
+	i++;
+	if (i < environments.length) {
+		getSimulation(i);
+	} else {
+		generateCharts(simulations);
+	}
 }
 
 function generateCharts(simulations) {
-   var datasets = [];
+	generateLineMeterChart(simulations);
+	generateLineSpeedChart(simulations);
+}
+function generateLineMeterChart(simulations) {
+	var datasets = [];
 
-   var dataOfFirst = simulations[0][1];
-   var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+	var dataOfFirst = simulations[0][1];
+	var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+	var initialAverage = 0;
 
-   var labels = [];
-   for (let i = 0; i < seconds; i++) {
-      labels.push(i);
-   }
+	var labels = [];
+	for (let i = 0; i < seconds; i++) {
+		labels.push(i);
+	}
 
-   for (let i = 0; i < simulations.length; i++) {
-      const element = simulations[i];
+	for (let i = 0; i < simulations.length; i++) {
+		const element = simulations[i];
 
-      var dataPoints = [];
-      for (let j = 0; j < seconds; j++) {
-         var dataOfSecond = simulations[i][1].filter(s => s.second == j);
-         var cars: Car[] = dataOfSecond[0].cars;
+		var dataPoints = [];
+		for (let j = 0; j < seconds; j++) {
+			var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+			var cars: Car[] = dataOfSecond[0].cars;
 
-         var totalMeters = 0;
-         for (let index = 0; index < cars.length; index++) {
-            totalMeters += cars[index].highwayPosition.meter;
-         }
+			var totalMeters = 0;
+			for (let index = 0; index < cars.length; index++) {
+				totalMeters += cars[index].highwayPosition.meter;
+			}
+			if (initialAverage == 0) {
+				initialAverage = totalMeters / cars.length;
+			}
+			dataPoints.push((totalMeters / cars.length)-initialAverage);
+		}
 
-         dataPoints.push(totalMeters / cars.length);
-      }
+		var data = {
+			data: dataPoints,
+			label: element[0],
+			fill: false
+		}
 
-      var data = {
-         data: dataPoints,
-         label: element[0],
-         fill: false
-      }
+		datasets.push(data);
+	}
 
-      datasets.push(data);
-   }
+	console.log(datasets);
 
-   console.log(datasets);
+	new Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: datasets
+		},
+		options: {
+			scales: {
+				y: {
+					title:{
+						display: true,
+						text: 'Distanz in Meter'
+					},
+					beginAtZero: true
+				},
+				x: {
+					title:{
+						display: true,
+						text: 'Zeit in Sekunden'
+					},
+					beginAtZero: true
+				}	
+			},
+			plugins: {
+				title: {
+					display: true,
+					text: 'Durchschnittliche Distanz pro Zeit'
+				},
+			}
+		}
+	});
+}
 
-   new Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
-      type: 'line',
-      data: {
-         labels: labels,
-         datasets: datasets
-      },
-      options: {
-         plugins: {
-            title: {
-               display: true,
-               text: 'Chart.js Line Chart - Cubic interpolation mode'
-            },
-         }
-      }
-   });
+function generateLineSpeedChart(simulations) {
+	var datasets = [];
+
+	var dataOfFirst = simulations[0][1];
+	var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+
+	var labels = [];
+	for (let i = 0; i < seconds; i++) {
+		labels.push(i);
+	}
+
+	for (let i = 0; i < simulations.length; i++) {
+		const element = simulations[i];
+
+		var dataPoints = [];
+		for (let j = 0; j < seconds; j++) {
+			var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+			var cars: Car[] = dataOfSecond[0].cars;
+
+			var totalSpeed = 0;
+			for (let index = 0; index < cars.length; index++) {
+				totalSpeed += cars[index].previousVersionSpeed * 3.6;
+			}
+
+			dataPoints.push(totalSpeed / cars.length);
+		}
+
+		var data = {
+			data: dataPoints,
+			label: element[0],
+			fill: false
+		}
+
+		datasets.push(data);
+	}
+
+	console.log(datasets);
+
+	new Chart(<HTMLCanvasElement>document.getElementById("time-speed-line-chart"), {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: datasets
+		},
+		options: {
+			scales: {
+				y: {
+					title:{
+						display: true,
+						text: 'Geschwindigkeit in km/h'
+					},
+					beginAtZero: true
+				},
+				x: {
+					title:{
+						display: true,
+						text: 'Zeit in Sekunden'
+					},
+					beginAtZero: true
+				}	
+			},
+			plugins: {
+				title: {
+					display: true,
+					text: 'Durchschnittliche Geschwindigkeit pro Zeit'
+				},
+			}
+		}
+	});
 }
