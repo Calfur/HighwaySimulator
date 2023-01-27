@@ -44,10 +44,10 @@ export default class Car {
       return this._previousVersionGoalLane;
    }
 
-   private get didBreakforSwitch() {
+   public get didBreakforSwitch() {
       return this._didBreakforSwitch;
    }
-   private get didBreakforFront() {
+   public get didBreakforFront() {
       return this._didBreakforFront;
    }
 
@@ -182,8 +182,8 @@ export default class Car {
       const doAccelerateLeft = (laneLeft == null) || this.doAccelerateForLane(cars, laneLeft);
       const doAccelerateForGoalLane = (this._previousVersionGoalLane == null) || this.doAccelerateForGoalLane(cars);
 
-      this._didBreakforFront = doAccelerate;
-      this._didBreakforSwitch = doAccelerateForGoalLane || doAccelerateLeft || doAccelerateRight || !doDecelerateToExit || !doDecelerateToNotExit;
+      this._didBreakforFront = !doAccelerate;
+      this._didBreakforSwitch = !doAccelerateForGoalLane || !doAccelerateLeft || !doAccelerateRight || doDecelerateToExit || doDecelerateToNotExit;
 
       if (
          !doDecelerateToExit 

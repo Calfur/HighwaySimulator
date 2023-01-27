@@ -79,6 +79,7 @@ function callback(arrayOfCars, environment) {
 function generateCharts(simulations) {
 	generateLineMeterChart(simulations);
 	generateLineSpeedChart(simulations);
+	generateLineBreakChart(simulations);
 }
 function generateLineMeterChart(simulations) {
 	var datasets = [];
@@ -196,6 +197,86 @@ function generateLineSpeedChart(simulations) {
 	console.log(datasets);
 
 	new Chart(<HTMLCanvasElement>document.getElementById("time-speed-line-chart"), {
+		type: 'line',
+		data: {
+			labels: labels,
+			datasets: datasets
+		},
+		options: {
+			scales: {
+				y: {
+					title:{
+						display: true,
+						text: 'Geschwindigkeit in km/h'
+					},
+					beginAtZero: true
+				},
+				x: {
+					title:{
+						display: true,
+						text: 'Zeit in Sekunden'
+					},
+					beginAtZero: true
+				}	
+			},
+			plugins: {
+				title: {
+					display: true,
+					text: 'Durchschnittliche Geschwindigkeit pro Zeit'
+				},
+			}
+		}
+	});
+}
+function generateLineBreakChart(simulations) {
+	var datasets = [];
+
+	var dataOfFirst = simulations[0][1];
+	var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+
+	var labels = [];
+	for (let i = 0; i < seconds; i++) {
+		labels.push(i);
+	}
+
+	for (let i = 0; i < simulations.length; i++) {
+		const element = simulations[i];
+
+		var dataPointsFront = [];
+		var dataPointsSwitch = [];
+		for (let j = 0; j < seconds; j++) {
+			var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+			var cars: Car[] = dataOfSecond[0].cars;
+
+			var totalBreaksforFront = 0;
+			var totalBreaksforSwitch = 0;
+			for (let index = 0; index < cars.length; index++) {
+				totalBreaksforFront += cars[index].didBreakforSwitch * 3.6;
+				totalBreaksforSwitch += cars[index].didBreakforSwitch * 3.6;
+			}
+
+			dataPointsFront.push(totalBreaksforFront / cars.length);
+			dataPointsFront.push(totalBreaksforSwitch / cars.length);
+		}
+
+		var dataBreak = {
+			data: dataPointsFront,
+			label: element[0] + ' Bremsen durch Stau',
+			fill: false
+		}
+		var dataSwitch = {
+			data: dataPointsSwitch,
+			label: element[0] + ' Bremsen durch Fahrbahnwechsel',
+			fill: false
+		}
+
+		datasets.push(dataBreak);
+		datasets.push(dataSwitch);
+	}
+
+	console.log(datasets);
+
+	new Chart(<HTMLCanvasElement>document.getElementById("time-break-line-chart"), {
 		type: 'line',
 		data: {
 			labels: labels,
