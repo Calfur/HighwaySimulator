@@ -47,6 +47,7 @@ export default class Car {
    public get didBreakforSwitch() {
       return this._didBreakforSwitch;
    }
+
    public get didBreakforFront() {
       return this._didBreakforFront;
    }

@@ -6,6 +6,7 @@ import Highway from "./Highway";
 import SimulatorStatistic from "./SimulatorStatistic";
 import TrafficCalculator from "./TrafficCalculator";
 import Lane from "./Lane";
+import PreloadedTraffic from "../PreloadedTraffic/PreloadedTraffic.json"
 
 export default class HighwaySimulator {   
    private _canvasWidth: number;
@@ -20,13 +21,14 @@ export default class HighwaySimulator {
          this._canvasHeight = 300;
 
          this._trafficCalculator = new TrafficCalculator(p5);
-         this._trafficCalculator.calculateTraffic();
 
          this.setup(p5);
          this.draw(p5);
       };
 
       new P5(sketch);
+
+      this._trafficCalculator.calculateTraffic();
    }
 
    private setup(p5: P5) {
@@ -58,7 +60,7 @@ export default class HighwaySimulator {
          const lowestSpeed = this.getLowestSpeed(cars);
          simulatorStatistic.addStatistic("↓ Geschwindigkeit", `${(Math.round(lowestSpeed * 3.6)).toString()} km/h`);         
 
-         const loadedTime = this._trafficCalculator.loadedTime;
+         const loadedTime = this._trafficCalculator.lastCalculatedSecond;
          simulatorStatistic.addStatistic("Bereits berechnete Zeit", `${(Math.round(loadedTime)).toString()} Sekunden`);
 
          simulatorStatistic.draw();
