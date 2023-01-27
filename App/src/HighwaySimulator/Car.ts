@@ -25,8 +25,8 @@ export default class Car {
    private readonly _previousVersionGoalLane: Lane;
    private readonly _mustLeaveTheHighway: boolean;
    private _checkSwitchInTicks: number;
-   private _didBreakforSwitch;
-   private _didBreakforFront;
+   private _didBreakforSwitch: boolean;
+   private _didBreakforFront: boolean;
 
    public get highwayPosition() {
       return this._highwayPosition;
