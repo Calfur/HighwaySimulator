@@ -57,23 +57,21 @@ main {
    cursor: pointer;
 }
 
-#variantSelection {
-   a:link {
-      color: white;
-   }
+a:link {
+   color: white;
+}
 
-   /* visited link */
-   a:visited {
-      color: white;
-   }
+/* visited link */
+a:visited {
+   color: white;
+}
 
-   /* mouse over link */
-   a:hover {
-      color: hotpink;
-   }
+/* mouse over link */
+a:hover {
+   color: hotpink;
+}
 
-   /* selected link */
-   a:active {
-      color: white;
-   }
+/* selected link */
+a:active {
+   color: white;
 }
