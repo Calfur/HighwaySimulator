@@ -395,22 +395,15 @@ export default class Car {
 
       const carsInFront = this.getCarsInFrontForLane(cars, this, lane);
       
-      var distance;
       var lowestSpeed;
       if (carsInFront[0] == null) {
          lowestSpeed = lane.maxSpeed;
-         distance = 100;
       } else {
-         distance = this.getDistanceBetween(carsInFront[0]);
          var carsInFrontfiltered = carsInFront.filter(c => c.highwayPosition.meter <= this.highwayPosition.meter + 100);
          lowestSpeed = this.calculateLowestSpeed(carsInFrontfiltered, 0, 5, lane);
       }
 
-      if (distance > 100) {
-         distance = 100;
-      }
-
-      return (distance/100 + 20) * (lowestSpeed);
+      return lowestSpeed;
    }
 
    private getDistanceBetween(carInFront: Car) {
