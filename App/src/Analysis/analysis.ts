@@ -56,7 +56,7 @@ function getData() {
 			selectedEnvironments.push(i);
 		}
 	}
-	console.log(selectedEnvironments);
+   
 	getSimulation(selectedEnvironments[0]);
 };
 
@@ -139,8 +139,6 @@ function generateLineMeterChart(simulations) {
 
 		datasets.push(data);
 	}
-
-	console.log(datasets);
 
 	if (chart1 != null) {
 		chart1.destroy();
@@ -272,12 +270,16 @@ function generateLineBreakChart(simulations) {
 			var totalBreaksforFront = 0;
 			var totalBreaksforSwitch = 0;
 			for (let index = 0; index < cars.length; index++) {
-				totalBreaksforFront += cars[index].didBreakforSwitch * 3.6;
-				totalBreaksforSwitch += cars[index].didBreakforSwitch * 3.6;
+				if(cars[index].didBreakforFront) {
+					totalBreaksforFront += 1;
+				}
+				if(cars[index].didBreakforSwitch){
+					totalBreaksforSwitch += 1;
+				}
 			}
 
-			dataPointsFront.push(totalBreaksforFront / cars.length);
-			dataPointsFront.push(totalBreaksforSwitch / cars.length);
+			dataPointsFront.push(totalBreaksforFront);
+			dataPointsSwitch.push(totalBreaksforSwitch);
 		}
 
 		var dataBreak = {
@@ -295,8 +297,6 @@ function generateLineBreakChart(simulations) {
 		datasets.push(dataSwitch);
 	}
 
-	console.log(datasets);
-
 	if (chart3 != null) {
 		chart3.destroy();
 	}
@@ -311,7 +311,7 @@ function generateLineBreakChart(simulations) {
 				y: {
 					title:{
 						display: true,
-						text: 'Geschwindigkeit in km/h'
+						text: 'Ticks gebremst'
 					},
 					beginAtZero: true
 				},
@@ -326,7 +326,7 @@ function generateLineBreakChart(simulations) {
 			plugins: {
 				title: {
 					display: true,
-					text: 'Durchschnittliche Geschwindigkeit pro Zeit'
+					text: 'Bremsungen aufgrund Stau/Spurwechsel'
 				},
 			}
 		}
