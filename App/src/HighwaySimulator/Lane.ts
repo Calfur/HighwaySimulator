@@ -46,6 +46,7 @@ export default class Lane {
       this._beginning = beginning;
       this._end = end;
    }
+
    public getLaneHeight(pixelsPerMeter: number) {
       return pixelsPerMeter * Lane.LANE_WIDTH_IN_METERS;
    }
@@ -164,7 +165,7 @@ export default class Lane {
 
       const lanesAwayFromExit = exitLane.id - this.id;
 
-      return meter > exitLane.beginning - (Lane.MUST_HEAD_TO_EXIT_DISTANCE_PER_LANE * (lanesAwayFromExit - 1) + Lane.RECOMMENDED_HEAD_TO_EXIT_DISTANCE_PER_LANE);
+      return meter > exitLane.beginning - (Lane.MUST_HEAD_TO_EXIT_DISTANCE_PER_LANE * (lanesAwayFromExit == 0 ? 0 : lanesAwayFromExit - 1) + Lane.RECOMMENDED_HEAD_TO_EXIT_DISTANCE_PER_LANE);
    }
 
    private getDrawPositionX(meter: number, viewPositionXInMeter: number, pixelsPerMeter: number) {
