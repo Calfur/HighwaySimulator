@@ -13,6 +13,7 @@ export default class TrafficCalculator {
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
    private _lastCalculatedSecond = 0;
    private _lanes: Lane[] = new Array();
+   private _environment;
 
    public get loadedTime() {
       return this._lastCalculatedSecond;
@@ -22,8 +23,12 @@ export default class TrafficCalculator {
       return this._lanes;
    }
 
-   constructor(p5: P5) {
+   constructor(p5: P5, environment?) {
       this._p5 = p5;
+
+      if (environment != null) {
+         this._environment = environment;         
+      }
    }
 
    public getClosestAvailableTime(requestedTime: number) {
@@ -38,46 +43,56 @@ export default class TrafficCalculator {
       return this._carsAtTime.find(c => c.second == second).cars;
    }
 
-   public calculateTraffic() {
-      this.createInitialCars();
-
-      this.calculateNextSecondsAsync();
+   public getAllCarsAtTime() {
+      return this._carsAtTime;
    }
 
-   private calculateNextSecondsAsync() {
+   public calculateTraffic(callBack?) {
+      this.createInitialCars();
+      this.calculateNextSecondsAsync(callBack);
+   }
+
+   private calculateNextSecondsAsync(callBack?) {
       setTimeout(() => {
          this.calculateNextSeconds();
 
          if (this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE) {
-            this.calculateNextSecondsAsync();
+            this.calculateNextSecondsAsync(callBack);
          } else {
-            this.onAllSecondsCalculated()
+            this.onAllSecondsCalculated(callBack)
          }
       }, 0);
    }
 
-   private onAllSecondsCalculated() {
+   private onAllSecondsCalculated(callBack?) {
       if (JSONHandler.getInstance().getDebugState()) {
-         console.log(this._carsAtTime)
+      }
+      if (callBack != null) {
+         callBack(this._carsAtTime, this._environment);
       }
    }
 
    private createInitialCars() {
       var initialCars: Car[] = new Array();
 
-      const laneConfigs = JSONHandler.getInstance().getSelectedEnvironment().lanes;
-      laneConfigs.forEach((laneConfig, i) => {
-         const newLane = new Lane(i, laneConfig.maxSpeed / 3.6, laneConfig.beginning, laneConfig.end);
+      var laneConfigs = JSONHandler.getInstance().getSelectedEnvironment().lanes;
+
+      if (this._environment != null) {
+         laneConfigs = this._environment.lanes;
+      }
+
+      for (let i = 0; i < laneConfigs.length; i++) {
+         const newLane = new Lane(i, laneConfigs[i].maxSpeed / 3.6, laneConfigs[i].beginning, laneConfigs[i].end);
          this._lanes.push(newLane);
 
-         for (var j = 0; j < laneConfig.amountOfCars; j++) {
+         for (var j = 0; j < laneConfigs[i].amountOfCars; j++) {
             const seed = (i + 1) * (j - 2);
 
-            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars) * j, newLane);
+            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfigs[i].distanceBetweeenInitialCars) * j, newLane);
             const color = this.getColor(seed);
-            const startSpeed = laneConfig.startSpeedOfCars / 3.6;
+            const startSpeed = laneConfigs[i].startSpeedOfCars / 3.6;
             const goalLane = null;
-            const checkSwitchInTicks = (laneConfig.amountOfCars - j) * 10;
+            const checkSwitchInTicks = (laneConfigs[i].amountOfCars - j) * 10;
 
             const car = new Car(
                this._p5,
@@ -90,7 +105,7 @@ export default class TrafficCalculator {
 
             initialCars.push(car);
          }
-      });
+      };
 
       this.sortCars(initialCars);
 
