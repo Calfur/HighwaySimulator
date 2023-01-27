@@ -66,7 +66,7 @@ export default class TrafficCalculator {
       var initialCars: Car[] = new Array();
 
       const laneConfigs = JSONHandler.getInstance().getSelectedEnvironment().lanes;
-      laneConfigs.forEach((laneConfig, i) => {
+      laneConfigs.forEach((laneConfig, i: number) => {
          const newLane = new Lane(
             this._p5, 
             i, 
@@ -76,16 +76,21 @@ export default class TrafficCalculator {
             laneConfig.end
          );
          this._lanes.push(newLane);
+      });
+
+      laneConfigs.forEach((laneConfig, i: number) => {
+         const newLane = this._lanes[i];
 
          for (var j = 0; j < laneConfig.amountOfCars; j++) {
             const seed = (i + 1) * (j - 2);
+            const meter = (Car.LENGTH + laneConfig.distanceBetweeenInitialCars) * j;
 
-            const highwayPosition = new HighwayPosition((Car.LENGTH + laneConfig.distanceBetweeenInitialCars) * j, newLane);
+            const highwayPosition = new HighwayPosition(meter, newLane);
             const color = this.getColor(seed);
             const startSpeed = laneConfig.startSpeedOfCars / 3.6;
             const goalLane = null;
             const checkSwitchInTicks = (laneConfig.amountOfCars - j) * 10;
-            const mustLeaveTheHighway = (j % laneConfig.everyNthCarLeavesHighway) == 0;
+            const mustLeaveTheHighway = (j % laneConfig.everyNthCarLeavesHighway) == 0 && !newLane.isOnlyForNotExitingCarsAt(meter, this._lanes);
 
             const car = new Car(
                this._p5,
@@ -98,32 +103,38 @@ export default class TrafficCalculator {
             );
 
             initialCars.push(car);
-         };
+         }
+
          if (laneConfig.standingCar != null)
          {
             const highwayPosition = new HighwayPosition(laneConfig.standingCar, newLane);
-            const color = this._p5.color("#FF0000");
-            const startSpeed = -1;
-            const goalLane = null;
-            const checkSwitchInTicks = 9999999;
-            const mustLeaveTheHighway = false;
+            const standingCar = this.getStandingCar(highwayPosition);
 
-            const car = new Car(
-               this._p5,
-               highwayPosition,
-               color,
-               startSpeed,
-               goalLane,
-               checkSwitchInTicks,
-               mustLeaveTheHighway
-            );
-            initialCars.push(car);
+            initialCars.push(standingCar);
          }
       });
 
       this.sortCars(initialCars);
 
       this._carsAtTime.push({ second: 0, cars: initialCars });
+   }
+
+   private getStandingCar(highwayPosition: HighwayPosition) {
+      const color = this._p5.color("#FF0000");
+      const startSpeed = -1;
+      const goalLane = null;
+      const checkSwitchInTicks = 9999999;
+      const mustLeaveTheHighway = false;
+
+      return new Car(
+         this._p5,
+         highwayPosition,
+         color,
+         startSpeed,
+         goalLane,
+         checkSwitchInTicks,
+         mustLeaveTheHighway
+      );
    }
 
    private sortCars(cars: Car[]) {

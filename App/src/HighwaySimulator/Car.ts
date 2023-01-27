@@ -18,7 +18,6 @@ export default class Car {
    private static readonly REQUIRED_REACTION_TIME_SECONDS = 2;
    private static readonly MUST_EXIT_HIGHWAY_COLOR = "#FF0000";
 
-   private readonly _laneHelper = new LaneHelper();
    private readonly _p5: P5;
    private readonly _highwayPosition: HighwayPosition;
    private readonly _color: P5.Color;
@@ -128,7 +127,7 @@ export default class Car {
       const meter = this.calculateMeterOfNextVersion(speed, secondsBetweenCalculation)
       const highwayPosition = new HighwayPosition(meter, lane)
 
-      const isExitedHighway = lane.isExitLane && lane.end <= meter;
+      const isExitedHighway = lane.isExitLane && lane.end <= meter && lane.end > this.highwayPosition.meter;
       if(isExitedHighway){
          return null;
       }
