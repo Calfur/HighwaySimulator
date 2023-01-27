@@ -59,19 +59,17 @@ function getData() {
 
 
 async function getSimulation(i: number) {
-	var environments = JSONHandler.getInstance().getEnvironments();
-	var trafficCalculator = new TrafficCalculator(p5, environments[i]);
+	var selectedEnvironments = JSONHandler.getInstance().getEnvironments();
+	var trafficCalculator = new TrafficCalculator(p5, selectedEnvironments[i]);
 	trafficCalculator.calculateTraffic(callback);
 }
 
 function callback(arrayOfCars, environment) {
-	var environments = JSONHandler.getInstance().getEnvironments();
-	var i = environments.indexOf(environment);
-
+	var i = selectedEnvironments.indexOf(environment);
 	simulations.push([environment.name, arrayOfCars]);
 
 	i++;
-	if (i < environments.length) {
+	if (i < selectedEnvironments.length) {
 		getSimulation(i);
 	} else {
 		generateCharts(simulations);
