@@ -52,6 +52,7 @@ function getData() {
 		var checkbox = <HTMLInputElement>document.getElementById(i.toString());
 		if (checkbox.checked == true) {
 			selectedEnvironments.push(environments[i]);
+			selectedEnvironments.push(i);
 		}
 	}
 	console.log(selectedEnvironments);
@@ -61,6 +62,7 @@ function getData() {
 
 async function getSimulation(i: number) {
 	var trafficCalculator = new TrafficCalculator(p5, selectedEnvironments[i]);
+	var trafficCalculator = new TrafficCalculator(p5, environments[i]);
 	trafficCalculator.calculateTraffic(callback);
 }
 
