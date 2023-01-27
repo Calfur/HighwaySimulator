@@ -4,6 +4,7 @@ import Car from "../HighwaySimulator/Car";
 import JSONHandler from "../HighwaySimulator/JSONConfigHandler";
 import TrafficCalculator from "../HighwaySimulator/TrafficCalculator";
 import "./analysis.scss";
+import "./../styles.scss";
 
 const sketch = (p5: P5) => {
    p5.setup = () => {
