@@ -7,29 +7,68 @@ import "./analysis.scss";
 import "./../styles.scss";
 
 const sketch = (p5: P5) => {
-   p5.setup = () => {
-      const canvas = p5.createCanvas(0, 0);
-      canvas.parent("dumpForP5DoNotRemove");
-   };
+	p5.setup = () => {
+		const canvas = p5.createCanvas(0, 0);
+		canvas.parent("dumpForP5DoNotRemove");
+	};
 };
 
 var p5 = new P5(sketch);
-
+var environments = JSONHandler.getInstance().getEnvironments();
+var selectedEnvironments = new Array();
 var simulations = new Array();
+var chart1: Chart;
 
-getSimulation(0);
 
-async function getSimulation(i: number) {
-   var environments = JSONHandler.getInstance().getEnvironments();
-   var trafficCalculator = new TrafficCalculator(p5, environments[i]);
-   trafficCalculator.calculateTraffic(callback);
+
+for (let i = 0; i < environments.length; i++) {
+	const environment = environments[i];
+
+	var checkbox = document.createElement('input');
+	checkbox.type = 'checkbox';
+	checkbox.id = i.toString();
+	checkbox.name = environment.name;
+	checkbox.value = i.toString();
+
+	var label = document.createElement('label')
+	label.htmlFor = i.toString();
+	label.appendChild(document.createTextNode(environment.name));
+
+	var br = document.createElement('br');
+
+	var container = document.getElementById('checkBoxWrapper');
+	container.appendChild(checkbox);
+	container.appendChild(label);
+	container.appendChild(br);
 }
 
-function callback(arrayOfCars: { second: number, cars: Car[] }[], environment) {
-   var environments = JSONHandler.getInstance().getEnvironments();
-   var i = environments.indexOf(environment);
+document.getElementById("getData").addEventListener("click", getData)
 
-   simulations.push([environment.name, arrayOfCars]);
+function getData() {
+	selectedEnvironments = new Array();
+	var simulations = new Array();
+	for (let i = 0; i < environments.length; i++) {
+		var checkbox = <HTMLInputElement>document.getElementById(i.toString());
+		if (checkbox.checked == true) {
+			selectedEnvironments.push(environments[i]);
+		}
+	}
+	console.log(selectedEnvironments)
+	getSimulation(0);
+};
+
+
+async function getSimulation(i: number) {
+	var environments = JSONHandler.getInstance().getEnvironments();
+	var trafficCalculator = new TrafficCalculator(p5, environments[i]);
+	trafficCalculator.calculateTraffic(callback);
+}
+
+function callback(arrayOfCars, environment) {
+	var environments = JSONHandler.getInstance().getEnvironments();
+	var i = environments.indexOf(environment);
+
+	simulations.push([environment.name, arrayOfCars]);
 
 	i++;
 	if (i < environments.length) {
@@ -84,7 +123,10 @@ function generateLineMeterChart(simulations) {
 
 	console.log(datasets);
 
-	new Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
+	if (chart1 != null) {
+		chart1.destroy();
+	}
+	chart1 = new Chart(<HTMLCanvasElement>document.getElementById("time-meter-line-chart"), {
 		type: 'line',
 		data: {
 			labels: labels,
