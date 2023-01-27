@@ -74,7 +74,7 @@ export default class Highway {
       const textSize = 15;
       const positionX = this.getDrawPositionX(positionXInMeters);
       const lastLane = this._lanes[this._lanes.length-1];
-      const positionY = lastLane.getLaneYTop(this._drawPosition.y, this.pixelsPerMeter) + textSize * 0.8 + lastLane.getLaneHeight(this.pixelsPerMeter);
+      const positionY = (lastLane?.getLaneYTop(this._drawPosition.y, this.pixelsPerMeter) || 0) + textSize * 0.8 + (lastLane?.getLaneHeight(this.pixelsPerMeter) || 0);
 
       this._p5.push();
 

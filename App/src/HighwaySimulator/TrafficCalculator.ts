@@ -11,12 +11,15 @@ export default class TrafficCalculator {
 
    private _p5: P5;
    private _carsAtTime: { second: number, cars: Car[] }[] = new Array();
-   private _lastCalculatedSecond = 0;
    private _lanes: Lane[] = new Array();
    private _environment;
 
-   public get loadedTime() {
-      return this._lastCalculatedSecond;
+   public get lastCalculatedSecond(){
+      if(this._carsAtTime.length == 0){
+         return 0;
+      }
+
+      return this._carsAtTime[this._carsAtTime.length-1].second;
    }
 
    public get lanes() {
@@ -31,7 +34,11 @@ export default class TrafficCalculator {
       }
    }
 
-   public getClosestAvailableTime(requestedTime: number) {
+   public getClosestAvailableTime(requestedTime: number): number {
+      if(this._carsAtTime.length == 0){
+         return 0;
+      }
+      
       var closest = this._carsAtTime.reduce(function (prev, curr) {
          return (Math.abs(curr.second - requestedTime) < Math.abs(prev.second - requestedTime) ? curr : prev);
       });
@@ -39,7 +46,11 @@ export default class TrafficCalculator {
       return closest.second;
    }
 
-   public getCarsAtTime(second: number) {
+   public getCarsAtTime(second: number): Car[] {
+      if(this._carsAtTime.length == 0){
+         return new Array();
+      }
+
       return this._carsAtTime.find(c => c.second == second).cars;
    }
 
@@ -52,11 +63,15 @@ export default class TrafficCalculator {
       this.calculateNextSecondsAsync(callBack);
    }
 
+   public loadTraffic(carsAtTime: { second: number, cars: Car[] }){
+
+   }
+
    private calculateNextSecondsAsync(callBack?) {
       setTimeout(() => {
          this.calculateNextSeconds();
 
-         if (this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE) {
+         if (this.lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE) {
             this.calculateNextSecondsAsync(callBack);
          } else {
             this.onAllSecondsCalculated(callBack)
@@ -162,18 +177,17 @@ export default class TrafficCalculator {
    }
 
    private calculateNextSeconds() {
-      for (var i = 0; i < TrafficCalculator.CALCULATIONS_PER_EVENT_CYCLE && this._lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE; i++) {
-         this.calculateNextVersionCars(this._lastCalculatedSecond);
-         this._lastCalculatedSecond = this.calculateNextSecond(this._lastCalculatedSecond);
+      for (var i = 0; i < TrafficCalculator.CALCULATIONS_PER_EVENT_CYCLE && this.lastCalculatedSecond <= TrafficCalculator.MAX_SECONDS_TO_CALCULATE; i++) {
+         this.calculateNextVersionCars();
       }
    }
-
-   private calculateNextVersionCars(lastSecond: number) {
-      var nextSecond = this.calculateNextSecond(lastSecond);
+ 
+   private calculateNextVersionCars() {
+      var nextSecond = this.calculateNextSecond();
       var nextVersionCars: Car[] = [];
 
-      for (const previousVersionCar of this.getCarsAtTime(lastSecond)) {
-         const nextVersionCar = this.calculateNextCar(previousVersionCar, lastSecond);
+      for (const previousVersionCar of this.getCarsAtTime(this.lastCalculatedSecond)) {
+         const nextVersionCar = this.calculateNextCar(previousVersionCar, this.lastCalculatedSecond);
 
          if (nextVersionCar != null) {
             nextVersionCars.push(nextVersionCar);
@@ -193,7 +207,7 @@ export default class TrafficCalculator {
       return car;
    }
 
-   private calculateNextSecond(lastSecond: number) {
-      return Math.round((lastSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) * 10000) / 10000;
+   private calculateNextSecond() {
+      return Math.round((this.lastCalculatedSecond + TrafficCalculator.SECONDS_BETWEEN_CALCULATIONS) * 10000) / 10000;
    }
 }
