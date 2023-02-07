@@ -17,11 +17,10 @@ const p5 = new P5(sketch);
 const environments = JSONHandler.getInstance().getEnvironments();
 const trafficCalculatorItems: { evironmentIndex: number, trafficCalculator: TrafficCalculator }[] = new Array();
 var selectedEnvironments: number[] = new Array();
-var simulations = new Array();
+var simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[] = new Array();
 var chart1: Chart;
 var chart2: Chart;
 var chart3: Chart;
-
 
 
 for (let i = 0; i < environments.length; i++) {
@@ -88,23 +87,24 @@ function callback() {
       selectedEnvironments.forEach(selectedEnvironment => {
          const environment = environments[selectedEnvironment];
          const arrayOfCars = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0].trafficCalculator.carsAtTime;
-         simulations.push([environment.name, arrayOfCars]);
+         const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
+         simulations.push(simulation);
       });
 
-      generateCharts(simulations);
+      generateCharts();
    }
 }
 
-function generateCharts(simulations) {
-   generateLineMeterChart(simulations);
-   generateLineSpeedChart(simulations);
-   generateLineBreakChart(simulations);
+function generateCharts() {
+   generateLineMeterChart();
+   generateLineSpeedChart();
+   generateLineBreakChart();
 }
 
-function generateLineMeterChart(simulations) {
+function generateLineMeterChart() {
    var datasets = [];
 
-   var dataOfFirst = simulations[0][1];
+   var dataOfFirst = simulations[0].carsAtTime;
    var seconds = dataOfFirst[dataOfFirst.length - 1].second;
 
    var labels = [];
@@ -113,12 +113,12 @@ function generateLineMeterChart(simulations) {
    }
 
    for (let i = 0; i < simulations.length; i++) {
-      const element = simulations[i];
+      const simulation = simulations[i];
       var initialAverage = 0;
 
       var dataPoints = [];
       for (let j = 0; j < seconds; j++) {
-         var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+         var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
          var cars: Car[] = dataOfSecond[0].cars;
 
          var totalMeters = 0;
@@ -133,7 +133,7 @@ function generateLineMeterChart(simulations) {
 
       var data = {
          data: dataPoints,
-         label: element[0],
+         label: simulation.environmentName,
          fill: false
       }
 
@@ -176,10 +176,10 @@ function generateLineMeterChart(simulations) {
    });
 }
 
-function generateLineSpeedChart(simulations) {
+function generateLineSpeedChart() {
    var datasets = [];
 
-   var dataOfFirst = simulations[0][1];
+   var dataOfFirst = simulations[0].carsAtTime;
    var seconds = dataOfFirst[dataOfFirst.length - 1].second;
 
    var labels = [];
@@ -188,11 +188,11 @@ function generateLineSpeedChart(simulations) {
    }
 
    for (let i = 0; i < simulations.length; i++) {
-      const element = simulations[i];
+      const simulation = simulations[i];
 
       var dataPoints = [];
       for (let j = 0; j < seconds; j++) {
-         var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+         var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
          var cars: Car[] = dataOfSecond[0].cars;
 
          var totalSpeed = 0;
@@ -205,7 +205,7 @@ function generateLineSpeedChart(simulations) {
 
       var data = {
          data: dataPoints,
-         label: element[0],
+         label: simulation.environmentName,
          fill: false
       }
 
@@ -247,10 +247,10 @@ function generateLineSpeedChart(simulations) {
       }
    });
 }
-function generateLineBreakChart(simulations) {
+function generateLineBreakChart() {
    var datasets = [];
 
-   var dataOfFirst = simulations[0][1];
+   var dataOfFirst = simulations[0].carsAtTime;
    var seconds = dataOfFirst[dataOfFirst.length - 1].second;
 
    var labels = [];
@@ -259,12 +259,12 @@ function generateLineBreakChart(simulations) {
    }
 
    for (let i = 0; i < simulations.length; i++) {
-      const element = simulations[i];
+      const simulation = simulations[i];
 
       var dataPointsFront = [];
       var dataPointsSwitch = [];
       for (let j = 0; j < seconds; j++) {
-         var dataOfSecond = simulations[i][1].filter(s => s.second == j);
+         var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
          var cars: Car[] = dataOfSecond[0].cars;
 
          var totalBreaksforFront = 0;
@@ -284,12 +284,12 @@ function generateLineBreakChart(simulations) {
 
       var dataBreak = {
          data: dataPointsFront,
-         label: element[0] + ' Bremsen durch Stau',
+         label: simulation.environmentName + ' Bremsen durch Stau',
          fill: false
       }
       var dataSwitch = {
          data: dataPointsSwitch,
-         label: element[0] + ' Bremsen durch Fahrbahnwechsel',
+         label: simulation.environmentName + ' Bremsen durch Fahrbahnwechsel',
          fill: false
       }
 
