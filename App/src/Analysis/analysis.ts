@@ -106,15 +106,15 @@ function generateLineMeterChart(simulations) {
 
 	var dataOfFirst = simulations[0][1];
 	var seconds = dataOfFirst[dataOfFirst.length - 1].second;
-	var initialAverage = 0;
-
+	
 	var labels = [];
 	for (let i = 0; i < seconds; i++) {
 		labels.push(i);
 	}
-
+	
 	for (let i = 0; i < simulations.length; i++) {
 		const element = simulations[i];
+		var initialAverage = 0;
 
 		var dataPoints = [];
 		for (let j = 0; j < seconds; j++) {
