@@ -55,17 +55,11 @@ function getData() {
       }
    }
 
-   getSimulation(selectedEnvironments[0]);
+   callback();
 };
 
 
 async function getSimulation(environmentIndex: number) {
-   var trafficCalculatorItem = trafficCalculatorItems.filter(t => t.evironmentIndex == environmentIndex)[0]
-   if (trafficCalculatorItem != null) {
-      callback();
-      return;
-   }
-
    const trafficCalculator = new TrafficCalculator(p5, environments[environmentIndex]);
 
    trafficCalculatorItems.push({ evironmentIndex: environmentIndex, trafficCalculator: trafficCalculator });
@@ -83,7 +77,7 @@ function callback() {
    if (notLoadedSelectedEnvironments.length != 0) {
       getSimulation(notLoadedSelectedEnvironments[0]);
    }
-   
+
    generateCharts();
 }
 
