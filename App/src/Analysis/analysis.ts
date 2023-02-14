@@ -104,8 +104,7 @@ function generateCharts() {
 function generateLineMeterChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
-   var dataOfFirst = simulations[0].carsAtTime;
-   var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+   var seconds = getLastSecond(simulations);
 
    var labels = [];
    for (let i = 0; i < seconds; i++) {
@@ -181,8 +180,7 @@ function generateLineMeterChart(simulations: { environmentName: string, carsAtTi
 function generateLineSpeedChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
-   var dataOfFirst = simulations[0].carsAtTime;
-   var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+   var seconds = getLastSecond(simulations);
 
    var labels = [];
    for (let i = 0; i < seconds; i++) {
@@ -251,11 +249,11 @@ function generateLineSpeedChart(simulations: { environmentName: string, carsAtTi
       }
    });
 }
+
 function generateLineBreakChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
-   var dataOfFirst = simulations[0].carsAtTime;
-   var seconds = dataOfFirst[dataOfFirst.length - 1].second;
+   var seconds = getLastSecond(simulations);
 
    var labels = [];
    for (let i = 0; i < seconds; i++) {
@@ -337,4 +335,14 @@ function generateLineBreakChart(simulations: { environmentName: string, carsAtTi
          }
       }
    });
+}
+
+function getLastSecond(simulations: { environmentName: string; carsAtTime: { second: number; cars: Car[]; }[]; }[]) {
+   if(simulations.length == 0){
+      return 0;
+   }
+   
+   var carsAtTime = simulations[0].carsAtTime;
+   var seconds = carsAtTime[carsAtTime.length - 1].second;
+   return seconds;
 }
