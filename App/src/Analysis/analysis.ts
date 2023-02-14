@@ -14,7 +14,7 @@ const sketch = (p5: P5) => {
 };
 
 // in ms
-const liveChartUpdatesInterval = 500;
+const liveChartUpdatesInterval = 1000;
 
 const p5 = new P5(sketch);
 const environments = JSONHandler.getInstance().getEnvironments();
