@@ -5,8 +5,8 @@ import JSONHandler from "./JSONConfigHandler";
 import Lane from "./Lane";
 
 export default class TrafficCalculator {
+   public static readonly MAX_SECONDS_TO_CALCULATE = 120;
    private static readonly SECONDS_BETWEEN_CALCULATIONS = 0.01;
-   private static readonly MAX_SECONDS_TO_CALCULATE = 120;
    private static readonly CALCULATIONS_PER_EVENT_CYCLE = 10;
 
    private _p5: P5;
