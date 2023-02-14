@@ -13,6 +13,9 @@ const sketch = (p5: P5) => {
    };
 };
 
+// in ms
+const liveChartUpdatesInterval = 500;
+
 const p5 = new P5(sketch);
 const environments = JSONHandler.getInstance().getEnvironments();
 const trafficCalculatorItems: { evironmentIndex: number, trafficCalculator: TrafficCalculator }[] = new Array();
@@ -20,6 +23,7 @@ var selectedEnvironments: number[] = new Array();
 var chart1: Chart;
 var chart2: Chart;
 var chart3: Chart;
+var liveChartUpdatesActive = false;
 
 
 for (let i = 0; i < environments.length; i++) {
@@ -65,6 +69,21 @@ async function getSimulation(environmentIndex: number) {
    trafficCalculatorItems.push({ evironmentIndex: environmentIndex, trafficCalculator: trafficCalculator });
 
    trafficCalculator.calculateTraffic(callback);
+
+   if (!liveChartUpdatesActive) {
+      liveChartUpdatesActive = true;
+      startLiveChartUpdates();
+   }
+}
+
+function startLiveChartUpdates() {
+   setTimeout(() => {
+      if (liveChartUpdatesActive) {
+         generateCharts()
+
+         startLiveChartUpdates()
+      }
+   }, liveChartUpdatesInterval);
 }
 
 function callback() {
@@ -76,6 +95,8 @@ function callback() {
 
    if (notLoadedSelectedEnvironments.length != 0) {
       getSimulation(notLoadedSelectedEnvironments[0]);
+   } else {
+      liveChartUpdatesActive = false;
    }
 
    generateCharts();
@@ -90,7 +111,7 @@ function generateCharts() {
 
       if (trafficCalculatorItem != null) {
          const arrayOfCars = trafficCalculatorItem.trafficCalculator.carsAtTime;
-         
+
          const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
          simulations.push(simulation);
       }
@@ -167,6 +188,7 @@ function generateLineMeterChart(simulations: { environmentName: string, carsAtTi
                beginAtZero: true
             }
          },
+         animation: false,
          plugins: {
             title: {
                display: true,
@@ -240,6 +262,7 @@ function generateLineSpeedChart(simulations: { environmentName: string, carsAtTi
                beginAtZero: true
             }
          },
+         animation: false,
          plugins: {
             title: {
                display: true,
@@ -327,6 +350,7 @@ function generateLineBreakChart(simulations: { environmentName: string, carsAtTi
                beginAtZero: true
             }
          },
+         animation: false,
          plugins: {
             title: {
                display: true,
@@ -338,10 +362,10 @@ function generateLineBreakChart(simulations: { environmentName: string, carsAtTi
 }
 
 function getLastSecond(simulations: { environmentName: string; carsAtTime: { second: number; cars: Car[]; }[]; }[]) {
-   if(simulations.length == 0){
+   if (simulations.length == 0) {
       return 0;
    }
-   
+
    var carsAtTime = simulations[0].carsAtTime;
    var seconds = carsAtTime[carsAtTime.length - 1].second;
    return seconds;
