@@ -17,7 +17,6 @@ const p5 = new P5(sketch);
 const environments = JSONHandler.getInstance().getEnvironments();
 const trafficCalculatorItems: { evironmentIndex: number, trafficCalculator: TrafficCalculator }[] = new Array();
 var selectedEnvironments: number[] = new Array();
-var simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[] = new Array();
 var chart1: Chart;
 var chart2: Chart;
 var chart3: Chart;
@@ -48,7 +47,7 @@ document.getElementById("getData").addEventListener("click", getData)
 
 function getData() {
    selectedEnvironments = new Array();
-   simulations = new Array();
+   
    for (let i = 0; i < environments.length; i++) {
       var checkbox = <HTMLInputElement>document.getElementById(i.toString());
       if (checkbox.checked == true) {
@@ -84,24 +83,27 @@ function callback() {
    if (notLoadedSelectedEnvironments.length != 0) {
       getSimulation(notLoadedSelectedEnvironments[0]);
    } else {
-      selectedEnvironments.forEach(selectedEnvironment => {
-         const environment = environments[selectedEnvironment];
-         const arrayOfCars = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0].trafficCalculator.carsAtTime;
-         const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
-         simulations.push(simulation);
-      });
-
       generateCharts();
    }
 }
 
 function generateCharts() {
-   generateLineMeterChart();
-   generateLineSpeedChart();
-   generateLineBreakChart();
+   const simulations = new Array();
+   
+   selectedEnvironments.forEach(selectedEnvironment => {
+      const environment = environments[selectedEnvironment];
+      const arrayOfCars = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0].trafficCalculator.carsAtTime;
+      
+      const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
+      simulations.push(simulation);
+   });
+
+   generateLineMeterChart(simulations);
+   generateLineSpeedChart(simulations);
+   generateLineBreakChart(simulations);
 }
 
-function generateLineMeterChart() {
+function generateLineMeterChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
    var dataOfFirst = simulations[0].carsAtTime;
@@ -176,7 +178,7 @@ function generateLineMeterChart() {
    });
 }
 
-function generateLineSpeedChart() {
+function generateLineSpeedChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
    var dataOfFirst = simulations[0].carsAtTime;
@@ -247,7 +249,7 @@ function generateLineSpeedChart() {
       }
    });
 }
-function generateLineBreakChart() {
+function generateLineBreakChart(simulations: { environmentName: string, carsAtTime: { second: number, cars: Car[] }[] }[]) {
    var datasets = [];
 
    var dataOfFirst = simulations[0].carsAtTime;
