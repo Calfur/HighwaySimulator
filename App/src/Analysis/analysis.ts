@@ -47,7 +47,7 @@ document.getElementById("getData").addEventListener("click", getData)
 
 function getData() {
    selectedEnvironments = new Array();
-   
+
    for (let i = 0; i < environments.length; i++) {
       var checkbox = <HTMLInputElement>document.getElementById(i.toString());
       if (checkbox.checked == true) {
@@ -82,20 +82,24 @@ function callback() {
 
    if (notLoadedSelectedEnvironments.length != 0) {
       getSimulation(notLoadedSelectedEnvironments[0]);
-   } else {
-      generateCharts();
    }
+   
+   generateCharts();
 }
 
 function generateCharts() {
    const simulations = new Array();
-   
+
    selectedEnvironments.forEach(selectedEnvironment => {
       const environment = environments[selectedEnvironment];
-      const arrayOfCars = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0].trafficCalculator.carsAtTime;
-      
-      const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
-      simulations.push(simulation);
+      const trafficCalculatorItem = trafficCalculatorItems.filter(t => t.evironmentIndex == selectedEnvironment)[0];
+
+      if (trafficCalculatorItem != null) {
+         const arrayOfCars = trafficCalculatorItem.trafficCalculator.carsAtTime;
+         
+         const simulation = { environmentName: environment.name, carsAtTime: arrayOfCars };
+         simulations.push(simulation);
+      }
    });
 
    generateLineMeterChart(simulations);
@@ -121,16 +125,18 @@ function generateLineMeterChart(simulations: { environmentName: string, carsAtTi
       var dataPoints = [];
       for (let j = 0; j < seconds; j++) {
          var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
-         var cars: Car[] = dataOfSecond[0].cars;
+         if (dataOfSecond[0] != null) {
+            var cars: Car[] = dataOfSecond[0].cars;
 
-         var totalMeters = 0;
-         for (let index = 0; index < cars.length; index++) {
-            totalMeters += cars[index].highwayPosition.meter;
+            var totalMeters = 0;
+            for (let index = 0; index < cars.length; index++) {
+               totalMeters += cars[index].highwayPosition.meter;
+            }
+            if (initialAverage == 0) {
+               initialAverage = totalMeters / cars.length;
+            }
+            dataPoints.push((totalMeters / cars.length) - initialAverage);
          }
-         if (initialAverage == 0) {
-            initialAverage = totalMeters / cars.length;
-         }
-         dataPoints.push((totalMeters / cars.length) - initialAverage);
       }
 
       var data = {
@@ -195,14 +201,16 @@ function generateLineSpeedChart(simulations: { environmentName: string, carsAtTi
       var dataPoints = [];
       for (let j = 0; j < seconds; j++) {
          var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
-         var cars: Car[] = dataOfSecond[0].cars;
+         if (dataOfSecond[0] != null) {
+            var cars: Car[] = dataOfSecond[0].cars;
 
-         var totalSpeed = 0;
-         for (let index = 0; index < cars.length; index++) {
-            totalSpeed += cars[index].previousVersionSpeed * 3.6;
+            var totalSpeed = 0;
+            for (let index = 0; index < cars.length; index++) {
+               totalSpeed += cars[index].previousVersionSpeed * 3.6;
+            }
+
+            dataPoints.push(totalSpeed / cars.length);
          }
-
-         dataPoints.push(totalSpeed / cars.length);
       }
 
       var data = {
@@ -267,21 +275,23 @@ function generateLineBreakChart(simulations: { environmentName: string, carsAtTi
       var dataPointsSwitch = [];
       for (let j = 0; j < seconds; j++) {
          var dataOfSecond = simulations[i].carsAtTime.filter(s => s.second == j);
-         var cars: Car[] = dataOfSecond[0].cars;
+         if (dataOfSecond[0] != null) {
+            var cars: Car[] = dataOfSecond[0].cars;
 
-         var totalBreaksforFront = 0;
-         var totalBreaksforSwitch = 0;
-         for (let index = 0; index < cars.length; index++) {
-            if (cars[index].didBreakforFront) {
-               totalBreaksforFront += 1;
+            var totalBreaksforFront = 0;
+            var totalBreaksforSwitch = 0;
+            for (let index = 0; index < cars.length; index++) {
+               if (cars[index].didBreakforFront) {
+                  totalBreaksforFront += 1;
+               }
+               if (cars[index].didBreakforSwitch) {
+                  totalBreaksforSwitch += 1;
+               }
             }
-            if (cars[index].didBreakforSwitch) {
-               totalBreaksforSwitch += 1;
-            }
+
+            dataPointsFront.push(totalBreaksforFront);
+            dataPointsSwitch.push(totalBreaksforSwitch);
          }
-
-         dataPointsFront.push(totalBreaksforFront);
-         dataPointsSwitch.push(totalBreaksforSwitch);
       }
 
       var dataBreak = {
