@@ -396,7 +396,7 @@ export default class Car {
 
       const carsInFront = this.getCarsInFrontForLane(cars, this, lane);
       
-      var lowestSpeed;
+      var lowestSpeed:number;
       if (carsInFront[0] == null) {
          lowestSpeed = lane.maxSpeed;
       } else {
