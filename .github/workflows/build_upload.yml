@@ -37,6 +37,9 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           passphrase: ${{ secrets.SSH_PASSPHRASE }}
           script: |
+            # Configure bash to exit on error
+            set -euxo pipefail
+
             # Ensure the Docker network exists
             docker network inspect website_net >/dev/null 2>&1 || docker network create website_net
 
