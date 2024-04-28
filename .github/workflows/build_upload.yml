@@ -1,9 +1,10 @@
+name: Build website and deploy with Docker
 
-name: Build website and upload with FTP 
 on:
   push:
     branches: ["master"]
   workflow_dispatch:
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,12 +23,36 @@ jobs:
           npm ci
           npm run build
 
-      - name: Deletes and uploads files with FTP
-        uses: hsimah/ftp-action@2.1.0
+      - name: Build Docker image
+        run: docker build -t pannenstreifen-website .
+
+      - name: Save Docker image
+        run: docker save pannenstreifen-website | gzip > pannenstreifen-website.tar.gz
+
+      - name: Upload Docker image to server and restart container
+        uses: appleboy/ssh-action@v1.0.3
         with:
-          host: pannenstreifen.com
-          user: pannenp_0
-          password: ${{ secrets.FTP_PASSWORD }}
-          forceSsl: false
-          localDir: App/dist
-          remoteDir: .
+          host: ${{ secrets.SERVER_IP }}
+          username: root
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          passphrase: ${{ secrets.SSH_PASSPHRASE }}
+          script: |
+            # Ensure the Docker network exists
+            docker network inspect website_net >/dev/null 2>&1 || docker network create website_net
+
+            # Load the Docker image
+            mkdir -p /tmp/docker-load
+            cd /tmp/docker-load
+            cat > pannenstreifen-website.tar.gz
+            gunzip pannenstreifen-website.tar.gz
+            docker load < pannenstreifen-website.tar
+
+            # Remove old container if it exists
+            docker stop pannenstreifen-website || true
+            docker rm pannenstreifen-website || true
+
+            # Run new container within the network
+            docker run -d --name pannenstreifen-website --net website_net pannenstreifen-website
+
+            # Clean up
+            rm -rf /tmp/docker-load
