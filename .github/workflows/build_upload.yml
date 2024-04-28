@@ -10,10 +10,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node.js environment
-        uses: actions/setup-node@v3.6.0
+        uses: actions/setup-node@v4
         with:
           cache-dependency-path: ./App/package-lock.json
 
@@ -25,9 +25,6 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t pannenstreifen-website .
-
-      - name: Save Docker image
-        run: docker save pannenstreifen-website | gzip > pannenstreifen-website.tar.gz
 
       - name: Upload Docker image to server and restart container
         uses: appleboy/ssh-action@v1.0.3
@@ -43,11 +40,14 @@ jobs:
             # Ensure the Docker network exists
             docker network inspect website_net >/dev/null 2>&1 || docker network create website_net
 
-            # Load the Docker image
+            # Prepare to receive the Docker image
             mkdir -p /tmp/docker-load
             cd /tmp/docker-load
-            cat > pannenstreifen-website.tar.gz
-            gunzip pannenstreifen-website.tar.gz
+
+            # Listen for incoming Docker image data
+            cat > pannenstreifen-website.tar
+
+            # Load the Docker image
             docker load < pannenstreifen-website.tar
 
             # Remove old container if it exists
