@@ -42,5 +42,5 @@ jobs:
 
       - name: Deploy to server
         run: |
-          scp ./docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/temp/pannenstreifen-website
+          scp -o StrictHostKeyChecking=no -p 22 ./docker-compose.yml ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/temp/pannenstreifen-website
           ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /temp/pannenstreifen-website && docker pull ghcr.io/calfur/pannenstreifen-website:${{ github.sha }} && docker-compose up -d"
