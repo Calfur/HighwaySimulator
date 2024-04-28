@@ -26,36 +26,20 @@ jobs:
       - name: Build Docker image
         run: docker build -t pannenstreifen-website .
 
-      - name: Upload Docker image to server and restart container
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Login to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t ghcr.io/Calfur/pannenstreifen-website:${{ github.sha }} -t ghcr.io/Calfur/pannenstreifen-website:latest .
+          docker push ghcr.io/Calfur/pannenstreifen-website:${{ github.sha }}
+          docker push ghcr.io/Calfur/pannenstreifen-website:latest
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
         with:
-          host: ${{ secrets.SERVER_IP }}
-          username: root
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          passphrase: ${{ secrets.SSH_PASSPHRASE }}
-          script: |
-            # Configure bash to exit on error
-            set -euxo pipefail
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-            # Ensure the Docker network exists
-            docker network inspect website_net >/dev/null 2>&1 || docker network create website_net
-
-            # Prepare to receive the Docker image
-            mkdir -p /tmp/docker-load
-            cd /tmp/docker-load
-
-            # Listen for incoming Docker image data
-            cat > pannenstreifen-website.tar
-
-            # Load the Docker image
-            docker load < pannenstreifen-website.tar
-
-            # Remove old container if it exists
-            docker stop pannenstreifen-website || true
-            docker rm pannenstreifen-website || true
-
-            # Run new container within the network
-            docker run -d --name pannenstreifen-website --net website_net pannenstreifen-website
-
-            # Clean up
-            rm -rf /tmp/docker-load
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -p 22 ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker pull ghcr.io/Calfur/pannenstreifen-website:${{ github.sha }} && docker-compose up -d"
