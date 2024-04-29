@@ -1,7 +1,7 @@
-version: '3.8'
 services:
   website:
     image: ghcr.io/calfur/pannenstreifen-website:latest
+    platform: linux/amd64
     ports:
       - "80:80"
     environment:
