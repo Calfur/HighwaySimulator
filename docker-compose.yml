@@ -1,9 +1,13 @@
 services:
-  website:
+  pannenstreifen-website:
     image: ghcr.io/calfur/pannenstreifen-website:latest
-    platform: linux/amd64
-    ports:
-      - "80:80"
+    container_name: pannenstreifen_web
+    platform: linux/arm64/v8
     environment:
       - NODE_ENV=production
-    restart: unless-stopped
+    networks:
+      - webnet
+
+networks:
+  webnet:
+    external: true
