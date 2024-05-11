@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  build-docker-image:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -42,3 +42,16 @@ jobs:
           build-args: |
             VERSION=alpine
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
+
+  deploy-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH, docker-compose pull, docker-compose up
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /opt/docker-projects/pannenstreifen
+            docker-compose pull && docker-compose up -d --force-recreate

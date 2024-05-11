@@ -2,9 +2,6 @@ services:
   pannenstreifen-website:
     image: ghcr.io/calfur/pannenstreifen-website:latest
     container_name: pannenstreifen_web
-    platform: linux/arm64/v8
-    environment:
-      - NODE_ENV=production
     networks:
       - webnet
 
