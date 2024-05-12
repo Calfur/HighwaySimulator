@@ -12,30 +12,38 @@
 </head>
 
 <body>
-   <main>
-      <div id="dumpForP5DoNotRemove"></div>
-      <h1 id="title">Autobahn Simulator - Statistiken</h1>
-      <h2><a href="../../index.html" target="_blank">Simulation</a></h2>
+   <div class="page-container">
+      <main>
+         <div id="dumpForP5DoNotRemove"></div>
+         <h1 id="title">Autobahn Simulator - Statistiken</h1>
+         <h2><a href="../../index.html" target="_blank">Simulation</a></h2>
 
-      <div id="checkBoxWrapper"></div>
-      <br>
-      <button id="getData">Laden</button>
-      Wartezeiten von einigen Minuten sind zu erwarten. Steigt mit jeder ausgewählten Situation.
-      
-      <div>
-         <canvas class="chart-canvas" id="time-meter-line-chart"></canvas>
-      </div>
+         <div id="checkBoxWrapper"></div>
+         <br>
+         <button id="getData">Laden</button>
+         Wartezeiten von einigen Minuten sind zu erwarten. Steigt mit jeder ausgewählten Situation.
 
-      <div>
-         <canvas class="chart-canvas " id="time-speed-line-chart"></canvas>
-      </div>
+         <div>
+            <canvas class="chart-canvas" id="time-meter-line-chart"></canvas>
+         </div>
 
-      <div>
-         <canvas class="chart-canvas " id="time-break-line-chart"></canvas>
-      </div>
+         <div>
+            <canvas class="chart-canvas " id="time-speed-line-chart"></canvas>
+         </div>
 
-      <script type="module" src="analysis.ts"></script>
-   </main>
+         <div>
+            <canvas class="chart-canvas " id="time-break-line-chart"></canvas>
+         </div>
+
+         <script type="module" src="analysis.ts"></script>
+      </main>
+
+      <footer class="footer">
+         <div><a href="https://github.com/Calfur/HighwaySimulator" target="_blank" rel="noopener noreferrer">Github</a>
+         </div>
+         <div>© 2024 Damian, Tobias, Robin</div>
+      </footer>
+   </div>
 </body>
 
 </html>

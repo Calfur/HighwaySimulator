@@ -11,6 +11,18 @@ body {
    font-family: 'Montserrat', sans-serif;
 }
 
+.page-container{
+   min-height: 100vh;
+   display: flex;
+   flex-direction: column;
+   height: 100%;
+}
+
+main {
+   flex: 1;
+   padding: 1px 25px;
+}
+
 .slider-container {
    display: grid;
    grid-template-rows: 1fr 1fr;
@@ -36,6 +48,14 @@ body {
    }
 }
 
+.footer {
+   background-color: #333;
+   color: #fff;
+   padding: 10px 20px;
+   display: flex;
+   justify-content: space-between;
+}
+
 .slider-label{
    grid-area: slider-label;
 }
@@ -46,10 +66,6 @@ body {
 
 .slider-output{
    grid-area: slider-output;
-}
-
-main {
-   padding: 1px 25px;
 }
 
 .play-pause-button {
