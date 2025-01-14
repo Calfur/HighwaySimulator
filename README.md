@@ -14,4 +14,8 @@ A simulator based on TypeScript and p5.js, created to analyze usage of breakdown
 - Allow script execution in Powershell with `Set-ExecutionPolicy Unrestricted` (open Powershell as admin)
 - Start project with command `npm start`
 
-- Build project with command `npm build`
+### Build docker image
+
+- Install npm packages with the command `npm ci`
+- Build project with command `npm run build`
+- Build docker image with `docker build -t highway-simulator .`
