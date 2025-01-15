@@ -43,7 +43,7 @@ jobs:
             ghcr.io/calfur/pannenstreifen-website:${{ env.IMAGE_VERSION }}
             ghcr.io/calfur/pannenstreifen-website:latest
           build-args: |
-            VERSION=alpine
+            NGINX_VERSION=alpine
           platforms: linux/amd64,linux/arm64,linux/arm/v7,linux/arm/v8
 
   trigger-deployment:
