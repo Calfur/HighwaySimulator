@@ -25,11 +25,11 @@ jobs:
           cache-dependency-path: ./App/package-lock.json
 
       - name: Install dependencies
-        working-directory: Website
+        working-directory: App
         run: npm ci
 
       - name: Build project
-        working-directory: Website
+        working-directory: App
         run: npm run build
 
       - name: Login to GitHub Container Registry
