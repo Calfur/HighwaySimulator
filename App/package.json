@@ -9,10 +9,10 @@
    "dependencies": {
       "chart.js": "^4.4.7",
       "p5": "1.11.2",
-      "parcel": "^2.13.3"
+      "parcel": "^2.16.0"
    },
    "devDependencies": {
-      "@parcel/transformer-sass": "^2.13.3",
+      "@parcel/transformer-sass": "^2.16.0",
       "@types/chart.js": "^2.9.41",
       "@types/p5": "1.7.6",
       "json-loader": "^0.5.7",
